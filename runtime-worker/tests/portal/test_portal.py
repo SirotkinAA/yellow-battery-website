@@ -34,7 +34,7 @@ class PortalTests(unittest.IsolatedAsyncioTestCase):
     async def test_activation_single_use_and_no_default_password(self):
         with self.assertRaises(PortalError):await self.call('activate',{'token':self.link.split('=')[1],'password':'another fixture password'})
         row=(await self.db.query('SELECT * FROM portal_users'))[0]
-        self.assertNotIn('fixture',row['password_hash']);self.assertTrue(row['password_hash'].startswith('pbkdf2_sha256$600000$'))
+        self.assertNotIn('fixture',row['password_hash']);self.assertTrue(row['password_hash'].startswith('scrypt$32768$8$3$'))
     async def test_csrf_and_partner_cannot_escalate(self):
         uid,partner=await self.partner([])
         for headers in ({**self.admin,'x-csrf-token':'bad'},{**self.admin,'origin':'https://evil.example'},partner):

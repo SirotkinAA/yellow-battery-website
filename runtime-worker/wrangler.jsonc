@@ -32,5 +32,14 @@
       "database_name": "yellow-battery-portal-test",
       "database_id": "3314d31c-216d-44e5-8118-8401f6e9f1da"
     }
-  ]
+  ],
+  "rules": [
+    {
+      "type": "ESModule",
+      "globs": [
+        "**/*.mjs"
+      ]
+    }
+  ],
+  "find_additional_modules": true
 }

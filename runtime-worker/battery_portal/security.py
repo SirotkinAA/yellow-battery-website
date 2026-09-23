@@ -5,7 +5,10 @@ import secrets
 from urllib.parse import urlsplit
 
 PERMISSIONS=('prices:read','api:export','widget:embed')
-ITERATIONS=600_000
+SCRYPT_N=32768
+SCRYPT_R=8
+SCRYPT_P=3
+SCRYPT_MAXMEM=64*1024*1024
 
 def digest(value):return hashlib.sha256(value.encode()).hexdigest()
 def token():return secrets.token_urlsafe(32)
@@ -15,20 +18,20 @@ def email(value):
     return value
 
 async def derive_password(password, salt):
-    if hasattr(hashlib,'pbkdf2_hmac'):
-        return hashlib.pbkdf2_hmac('sha256',password.encode(),salt,ITERATIONS).hex()
-    from js import crypto, Object, Uint8Array
+    # OWASP scrypt parameters. Cloudflare production caps PBKDF2 at 100000;
+    # local workerd does not, so PBKDF2-600000 cannot be used on this platform.
+    if hasattr(hashlib,'scrypt'):
+        return hashlib.scrypt(password.encode(),salt=salt,n=SCRYPT_N,r=SCRYPT_R,p=SCRYPT_P,maxmem=SCRYPT_MAXMEM,dklen=32).hex()
+    from workers import import_from_javascript
     from pyodide.ffi import to_js
-    key=await crypto.subtle.importKey('raw',to_js(password.encode()),'PBKDF2',False,to_js(['deriveBits']))
-    params=to_js({'name':'PBKDF2','hash':'SHA-256','salt':to_js(salt),'iterations':ITERATIONS},dict_converter=Object.fromEntries)
-    result=await crypto.subtle.deriveBits(params,key,256)
-    return bytes(Uint8Array.new(result).to_py()).hex()
+    crypto=import_from_javascript('crypto_bridge.mjs')
+    return crypto.derivePassword(to_js(password.encode()),to_js(salt))
 
 async def password_hash(password):
     if not isinstance(password,str) or not 12<=len(password)<=128:raise ValueError('Пароль: от 12 до 128 символов')
     salt=secrets.token_hex(16)
     derived=await derive_password(password,bytes.fromhex(salt))
-    return f'pbkdf2_sha256${ITERATIONS}${salt}${derived}'
+    return f'scrypt${SCRYPT_N}${SCRYPT_R}${SCRYPT_P}${salt}${derived}'
 
 async def password_ok(password,stored):
     if not isinstance(password,str) or len(password)>128:return False
@@ -36,8 +39,8 @@ async def password_ok(password,stored):
         await derive_password(password,b'unknown-account!')
         return False
     try:
-        algorithm,iterations,salt,expected=stored.split('$')
-        if algorithm!='pbkdf2_sha256' or int(iterations)!=ITERATIONS:return False
+        algorithm,n,r,p,salt,expected=stored.split('$')
+        if algorithm!='scrypt' or (int(n),int(r),int(p))!=(SCRYPT_N,SCRYPT_R,SCRYPT_P):return False
         actual=await derive_password(password,bytes.fromhex(salt))
         return hmac.compare_digest(actual,expected)
     except (ValueError,TypeError):return False
