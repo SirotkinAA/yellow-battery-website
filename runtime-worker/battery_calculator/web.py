@@ -32,7 +32,8 @@ def application(environ, start_response):
     assets = {"/runtime": ("index.html", "text/html; charset=utf-8"),
               "/runtime/": ("index.html", "text/html; charset=utf-8"),
               "/runtime/app.js": ("app.js", "text/javascript; charset=utf-8"),
-              "/runtime/style.css": ("style.css", "text/css; charset=utf-8")}
+              "/runtime/style.css": ("style.css", "text/css; charset=utf-8"),
+              "/runtime/yellow-logo.svg": ("yellow-logo.svg", "image/svg+xml")}
     if path in assets and method in ("GET", "HEAD"):
         name, mime = assets[path]
         return respond("200 OK", (STATIC / name).read_bytes(), mime)
