@@ -1,0 +1,131 @@
+'use strict';
+const translationsEn = {
+  "Тестовая версия": "Test version",
+  "ИНЖЕНЕРНЫЕ ИНСТРУМЕНТЫ / 01": "ENGINEERING TOOLS / 01",
+  "Энергия.": "Power.",
+  "На нужное время.": "For the time you need.",
+  "Подбор конфигурации и расчёт автономии аккумуляторных батарей.": "Battery configuration selection and runtime calculation.",
+  "Демонстрация на синтетических данных.": "Demonstration with synthetic data.",
+  "Реальные характеристики HR-M и HR-WM ещё не подключены. Результаты не предназначены для подбора оборудования. Токовые ограничения не проверены; сверка с Mathcad ожидается.": "Real HR-M and HR-WM data is not connected yet. Do not use these results to select equipment. Current limits are not verified; Mathcad validation is pending.",
+  "Условия расчёта": "Calculation inputs",
+  "Режим": "Mode",
+  "Время работы": "Runtime",
+  "Подбор по времени": "Select by runtime",
+  "Ступенчатый профиль": "Stepped load profile",
+  "Мощность нагрузки": "Load power",
+  "Единица": "Unit",
+  "кВт": "kW",
+  "кВА": "kVA",
+  "КПД ИБП, %": "UPS efficiency, %",
+  "Коэффициент мощности": "Power factor",
+  "АКБ в одной линейке": "Batteries per string",
+  "Конечное напряжение, В/элемент": "End voltage, V/cell",
+  "Параллельных линеек": "Parallel strings",
+  "Требуемое время, мин": "Required runtime, min",
+  "Максимум параллелей": "Maximum parallel strings",
+  "Коэффициент старения": "Ageing factor",
+  "Коэффициент запаса": "Design margin factor",
+  "Этапы нагрузки": "Load stages",
+  "Мощность в выбранных единицах. Порядок этапов — сверху вниз.": "Power in the selected units. Stages run from top to bottom.",
+  "+ Добавить этап": "+ Add stage",
+  "Условная модель: 12 В / 100 А·ч, 6 элементов.": "Synthetic model: 12 V / 100 Ah, 6 cells.",
+  "Температура 25 °C. В синтетическом наборе есть таблица только для 1,75 В/элемент.": "Temperature: 25 °C. The synthetic dataset has a table for 1.75 V/cell only.",
+  "Табличный диапазон: 5–180 минут. Для проверки выберите «Загрузить пример».": "Tabulated range: 5–180 minutes. Select “Load example” to try it.",
+  "Рассчитать →": "Calculate →",
+  "Загрузить пример": "Load example",
+  "РЕЗУЛЬТАТ РАСЧЁТА": "CALCULATION RESULT",
+  "Задайте условия": "Enter your inputs",
+  "Нажмите «Рассчитать», чтобы проверить работу алгоритма.": "Select “Calculate” to try the algorithm.",
+  "Условия изменены. Выполните расчёт заново.": "Inputs have changed. Run the calculation again.",
+  "Скачать расчёт JSON": "Download calculation JSON",
+  "Полные данные расчёта": "Full calculation data",
+  "YELLOW / Калькулятор автономии · Тестовая версия 0.1": "YELLOW / Battery runtime calculator · Test version 0.1",
+  "Синтетические примеры не описывают реальные изделия.": "Synthetic examples do not describe real products.",
+  "Нагрузка": "Load",
+  "Время, мин": "Time, min",
+  "Удалить": "Remove",
+  "Варианты в диапазоне ±20%": "Options within ±20%",
+  "Достигают заданного времени": "Meet the runtime target",
+  "Ниже заданного времени": "Below the runtime target",
+  "Нет вариантов": "No matching options",
+  "Время": "Runtime",
+  "Параллели": "Strings",
+  "Всего АКБ": "Total batteries",
+  "Расчётное время работы": "Calculated runtime",
+  "Конфигурация по профилю": "Profile configuration",
+  "Всего батарей": "Total batteries",
+  "Ток линейки, А": "String current, A",
+  "Требуется, А·ч": "Required capacity, Ah",
+  "Определяющая секция": "Critical section",
+  "Превышено допустимое число параллелей.": "The maximum number of parallel strings is exceeded.",
+  "Мощность DC, Вт": "DC power, W",
+  "На элемент, Вт": "Power per cell, W",
+  "Демонстрационный результат. Токовые ограничения не проверены.": "Demonstration result. Current limits are not verified.",
+  "Расчёт не выполнен": "Calculation failed",
+  "Не удалось загрузить пример": "Could not load the example",
+  "Не удалось связаться с сервером. Проверьте подключение и повторите расчёт.": "Could not reach the server. Check your connection and try again.",
+  "Расчёт не выполнен. Проверьте исходные данные и повторите попытку.": "Calculation failed. Check the inputs and try again.",
+  "КПД ИБП": "UPS efficiency",
+  "АКБ в линейке": "Batteries per string",
+  "Параллельные линейки": "Parallel strings",
+  "Требуемое время": "Required runtime",
+  "Конечное напряжение": "End voltage",
+  "Длительность этапа": "Stage duration",
+  "Язык": "Language",
+  "Нет разрядной таблицы для выбранного конечного напряжения. Для синтетического примера доступно 1,75 В/элемент.": "No discharge table is available at the selected end voltage. The synthetic example supports 1.75 V/cell.",
+  "Введите конечное числовое значение. Допускаются запятая или точка.": "Enter a finite number. A comma or decimal point is accepted.",
+  "Значение вне допустимого диапазона.": "The value is outside the permitted range.",
+  "Количество должно быть положительным целым числом.": "The count must be a positive integer.",
+  "КПД должен быть больше 0 и не выше 100%.": "Efficiency must be above 0 and no higher than 100%.",
+  "Коэффициент мощности должен быть больше 0 и не выше 1.": "Power factor must be above 0 and no higher than 1.",
+  "Недопустимая единица измерения.": "Unsupported unit.",
+  "Напряжение системы не соответствует целому числу батарей.": "System voltage does not match a whole number of batteries.",
+  "Длительность выходит за пределы исходной разрядной таблицы.": "Duration is outside the source discharge table.",
+  "Нет подтверждённых данных для выбранной температуры.": "No confirmed data is available for the selected temperature.",
+  "Выбранная разрядная таблица ещё не утверждена.": "The selected discharge table is not approved yet.",
+  "Добавьте от 1 до 100 этапов с положительной длительностью.": "Add 1–100 stages with positive durations.",
+  "Нагрузка не может быть нулевой на всех этапах.": "The load cannot be zero in every stage.",
+  "Превышен предел расчёта: не более 100 параллельных линеек.": "Calculation limit exceeded: at most 100 parallel strings.",
+  "Выбранная модель отсутствует в доступном наборе данных.": "The selected model is not in the available dataset.",
+  "Разрядная таблица содержит некорректные значения.": "The discharge table contains invalid values.",
+  "Разрядные таблицы противоречат друг другу по конечному напряжению.": "Discharge tables are inconsistent across end voltages.",
+  "Найдено несколько таблиц для одинаковых условий.": "Multiple tables exist for the same conditions.",
+  "Не указан корректный источник или статус данных.": "The data source or approval status is invalid.",
+  "Некорректные данные токового ограничения.": "The current limit data is invalid.",
+  "Доступны только серии HR-M и HR-WM.": "Only HR-M and HR-WM series are available.",
+  "Этот источник разрядных данных не разрешён.": "This discharge data source is not permitted.",
+  "Синтетические данные доступны только в демонстрационном режиме.": "Synthetic data is available in demonstration mode only.",
+  "Простой подбор выполняется при 25 °C и коэффициентах старения и запаса 1.": "Simple selection uses 25 °C with ageing and margin factors of 1.",
+  "Некорректный состав полей запроса.": "The request fields are invalid.",
+  "Некорректный формат данных.": "Invalid data format.",
+  "Не удалось прочитать запрос.": "Could not read the request.",
+  "Не заполнено обязательное текстовое поле.": "A required text field is empty.",
+  "Неизвестный режим расчёта.": "Unknown calculation mode.",
+  "Версия набора данных не поддерживается.": "The dataset version is not supported.",
+  "В наборе повторяется артикул модели.": "The dataset contains a duplicate model ID.",
+  "В запросе повторяется поле.": "The request contains a duplicate field.",
+  "Запрос слишком велик или пуст.": "The request is too large or empty.",
+  "Ожидаются данные в формате JSON.": "JSON data is required.",
+  "Сервер не смог определить размер запроса.": "The server could not determine the request size."
+};
+let language='ru';
+try { const saved=localStorage.getItem('yellow-runtime-language'); if(saved==='en'||saved==='ru')language=saved; } catch (_) {}
+const localizedNodes=new Map();
+function t(value){
+ if(language==='ru'||typeof value!=='string')return value;
+ if(translationsEn[value])return translationsEn[value];
+ if(value.includes(': ')){const [first,...rest]=value.split(': ');if(translationsEn[first])return translationsEn[first]+': '+t(rest.join(': '));}
+ return value.replace(/^Всего вариантов: (\d+)\. Полный расчёт и причины исключений доступны в JSON\.$/,'Total options: $1. Full results and exclusion reasons are available in JSON.')
+  .replace(/ параллели$/,' parallel strings').replace(/^Менее /,'Less than ').replace(/^Не менее /,'At least ').replace(/ мин$/,' min');
+}
+function localizedText(element,value){element.textContent=t(value);if(typeof value==='string'&&element.firstChild)localizedNodes.set(element.firstChild,value);}
+const walker=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);
+while(walker.nextNode()){const n=walker.currentNode;if(n.parentElement.closest('script,style'))continue;const value=n.nodeValue.trim();if(value)localizedNodes.set(n,value);}
+function applyLanguage(){
+ document.documentElement.lang=language;
+ document.title=language==='ru'?'YELLOW — Калькулятор автономии':'YELLOW — Battery runtime calculator';
+ document.querySelector('.brand').setAttribute('aria-label',document.title);
+ document.getElementById('language').value=language;
+ for(const [n,value] of localizedNodes){if(!n.isConnected){localizedNodes.delete(n);continue;}n.nodeValue=t(value);}
+}
+applyLanguage();
