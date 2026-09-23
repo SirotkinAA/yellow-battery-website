@@ -108,6 +108,15 @@ const translationsEn = {
   "Ожидаются данные в формате JSON.": "JSON data is required.",
   "Сервер не смог определить размер запроса.": "The server could not determine the request size."
 };
+Object.assign(translationsEn,{
+ 'Режим расчёта':'Calculation mode',
+ 'По времени автономной работы и нагрузке':'By runtime and load',
+ 'Время автономной работы конкретной батареи':'Runtime of a specific battery',
+ 'Время автономной работы, мин':'Runtime, min',
+ 'Единица измерения':'Unit of measurement',
+ 'КПД преобразователя, %':'Converter efficiency, %',
+ 'Количество параллельных линеек':'Number of parallel strings'
+});
 let language='ru';
 try { const saved=localStorage.getItem('yellow-runtime-language'); if(saved==='en'||saved==='ru')language=saved; } catch (_) {}
 const localizedNodes=new Map();

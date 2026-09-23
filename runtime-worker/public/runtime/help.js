@@ -56,7 +56,7 @@ const helpContent={
 let helpId=0;
 function installHelp(){
  for(const field of document.querySelectorAll('input,select')){
-  if(field.dataset.helpInstalled)continue;
+  if(field.type==='hidden'||field.dataset.helpInstalled)continue;
   const key=field.name||field.dataset.key||field.id;
   if(!helpContent[key])continue;
   const label=field.closest('label');if(!label)continue;
