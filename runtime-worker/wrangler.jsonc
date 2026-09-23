@@ -1,0 +1,25 @@
+{
+  "name": "yellow-battery-runtime-test",
+  "main": "src/entry.py",
+  "compatibility_date": "2026-09-20",
+  "compatibility_flags": [
+    "python_workers"
+  ],
+  "assets": {
+    "directory": "./public",
+    "binding": "ASSETS",
+    "run_worker_first": [
+      "/runtime/api/*",
+      "/runtime/health"
+    ]
+  },
+  "routes": [
+    {
+      "pattern": "test.yellow-battery.com",
+      "custom_domain": true
+    }
+  ],
+  "build": {
+    "command": "python3 build_worker.py"
+  }
+}
