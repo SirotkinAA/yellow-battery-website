@@ -2,7 +2,9 @@ import io
 import json
 import unittest
 
-from battery_calculator.web import application, EXAMPLES
+from battery_calculator.web import application
+from battery_calculator.catalog import example_requests
+EXAMPLES = {k:{"request":v} for k,v in example_requests().items()}
 
 
 class WebTests(unittest.TestCase):
@@ -15,15 +17,15 @@ class WebTests(unittest.TestCase):
             "wsgi.input": io.BytesIO(body)}, start))
         return response
 
-    def test_three_modes_use_server_owned_demo(self):
+    def test_three_modes_use_server_owned_leaflets(self):
         for op in EXAMPLES:
             response = self.call("/runtime/api/calculate", "POST", json.dumps(EXAMPLES[op]["request"]).encode())
             self.assertEqual(response["status"], "200 OK")
             data = json.loads(response["body"])
-            self.assertTrue(data["demo"])
+            self.assertFalse(data["demo"])
             self.assertFalse(data["production_ready"])
             self.assertEqual(data["result"]["operation"], op)
-            self.assertEqual(data["input_snapshot"]["dataset"]["origin"], "synthetic")
+            self.assertEqual(data["input_snapshot"]["dataset"]["origin"], "new_shared_dataset")
 
     def test_assets_routes_and_no_file_traversal(self):
         for path in ("/runtime", "/runtime/", "/runtime/app.js", "/runtime/style.css", "/runtime/health", "/runtime/api/examples"):

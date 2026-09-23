@@ -1,5 +1,7 @@
 'use strict';
 const helpContent={
+ "model_id":["Выберите модель из готовых листовок YELLOW. Для режимов 2 и 3 расчёт выполняется только по её таблице мощности.","Select a model from the YELLOW leaflets. Modes 2 and 3 use that model’s power table."],
+ "temperature_c":["Температура исходной таблицы: 20 или 25 °C. Универсальная температурная поправка не применяется. HR 12-40WM имеет таблицы при 20 °C.","Source table temperature: 20 or 25 °C. No generic temperature correction is used. HR 12-40WM tables are at 20 °C."],
   "operation": [
     "Выберите задачу: время работы заданной конфигурации, подбор по требуемому времени или подбор по ступенчатой нагрузке.",
     "Choose runtime for a fixed configuration, selection by required runtime, or sizing for a stepped load profile."

@@ -7,11 +7,13 @@ from wsgiref.simple_server import make_server
 from .__main__ import reject_constant, unique_object
 from .core import CalculationError
 from .io import execute
+from .catalog import catalog_summary, example_requests
 
 ROOT = Path(__file__).resolve().parent.parent
 STATIC = Path(__file__).resolve().parent / "static"
 EXAMPLES = {name: json.loads((ROOT / "examples" / "calculator" / (name + ".json")).read_text())
             for name in ("runtime", "profile", "select")}
+DATASET = json.loads((ROOT / "data/calculator/leaflets-v1.json").read_text())
 MAX_BODY = 32768
 
 
@@ -39,10 +41,12 @@ def application(environ, start_response):
     if path in assets and method in ("GET", "HEAD"):
         name, mime = assets[path]
         return respond("200 OK", (STATIC / name).read_bytes(), mime)
+    if path == "/runtime/api/catalog" and method == "GET":
+        return respond("200 OK", catalog_summary(DATASET))
     if path == "/runtime/api/examples" and method == "GET":
-        return respond("200 OK", {name: item["request"] for name, item in EXAMPLES.items()})
+        return respond("200 OK", example_requests())
     if path == "/runtime/health" and method == "GET":
-        return respond("200 OK", {"status": "ok", "demo": True, "production_ready": False})
+        return respond("200 OK", {"status": "ok", "demo": False, "production_ready": False})
     if path != "/runtime/api/calculate":
         return respond("404 Not Found", {"error": "not_found"})
     if method != "POST":
@@ -55,7 +59,7 @@ def application(environ, start_response):
             return respond("413 Payload Too Large", {"error": "invalid_body_size"})
         request = json.loads(environ["wsgi.input"].read(length).decode("utf-8"),
                              parse_constant=reject_constant, object_pairs_hook=unique_object)
-        result = execute({"dataset": EXAMPLES["runtime"]["dataset"], "request": request}, demo=True)
+        result = execute({"dataset": DATASET, "request": request}, demo=False)
         return respond("200 OK", result)
     except (CalculationError, ValueError, UnicodeError, RecursionError, OverflowError) as exc:
         return respond("400 Bad Request", {"error": getattr(exc, "code", "invalid_request"), "message": str(exc)})

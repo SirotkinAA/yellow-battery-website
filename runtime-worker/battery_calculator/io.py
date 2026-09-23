@@ -111,8 +111,8 @@ def execute(document, demo=False):
         object_fields(request, common+("model_id", "stages"), optional+("max_parallel_strings",))
     elif op == "select":
         object_fields(request, common+("load", "required_minutes"), optional+("max_parallel_strings", "time_range_minutes"))
-        if number(request.get("age_factor", 1), "age_factor") != 1 or number(request.get("reserve_factor", 1), "reserve_factor") != 1 or number(request.get("temperature_c", 25), "temperature_c") != 25:
-            raise CalculationError("simple_mode_conditions", "Simple mode uses 25 C and age/reserve factors of 1")
+        if number(request.get("age_factor", 1), "age_factor") != 1 or number(request.get("reserve_factor", 1), "reserve_factor") != 1:
+            raise CalculationError("simple_mode_conditions", "Simple mode uses age/reserve factors of 1")
     else:
         raise CalculationError("invalid_operation", "Use runtime, profile or select")
     if "configuration_id" in request:

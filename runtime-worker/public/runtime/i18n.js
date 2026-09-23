@@ -109,6 +109,19 @@ const translationsEn = {
   "Сервер не смог определить размер запроса.": "The server could not determine the request size."
 };
 Object.assign(translationsEn,{
+ 'Расчёт по листовкам YELLOW.':'Calculation using YELLOW leaflets.',
+ 'Подключено 26 моделей HR-M/HR-WM, включая обозначения HRL. Используются опубликованные табличные значения при выбранной температуре. Токовые ограничения не проверены; сверка с Mathcad ожидается.':'26 HR-M/HR-WM models are connected, including HRL designations. Published table values are used at the selected temperature. Current limits are not verified; Mathcad validation is pending.',
+ 'Модель батареи':'Battery model',
+ 'Температура таблицы, °C':'Table temperature, °C',
+ 'Загрузка каталога…':'Loading catalogue…',
+ 'Данные из листовок. Инженерная проверка конфигурации обязательна.':'Leaflet data. Engineering verification of the configuration is required.',
+ 'Данные листовок доступны для выбранных условий. Без экстраполяции за пределы таблиц.':'Leaflet data is available for the selected conditions. No extrapolation beyond the tables.',
+ 'Для выбранной температуры и напряжения нет таблиц. Измените условия.':'No tables at the selected temperature and voltage. Change the conditions.',
+ 'Не удалось загрузить каталог. Обновите страницу.':'Could not load the catalogue. Reload the page.',
+ 'В выбранном диапазоне нет подходящих вариантов. Проверьте нагрузку, напряжение, температуру и число параллельных линеек.':'No options within the selected range. Check load, voltage, temperature and parallel strings.',
+ 'Расчёт по листовкам. Токовые ограничения не проверены; сверка с Mathcad ожидается.':'Calculation using leaflets. Current limits are not verified; Mathcad validation is pending.',
+ 'Нет разрядной таблицы для выбранного конечного напряжения. Выберите напряжение из таблицы выбранной модели.':'No discharge table at the selected end voltage. Choose a voltage from the selected model’s table.',
+
  'Время разряда':'Discharge time',
  'Варианты в выбранном диапазоне':'Options within the selected range',
  'Свыше 20 ч':'Over 20 h',
