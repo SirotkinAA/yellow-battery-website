@@ -319,8 +319,17 @@ def size_profile(model, stages, unit, efficiency_percent, series_batteries,
             "fully_checked": model.source_kind != "synthetic" and np <= maximum and check["status"] == "checked"}
 
 
-def select(models, required_minutes, max_parallel_strings=5, **kwargs):
+def select(models, required_minutes, max_parallel_strings=5, time_range_minutes=None, **kwargs):
     target = positive(required_minutes, "required_minutes")
+    lower, upper = 0.8*target, 1.2*target
+    if time_range_minutes is not None:
+        if not isinstance(time_range_minutes, (list, tuple)) or len(time_range_minutes) != 2:
+            raise CalculationError("invalid_range", "time_range_minutes requires two bounds")
+        lower = positive(time_range_minutes[0], "minimum_minutes")
+        upper = None if time_range_minutes[1] is None else positive(time_range_minutes[1], "maximum_minutes")
+        if upper is not None and upper <= lower:
+            raise CalculationError("invalid_range", "maximum_minutes must exceed minimum_minutes")
+        target = lower
     maximum = count(max_parallel_strings, "max_parallel_strings")
     if maximum > 100:
         raise CalculationError("resource_limit", "Maximum enumeration is 100 parallel strings")
@@ -348,12 +357,14 @@ def select(models, required_minutes, max_parallel_strings=5, **kwargs):
                                    "code": "time_not_exact", "runtime_bound": time})
                 continue
             minutes = time["minutes"]
-            if 0.8*target <= minutes <= 1.2*target:
+            end_minutes = time.get("upper_minutes", minutes) if time_range_minutes is not None else minutes
+            in_range = (minutes > lower if upper is None else lower <= minutes and end_minutes <= upper)
+            if in_range:
                 group = "meets_target" if minutes >= target else "below_target"
                 r["target_difference_minutes"] = minutes-target
                 groups[group].append(r)
     for rows in groups.values():
         rows.sort(key=lambda r: (abs(r["target_difference_minutes"]), r["parallel_strings"], r["total_batteries"], r["model_id"]))
     return {"engine_version": ENGINE_VERSION, "operation": "select", "target_minutes": target,
-            "band_minutes": [0.8*target, 1.2*target], "groups": groups, "exclusions": exclusions,
+            "band_minutes": [lower, upper], "time_range_minutes": time_range_minutes, "groups": groups, "exclusions": exclusions,
             "display_limit": 10, "total_candidates": sum(len(v) for v in groups.values())}

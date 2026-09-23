@@ -33,8 +33,8 @@ const helpContent={
     "Number of identical strings connected in parallel. Equal current sharing between strings is assumed."
   ],
   "required_minutes": [
-    "Целевое время автономии в минутах. Подбор рассматривает варианты в диапазоне ±20% и отдельно отмечает те, которые не достигают цели.",
-    "Target runtime in minutes. Selection considers options within ±20% and separately identifies options below the target."
+    "Выберите интервал времени. Подбор показывает варианты внутри его границ без допуска ±20%. «Свыше 20 ч» означает более 1200 минут. Расчёт ограничен доступными разрядными таблицами.",
+    "Choose a time interval. Selection uses its bounds without a ±20% tolerance. “Over 20 h” means more than 1200 minutes. Results are limited to available discharge tables."
   ],
   "max_parallel_strings": [
     "Максимальное число параллельных линеек для подбора. По умолчанию 5. Допустимость конфигурации зависит от ИБП, батарей и соединений.",

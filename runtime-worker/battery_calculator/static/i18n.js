@@ -109,6 +109,21 @@ const translationsEn = {
   "Сервер не смог определить размер запроса.": "The server could not determine the request size."
 };
 Object.assign(translationsEn,{
+ 'Время разряда':'Discharge time',
+ 'Варианты в выбранном диапазоне':'Options within the selected range',
+ 'Свыше 20 ч':'Over 20 h',
+ '5–10 мин':'5–10 min',
+ '10–15 мин':'10–15 min',
+ '15–30 мин':'15–30 min',
+ '30–60 мин':'30–60 min',
+ '1–2 ч':'1–2 h',
+ '2–3 ч':'2–3 h',
+ '3–4 ч':'3–4 h',
+ '4–5 ч':'4–5 h',
+ '5–10 ч':'5–10 h',
+ '10–15 ч':'10–15 h',
+ '15–20 ч':'15–20 h',
+
  'По времени и нагрузке':'Runtime and load',
  'Время работы батареи':'Battery runtime',
  'Модель':'Model',
