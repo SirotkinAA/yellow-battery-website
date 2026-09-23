@@ -67,7 +67,7 @@ function installHelp(){
   button.setAttribute('aria-controls',tip.id);button.setAttribute('aria-expanded','false');field.setAttribute('aria-describedby',tip.id);
   button.addEventListener('click',event=>{event.preventDefault();event.stopPropagation();const open=group.classList.toggle('open');button.setAttribute('aria-expanded',String(open));});
   button.addEventListener('keydown',event=>{if(event.key==='Escape'){group.classList.remove('open');button.setAttribute('aria-expanded','false');button.blur();}});
-  group.dataset.helpKey=key;group.append(button,tip);label.insertBefore(group,field);field.dataset.helpInstalled='true';
+  group.dataset.helpKey=key;group.append(button,tip);const caption=label.querySelector('.field-caption');if(caption)caption.append(group);else label.insertBefore(group,field);field.dataset.helpInstalled='true';
  }
  refreshHelp();
 }

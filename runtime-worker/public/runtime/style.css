@@ -12,3 +12,8 @@ h1{font-size:clamp(32px,4vw,48px);line-height:1.12;letter-spacing:-1px}
 .grid{grid-template-columns:repeat(2,minmax(0,1fr));align-items:start}.grid>label{position:relative;min-width:0;height:94px;margin:0;line-height:1.4;padding-bottom:55px}.grid>label>input,.grid>label>select{position:absolute;bottom:0;left:0;height:48px;margin:0;width:100%;min-width:0}.grid>[data-field="required_minutes"]{grid-column:1/-1;width:calc((100% - 16px)/2);justify-self:center}.stage input{height:48px}
 @media(max-width:760px){.mode-options{grid-template-columns:1fr}.mode-options button{min-height:64px}.grid>[data-field="required_minutes"]{width:calc((100% - 10px)/2)}}
 @media(max-width:480px){.grid{grid-template-columns:1fr}.grid>[data-field="required_minutes"]{width:100%}}
+
+/* Keep each caption close to its control, with breathing room between rows. */
+.grid{row-gap:24px}.grid>label{height:auto;padding:0;display:flex;flex-direction:column;gap:6px}.field-caption{min-height:34px;display:flex;align-items:flex-end;line-height:17px}.field-caption>.field-help{flex-shrink:0;margin-bottom:1px}.grid>label>input,.grid>label>select{position:static;height:48px;margin:0;flex-shrink:0}.mode-options button{display:flex;align-items:center;gap:14px}.mode-number{display:inline-flex;align-items:center;justify-content:center;flex:0 0 30px;height:30px;border:1px solid #bfc3b5;border-radius:50%;font-size:16px}.mode-options button[aria-pressed="true"] .mode-number{background:#202525;color:white;border-color:#202525}.result-panel table{table-layout:fixed}.result-panel td,.result-panel th{overflow-wrap:anywhere}.result-panel th:first-child{width:35%}
+
+@media(max-width:480px){.field-caption{min-height:0}}
