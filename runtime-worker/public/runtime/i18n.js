@@ -109,6 +109,8 @@ const translationsEn = {
   "Сервер не смог определить размер запроса.": "The server could not determine the request size."
 };
 Object.assign(translationsEn,{
+ 'По времени и нагрузке':'Runtime and load',
+ 'Время работы батареи':'Battery runtime',
  'Модель':'Model',
  'Подбор не выполнен: в подключённом наборе нет подходящих вариантов. Реальный каталог HR-M/HR-WM ещё не подключён.':'No matching configurations in the connected dataset. The real HR-M/HR-WM catalogue is not connected yet.',
  'Режим расчёта':'Calculation mode',
