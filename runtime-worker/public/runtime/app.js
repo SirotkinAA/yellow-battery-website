@@ -29,7 +29,7 @@ $('language').addEventListener('click',event=>{const button=event.target.closest
 
 document.querySelector('.mode-options').addEventListener('click',event=>{const button=event.target.closest('[data-operation]');if(!button)return;get('operation').value=button.dataset.operation;mode();dirty();});
 
-document.querySelector('.mode-options').addEventListener('keydown',event=>{const tabs=[...document.querySelectorAll('[data-operation]')];const current=tabs.indexOf(event.target);if(current<0)return;let next;if(event.key==='ArrowRight')next=(current+1)%tabs.length;else if(event.key==='ArrowLeft')next=(current+tabs.length-1)%tabs.length;else if(event.key==='Home')next=0;else if(event.key==='End')next=tabs.length-1;else return;event.preventDefault();tabs[next].click();tabs[next].focus();});
+document.querySelector('.mode-options').addEventListener('keydown',event=>{const tabs=[...document.querySelectorAll('[data-operation]')].filter(button=>!button.hidden);const current=tabs.indexOf(event.target);if(current<0)return;let next;if(event.key==='ArrowRight')next=(current+1)%tabs.length;else if(event.key==='ArrowLeft')next=(current+tabs.length-1)%tabs.length;else if(event.key==='Home')next=0;else if(event.key==='End')next=tabs.length-1;else return;event.preventDefault();tabs[next].click();tabs[next].focus();});
 
 function updateCatalogStatus(){
  if(!catalog)return;

@@ -10,7 +10,11 @@
     "binding": "ASSETS",
     "run_worker_first": [
       "/runtime/api/*",
-      "/runtime/health"
+      "/runtime/health",
+      "/admin",
+      "/admin/*",
+      "/partner-api/*",
+      "/embed/*"
     ]
   },
   "routes": [
@@ -21,5 +25,12 @@
   ],
   "build": {
     "command": "python3 build_worker.py"
-  }
+  },
+  "d1_databases": [
+    {
+      "binding": "PORTAL_DB",
+      "database_name": "yellow-battery-portal-test",
+      "database_id": "3314d31c-216d-44e5-8118-8401f6e9f1da"
+    }
+  ]
 }

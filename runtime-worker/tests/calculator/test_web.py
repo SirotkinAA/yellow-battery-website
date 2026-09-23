@@ -25,7 +25,8 @@ class WebTests(unittest.TestCase):
             self.assertFalse(data["demo"])
             self.assertFalse(data["production_ready"])
             self.assertEqual(data["result"]["operation"], op)
-            self.assertEqual(data["input_snapshot"]["dataset"]["origin"], "new_shared_dataset")
+            self.assertNotIn("models",data["input_snapshot"]["dataset"])
+            self.assertEqual(data["input_snapshot"]["dataset"]["dataset_id"],data["dataset_id"])
 
     def test_assets_routes_and_no_file_traversal(self):
         for path in ("/runtime", "/runtime/", "/runtime/app.js", "/runtime/style.css", "/runtime/health", "/runtime/api/examples"):

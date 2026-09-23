@@ -1,5 +1,6 @@
 """WSGI demo application mounted at /runtime; never accepts a browser catalog."""
 import argparse
+import asyncio
 import json
 from pathlib import Path
 from wsgiref.simple_server import make_server
@@ -18,6 +19,9 @@ MAX_BODY = 32768
 
 
 def application(environ, start_response):
+    if environ.get("PATH_INFO", "").startswith(("/admin", "/partner-api/", "/embed/")):
+        from battery_portal.local import serve
+        return serve(environ,start_response,DATASET,(STATIC/"index.html").read_text())
     method = environ.get("REQUEST_METHOD", "GET")
     path = environ.get("PATH_INFO", "")
 
@@ -35,14 +39,18 @@ def application(environ, start_response):
               "/runtime/": ("index.html", "text/html; charset=utf-8"),
               "/runtime/app.js": ("app.js", "text/javascript; charset=utf-8"),
               "/runtime/i18n.js": ("i18n.js", "text/javascript; charset=utf-8"),
+              "/runtime/embed.js": ("embed.js", "text/javascript; charset=utf-8"),
               "/runtime/help.js": ("help.js", "text/javascript; charset=utf-8"),
               "/runtime/style.css": ("style.css", "text/css; charset=utf-8"),
               "/runtime/yellow-logo.svg": ("yellow-logo.svg", "image/svg+xml")}
     if path in assets and method in ("GET", "HEAD"):
         name, mime = assets[path]
         return respond("200 OK", (STATIC / name).read_bytes(), mime)
+    from battery_portal.local import portal_for
+    from battery_portal.transport import public_calculation
+    dataset=asyncio.run(portal_for(environ,DATASET).dataset())
     if path == "/runtime/api/catalog" and method == "GET":
-        return respond("200 OK", catalog_summary(DATASET))
+        return respond("200 OK", catalog_summary(dataset))
     if path == "/runtime/api/examples" and method == "GET":
         return respond("200 OK", example_requests())
     if path == "/runtime/health" and method == "GET":
@@ -59,7 +67,7 @@ def application(environ, start_response):
             return respond("413 Payload Too Large", {"error": "invalid_body_size"})
         request = json.loads(environ["wsgi.input"].read(length).decode("utf-8"),
                              parse_constant=reject_constant, object_pairs_hook=unique_object)
-        result = execute({"dataset": DATASET, "request": request}, demo=False)
+        result = public_calculation(execute({"dataset": dataset, "request": request}, demo=False))
         return respond("200 OK", result)
     except (CalculationError, ValueError, UnicodeError, RecursionError, OverflowError) as exc:
         return respond("400 Bad Request", {"error": getattr(exc, "code", "invalid_request"), "message": str(exc)})
