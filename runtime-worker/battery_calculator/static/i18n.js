@@ -1,5 +1,6 @@
 'use strict';
 const translationsEn = {
+  "Главная":"Home", "Каталог":"Catalogue", "Документация":"Documents", "Кабинет":"Account",
   "Тестовая версия": "Test version",
   "ИНЖЕНЕРНЫЕ ИНСТРУМЕНТЫ / 01": "ENGINEERING TOOLS / 01",
   "Энергия.": "Power.",
@@ -150,7 +151,7 @@ Object.assign(translationsEn,{
  'Количество параллельных линеек':'Number of parallel strings'
 });
 let language='ru';
-try { const saved=localStorage.getItem('yellow-runtime-language'); if(saved==='en'||saved==='ru')language=saved; } catch (_) {}
+try { const saved=localStorage.getItem('yellow-site-language') || localStorage.getItem('yellow-runtime-language'); if(saved==='en'||saved==='ru')language=saved; } catch (_) {}
 const localizedNodes=new Map();
 function t(value){
  if(language==='ru'||typeof value!=='string')return value;

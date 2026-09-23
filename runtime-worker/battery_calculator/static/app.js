@@ -25,7 +25,7 @@ form.onsubmit=async event=>{event.preventDefault();if(pending)return;pending=tru
 $('download').onclick=()=>{if(!last||!$('stale').hidden)return;const url=URL.createObjectURL(new Blob([JSON.stringify(last,null,2)],{type:'application/json'}));const a=node('a');a.href=url;a.download='yellow-runtime-calculation.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);};
 row(0.54,5);row(0.06,5);mode();
 
-$('language').addEventListener('click',event=>{const button=event.target.closest('[data-language]');if(!button)return;language=button.dataset.language;try{localStorage.setItem('yellow-runtime-language',language);}catch(_){}applyLanguage();refreshHelp();if(last)render(last);});
+$('language').addEventListener('click',event=>{const button=event.target.closest('[data-language]');if(!button)return;language=button.dataset.language;try{localStorage.setItem('yellow-runtime-language',language);localStorage.setItem('yellow-site-language',language);}catch(_){}applyLanguage();refreshHelp();if(last)render(last);});
 
 document.querySelector('.mode-options').addEventListener('click',event=>{const button=event.target.closest('[data-operation]');if(!button)return;get('operation').value=button.dataset.operation;mode();dirty();});
 
@@ -53,7 +53,7 @@ async function loadCatalog(){
   const response=await fetch('/runtime/api/catalog');if(!response.ok)throw Error('Не удалось загрузить каталог. Обновите страницу.');
   catalog=await response.json();get('model_id').replaceChildren();
   for(const model of catalog.models){const option=document.createElement('option');option.value=model.id;option.textContent=model.id;get('model_id').append(option);}
-  get('model_id').value='HR 12-12M';mode();updateCatalogStatus();$('calculate').disabled=false;$('example').disabled=false;
+  get('model_id').value='HR 12-12M';const requested=new URLSearchParams(location.search).get('model');if(!document.body.classList.contains('embedded')&&catalog.models.some(m=>m.id===requested)){get('model_id').value=requested;get('operation').value='runtime';const selected=catalog.models.find(m=>m.id===requested);if(selected.conditions.length)get('temperature_c').value=String(selected.conditions[0].temperature_c);}mode();updateCatalogStatus();$('calculate').disabled=false;$('example').disabled=false;
  }catch(e){localizedText($('catalog-status'),'Не удалось загрузить каталог. Обновите страницу.');}
 }
 loadCatalog();
