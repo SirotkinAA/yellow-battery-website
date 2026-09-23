@@ -51,10 +51,6 @@ const helpContent={
   "duration_minutes": [
     "Продолжительность этого этапа в минутах, больше нуля. Этапы выполняются сверху вниз. Все расчётные интервалы должны укладываться в разрядную таблицу.",
     "Duration of this stage in minutes, above zero. Stages run from top to bottom. All calculation intervals must fit within the discharge table."
-  ],
-  "language": [
-    "Язык подписей, подсказок и результатов. Выбор сохраняется в этом браузере и не меняет исходные числа.",
-    "Language of labels, tooltips, and results. The choice is saved in this browser and does not change the input values."
   ]
 };
 let helpId=0;
@@ -77,6 +73,5 @@ function installHelp(){
 }
 function refreshHelp(){for(const group of document.querySelectorAll('.field-help')){const key=group.dataset.helpKey;group.querySelector('.help-tooltip').textContent=helpContent[key][language==='ru'?0:1];group.querySelector('button').setAttribute('aria-label',language==='ru'?'Справка по полю':'Field help');}}
 new MutationObserver(installHelp).observe(document.getElementById('stages'),{childList:true});
-document.getElementById('language').addEventListener('change',refreshHelp);
 document.addEventListener('click',event=>{for(const group of document.querySelectorAll('.field-help.open'))if(!group.contains(event.target)){group.classList.remove('open');group.querySelector('button').setAttribute('aria-expanded','false');}});
 installHelp();

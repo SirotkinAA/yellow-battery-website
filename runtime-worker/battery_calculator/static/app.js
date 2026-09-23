@@ -25,4 +25,4 @@ form.onsubmit=async event=>{event.preventDefault();if(pending)return;pending=tru
 $('download').onclick=()=>{if(!last||!$('stale').hidden)return;const url=URL.createObjectURL(new Blob([JSON.stringify(last,null,2)],{type:'application/json'}));const a=node('a');a.href=url;a.download='yellow-runtime-demo.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);};
 row(0.54,5);row(0.06,5);mode();
 
-$('language').addEventListener('change',()=>{language=$('language').value;try{localStorage.setItem('yellow-runtime-language',language);}catch(_){}applyLanguage();if(last)render(last);});
+$('language').addEventListener('click',event=>{const button=event.target.closest('[data-language]');if(!button)return;language=button.dataset.language;try{localStorage.setItem('yellow-runtime-language',language);}catch(_){}applyLanguage();refreshHelp();if(last)render(last);});

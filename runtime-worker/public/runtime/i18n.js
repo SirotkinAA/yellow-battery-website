@@ -125,7 +125,8 @@ function applyLanguage(){
  document.documentElement.lang=language;
  document.title=language==='ru'?'YELLOW — Калькулятор автономии':'YELLOW — Battery runtime calculator';
  document.querySelector('.brand').setAttribute('aria-label',document.title);
- document.getElementById('language').value=language;
+ document.getElementById('language').setAttribute('aria-label',language==='ru'?'Язык':'Language');
+ for(const button of document.querySelectorAll('[data-language]'))button.setAttribute('aria-pressed',String(button.dataset.language===language));
  for(const [n,value] of localizedNodes){if(!n.isConnected){localizedNodes.delete(n);continue;}n.nodeValue=t(value);}
 }
 applyLanguage();
