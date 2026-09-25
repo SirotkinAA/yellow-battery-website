@@ -72,8 +72,8 @@ class CurveTests(unittest.TestCase):
         self.assertEqual(c.inverse(39),{"kind":"at_least","minutes":20})
 
     def test_plateau_returns_lower_bound_and_full_interval(self):
-        c=model((5,10,15,20),(100,80,80,40)).curves[0]
-        self.assertEqual(c.inverse(80),{"kind":"interval","minutes":10,"upper_minutes":15})
+        c=model((5,10),(80,80)).curves[0]
+        self.assertEqual(c.inverse(80),{"kind":"interval","minutes":5,"upper_minutes":10})
 
     def test_invalid_curves(self):
         for ts,vs in [((5,5),(100,80)),((5,10),(80,100)),((5,10),(80,0)),((5,10),(80,)),((5,),(80,))]:

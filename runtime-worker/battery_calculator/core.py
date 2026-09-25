@@ -5,9 +5,10 @@ Mathcad parity on the new HR-M/HR-WM dataset remains a release requirement.
 """
 from dataclasses import dataclass, asdict
 import math
+from functools import cached_property
 from typing import Optional, Tuple
 
-ENGINE_VERSION = "0.1.0"
+ENGINE_VERSION = "0.2.0"
 SERIES = {"HR-M", "HR-WM"}
 COMPONENTS = ("battery", "terminals", "interconnects", "protection")
 
@@ -110,6 +111,46 @@ class Curve:
         object.__setattr__(self, "times_minutes", ts)
         object.__setattr__(self, "values", vs)
 
+    @cached_property
+    def spline_segments(self):
+        """Natural cubic spline: Mathcad interp(lspline(x,y),x,y,t).
+
+        Solve for second derivatives with zero endpoint curvature. No fitting,
+        smoothing, axis transform or extrapolation is performed.
+        """
+        x, y = self.times_minutes, self.values
+        n = len(x)
+        h = [x[i+1]-x[i] for i in range(n-1)]
+        upper, rhs = [0.0]*n, [0.0]*n
+        for i in range(1, n-1):
+            diagonal = 2*(h[i-1]+h[i])-h[i-1]*upper[i-1]
+            upper[i] = h[i]/diagonal
+            slope_change = 6*((y[i+1]-y[i])/h[i]-(y[i]-y[i-1])/h[i-1])
+            rhs[i] = (slope_change-h[i-1]*rhs[i-1])/diagonal
+        second = [0.0]*n
+        for i in range(n-2, 0, -1):
+            second[i] = rhs[i]-upper[i]*second[i+1]
+        return tuple((y[i], (y[i+1]-y[i])/h[i]-h[i]*(2*second[i]+second[i+1])/6,
+                      second[i]/2, (second[i+1]-second[i])/(6*h[i])) for i in range(n-1))
+
+    @cached_property
+    def spline_is_monotone(self):
+        # A cubic can overshoot monotone input. Check derivative extrema exactly,
+        # rather than silently replacing Mathcad's spline with another algorithm.
+        for i, (_, b, c, d) in enumerate(self.spline_segments):
+            h = self.times_minutes[i+1]-self.times_minutes[i]
+            points = [0.0, h]
+            if d and 0 < -c/(3*d) < h:
+                points.append(-c/(3*d))
+            tolerance = 1e-12*max(self.values)/h
+            if max(b+2*c*u+3*d*u*u for u in points) > tolerance:
+                return False
+        return True
+
+    def _require_monotone_spline(self):
+        if not self.spline_is_monotone:
+            raise CalculationError("nonmonotone_spline", "Mathcad natural spline increases between table nodes; engineering review required")
+
     def at(self, minutes):
         t = positive(minutes, "duration_minutes")
         if not self.times_minutes[0] <= t <= self.times_minutes[-1]:
@@ -117,13 +158,17 @@ class Curve:
         for time, value in zip(self.times_minutes, self.values):
             if t == time:
                 return value
+        self._require_monotone_spline()
         for i, (a, b) in enumerate(zip(self.times_minutes, self.times_minutes[1:])):
             if a < t < b:
-                return self.values[i] + (t - a) / (b - a) * (self.values[i+1] - self.values[i])
+                u = t-a
+                v, slope, quadratic, cubic = self.spline_segments[i]
+                return ((cubic*u+quadratic)*u+slope)*u+v
         raise AssertionError("Unreachable interpolation interval")
 
     def inverse(self, value):
         v = positive(value, "required_discharge")
+        self._require_monotone_spline()
         if v > self.values[0]:
             return {"kind": "less_than", "minutes": self.times_minutes[0]}
         if v < self.values[-1]:
@@ -133,10 +178,18 @@ class Curve:
             if len(equal) > 1:
                 return {"kind": "interval", "minutes": equal[0], "upper_minutes": equal[-1]}
             return {"kind": "exact", "minutes": equal[0]}
+        # Invert the original spline (as Mathcad root(f(T)-target,T) does),
+        # not a new spline with exchanged axes. Bracketing prevents extrapolation.
         for i, (a, b) in enumerate(zip(self.values, self.values[1:])):
             if a > v > b:
-                t = self.times_minutes[i] + (a-v)/(a-b)*(self.times_minutes[i+1]-self.times_minutes[i])
-                return {"kind": "exact", "minutes": t}
+                lo, hi = self.times_minutes[i:i+2]
+                for _ in range(60):
+                    mid = (lo+hi)/2
+                    if self.at(mid) > v:
+                        lo = mid
+                    else:
+                        hi = mid
+                return {"kind": "exact", "minutes": (lo+hi)/2}
         raise AssertionError("Unreachable inverse interval")
 
 
@@ -248,7 +301,7 @@ def checks(model, current_a, duration, temperature, configuration_id, bounded=Tr
 
 
 def metadata(model, curve):
-    return {"engine_version": ENGINE_VERSION, "model_id": model.id, "series": model.series,
+    return {"engine_version": ENGINE_VERSION, "interpolation": "mathcad_lspline_natural_cubic", "model_id": model.id, "series": model.series,
             "model_revision": model.revision, "source_kind": model.source_kind,
             "curve_source": curve.source_ref, "curve_revision": curve.revision,
             "curve_approval": curve.approval, "mode": "demo" if model.source_kind == "synthetic" else "production_data",
@@ -281,6 +334,7 @@ def size_profile(model, stages, unit, efficiency_percent, series_batteries,
                  age_factor=1, reserve_factor=1, max_parallel_strings=5,
                  configuration_id=None, demo=False):
     curve = model.curve(end_voltage_v_cell, temperature_c, demo)
+    curve._require_monotone_spline()
     ns = count(series_batteries, "series_batteries")
     maximum = count(max_parallel_strings, "max_parallel_strings")
     stages = tuple(stages)
@@ -365,6 +419,6 @@ def select(models, required_minutes, max_parallel_strings=5, time_range_minutes=
                 groups[group].append(r)
     for rows in groups.values():
         rows.sort(key=lambda r: (abs(r["target_difference_minutes"]), r["parallel_strings"], r["total_batteries"], r["model_id"]))
-    return {"engine_version": ENGINE_VERSION, "operation": "select", "target_minutes": target,
+    return {"engine_version": ENGINE_VERSION, "interpolation": "mathcad_lspline_natural_cubic", "operation": "select", "target_minutes": target,
             "band_minutes": [lower, upper], "time_range_minutes": time_range_minutes, "groups": groups, "exclusions": exclusions,
             "display_limit": 10, "total_candidates": sum(len(v) for v in groups.values())}
