@@ -1,0 +1,45 @@
+{
+  "name": "yellow-battery-runtime-test",
+  "main": "src/entry.py",
+  "compatibility_date": "2026-09-20",
+  "compatibility_flags": [
+    "python_workers"
+  ],
+  "assets": {
+    "directory": "./public",
+    "binding": "ASSETS",
+    "run_worker_first": [
+      "/runtime/api/*",
+      "/runtime/health",
+      "/admin",
+      "/admin/*",
+      "/partner-api/*",
+      "/embed/*"
+    ]
+  },
+  "routes": [
+    {
+      "pattern": "test.yellow-battery.com",
+      "custom_domain": true
+    }
+  ],
+  "build": {
+    "command": "python3 build_worker.py"
+  },
+  "d1_databases": [
+    {
+      "binding": "PORTAL_DB",
+      "database_name": "yellow-battery-portal-test",
+      "database_id": "3314d31c-216d-44e5-8118-8401f6e9f1da"
+    }
+  ],
+  "rules": [
+    {
+      "type": "ESModule",
+      "globs": [
+        "**/*.mjs"
+      ]
+    }
+  ],
+  "find_additional_modules": true
+}

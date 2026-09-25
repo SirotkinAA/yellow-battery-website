@@ -1,0 +1,118 @@
+{
+  "status": "reference_expectations_core_tests_reported_separately",
+  "historical_arithmetic": [
+    {
+      "id": "mail-2-27kW",
+      "load": 27,
+      "unit": "kW",
+      "displayed_pf_ignored": 0.5,
+      "efficiency_percent": 93,
+      "batteries_per_string": 36,
+      "cells_per_battery": 6,
+      "parallel_strings": 1,
+      "required_minutes": 60,
+      "end_voltage_v_per_cell": 1.75,
+      "expected_dc_w": 29032.25806451613,
+      "expected_w_per_cell": 134.40860215053763,
+      "observed_legacy_display": 1.3440860215054,
+      "comparison_model": "Delta HRL 12-100",
+      "comparison_runtime_minutes": 57,
+      "note": "57 minutes is a historical competitor screenshot, not an accepted Yellow output."
+    },
+    {
+      "id": "mail-3-20kVA",
+      "load": 20,
+      "unit": "kVA",
+      "pf": 0.9,
+      "efficiency_percent": 93,
+      "batteries_per_string": 62,
+      "cells_per_battery": 6,
+      "parallel_strings": 1,
+      "required_minutes": 60,
+      "end_voltage_v_per_cell": 1.75,
+      "expected_dc_w": 19354.838709677417,
+      "expected_w_per_cell": 52.029136316337144,
+      "observed_legacy_display": 52.029136316337
+    },
+    {
+      "id": "GE-manual-7.5kVA",
+      "load": 7.5,
+      "unit": "kVA",
+      "pf": 0.8,
+      "efficiency_percent": 88,
+      "batteries_per_string": 40,
+      "cells_per_battery": 6,
+      "parallel_strings": 1,
+      "required_minutes": 120,
+      "expected_w_per_battery": 170.45454545454544,
+      "expected_w_per_cell": 28.40909090909091,
+      "note": "Illustrative arithmetic from PPT text; source battery-table layout has not been visually verified."
+    }
+  ],
+  "interpolation": {
+    "id": "I01-I03",
+    "synthetic": true,
+    "mode": "constant_power",
+    "unit": "W/cell",
+    "nodes": [
+      [
+        15,
+        40
+      ],
+      [
+        20,
+        20
+      ]
+    ],
+    "expected_midpoint": [
+      17.5,
+      30
+    ],
+    "production_approval": false
+  },
+  "synthetic_profile": {
+    "id": "E01-E03",
+    "synthetic": true,
+    "nominal_capacity_ah": 100,
+    "curve_time_min_power_w_cell": [
+      [
+        5,
+        100
+      ],
+      [
+        10,
+        80
+      ]
+    ],
+    "stages": [
+      {
+        "duration_minutes": 5,
+        "power_w_cell": 90
+      },
+      {
+        "duration_minutes": 5,
+        "power_w_cell": 10
+      }
+    ],
+    "expected_section_capacity_ah": [
+      90.0,
+      32.5
+    ],
+    "expected_critical_section_1_based": 1,
+    "age_factor": 1.25,
+    "reserve_factor": 1.1,
+    "temperature_factor": 1,
+    "expected_required_capacity_ah": 123.75000000000001,
+    "expected_parallel_strings": 2,
+    "expected_installed_capacity_ah": 200
+  },
+  "mathcad_numerical_comparison": {
+    "status": "pending",
+    "reason": "Approved two-stage validation: synthetic cases with predetermined answers, then identical new HR-M/HR-WM data in calculator and control Mathcad; no historical embedded tables.",
+    "procedure_status": "approved_by_user",
+    "relative_numeric_tolerance": 0.001,
+    "absolute_time_tolerance_minutes": 0.1,
+    "resolve_discrepancies_before_release": true
+  },
+  "data_policy": "New HR-M and HR-WM dataset only; historical arithmetic is not model data; no legacy discharge-table imports."
+}
