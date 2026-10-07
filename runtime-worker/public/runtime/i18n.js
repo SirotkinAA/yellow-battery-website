@@ -164,11 +164,12 @@ function t(value){
 }
 function localizedText(element,value){element.textContent=t(value);if(typeof value==='string'&&element.firstChild)localizedNodes.set(element.firstChild,value);}
 const walker=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);
-while(walker.nextNode()){const n=walker.currentNode;if(n.parentElement.closest('script,style'))continue;const value=n.nodeValue.trim();if(value)localizedNodes.set(n,value);}
+while(walker.nextNode()){const n=walker.currentNode;if(n.parentElement.closest('script,style,[data-lang]'))continue;const value=n.nodeValue.trim();if(value)localizedNodes.set(n,value);}
 function applyLanguage(){
  document.documentElement.lang=language;
  document.title=language==='ru'?'YELLOW — Калькулятор автономии':'YELLOW — Battery runtime calculator';
- document.querySelector('.brand').setAttribute('aria-label',document.title);
+ document.querySelectorAll('[data-lang]').forEach(el=>{el.hidden=el.dataset.lang!==language;});
+ document.querySelectorAll('.site-header nav,.site-breadcrumb').forEach(el=>el.setAttribute('aria-label',el.classList.contains('site-breadcrumb')?(language==='ru'?'Хлебные крошки':'Breadcrumb'):(language==='ru'?'Основная навигация':'Main navigation')));
  document.getElementById('language').setAttribute('aria-label',language==='ru'?'Язык':'Language');
  for(const button of document.querySelectorAll('[data-language]'))button.setAttribute('aria-pressed',String(button.dataset.language===language));
  for(const [n,value] of localizedNodes){if(!n.isConnected){localizedNodes.delete(n);continue;}n.nodeValue=t(value);}

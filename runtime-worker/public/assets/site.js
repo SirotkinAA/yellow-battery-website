@@ -5,8 +5,13 @@
   function setLanguage(language) {
     if (!languages.includes(language)) language = 'ru';
     document.documentElement.lang = language;
+    document.querySelector('.language')?.setAttribute('aria-label',language==='ru'?'Язык':'Language');
+    document.querySelectorAll('.site-header nav,.site-breadcrumb').forEach(el=>el.setAttribute('aria-label',el.classList.contains('site-breadcrumb')?(language==='ru'?'Хлебные крошки':'Breadcrumb'):(language==='ru'?'Основная навигация':'Main navigation')));
     document.querySelectorAll('[data-lang]').forEach(el => { el.hidden = el.dataset.lang !== language; });
     document.querySelectorAll('[data-language]').forEach(el => el.setAttribute('aria-pressed', String(el.dataset.language === language)));
+    document.querySelectorAll('[data-text-ru][data-text-en]').forEach(el => { el.textContent = el.getAttribute('data-text-'+language); });
+    document.querySelectorAll('[data-alt-ru][data-alt-en]').forEach(el => { el.alt = el.getAttribute('data-alt-'+language); });
+    document.dispatchEvent(new CustomEvent('site-language-changed',{detail:{language}}));
     try { localStorage.setItem('yellow-site-language', language); } catch {}
   }
   setLanguage(storageGet());

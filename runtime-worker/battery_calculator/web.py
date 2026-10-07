@@ -43,6 +43,13 @@ def application(environ, start_response):
               "/runtime/help.js": ("help.js", "text/javascript; charset=utf-8"),
               "/runtime/style.css": ("style.css", "text/css; charset=utf-8"),
               "/runtime/yellow-logo.svg": ("yellow-logo.svg", "image/svg+xml")}
+    shared_assets = ROOT / 'website' / 'assets'
+    if not shared_assets.exists():
+        shared_assets = ROOT / 'site-source' / 'assets'
+    for name, mime in [('navigation.js', 'text/javascript; charset=utf-8'),
+                       ('navigation.css', 'text/css; charset=utf-8'),
+                       ('yellow.svg', 'image/svg+xml')]:
+        assets['/assets/' + name] = (shared_assets / name, mime)
     if path in assets and method in ("GET", "HEAD"):
         name, mime = assets[path]
         return respond("200 OK", (STATIC / name).read_bytes(), mime)
