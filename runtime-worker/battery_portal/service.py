@@ -6,6 +6,7 @@ import hmac
 from http.cookies import SimpleCookie
 from .security import email, token, digest, password_hash, password_ok, permissions, origins, widget_config, PERMISSIONS
 from battery_calculator.io import read_dataset
+from .pricing import prepare_pricebook, public_prices
 
 COOKIE='yellow_portal_session'
 SESSION_SECONDS=8*3600
@@ -52,6 +53,11 @@ class Portal:
     async def dataset(self):
         rows=await self.db.query("SELECT payload FROM portal_datasets WHERE id=(SELECT value FROM portal_settings WHERE id='active_dataset')")
         return json.loads(rows[0]['payload']) if rows else self.base_dataset
+    async def pricebook(self):
+        rows=await self.db.query("SELECT value FROM portal_settings WHERE id='pricebook'")
+        return json.loads(rows[0]['value']) if rows else {'revision':'','entries':[]}
+    async def prices(self):
+        return public_prices(await self.pricebook())
     async def invite(self,user_id,actor):
         raw=token();now=int(time.time())
         await self.db.batch([('DELETE FROM portal_invites WHERE user_id=?',(user_id,)),('INSERT INTO portal_invites VALUES (?,?,?,NULL)',(digest(raw),user_id,now+86400))])
@@ -118,7 +124,7 @@ class Portal:
                 exported={'schema_version':'1','dataset_id':dataset['dataset_id'],'revision':dataset['revision'],'models':[]}
                 for model in dataset['models']:
                     exported['models'].append({k:model[k] for k in ('id','series','nominal_voltage_v','cells','nominal_capacity_ah','capacity_rating')} | {'curves':[{k:v for k,v in c.items() if k not in ('source_ref','approval')} for c in model['curves']]})
-                if 'prices:read' in scopes and allowed(user,'prices:read'):exported['prices']=await self.db.query('SELECT * FROM portal_prices')
+                if 'prices:read' in scopes and allowed(user,'prices:read'):exported['prices']=await self.prices()
                 await self.audit(user['id'],'api_catalog_export',user['key_id'])
                 return 200,exported,out_headers
             raise PortalError(404,'API-метод не найден')
@@ -129,10 +135,29 @@ class Portal:
             await self.db.query('DELETE FROM portal_sessions WHERE token_hash=?',(session,))
             return 200,{'ok':True},{'Set-Cookie':self.cookie('',0)}
         if path=='/admin/api/overview' and method=='GET':
-            return 200,{'user':public_user(user),'catalog_models':len((await self.dataset())['models']),'prices_ready':False},out_headers
+            return 200,{'user':public_user(user),'catalog_models':len((await self.dataset())['models']),'prices_ready':bool((await self.pricebook())['entries'])},out_headers
         if path=='/admin/api/prices' and method=='GET':
             if not allowed(user,'prices:read'):raise PortalError(403,'Нет доступа к ценам')
-            return 200,{'prices':await self.db.query('SELECT * FROM portal_prices'),'message':'Цены ещё не добавлены'},out_headers
+            prices=await self.prices()
+            return 200,{'prices':prices,'message':'' if prices else 'Цены ещё не добавлены'},out_headers
+        if path=='/admin/api/pricebook' and method=='GET' and admin:
+            return 200,{'pricebook':await self.pricebook()},out_headers
+        if path in ('/admin/api/prices-validate','/admin/api/prices-publish') and method=='POST' and admin:
+            book=prepare_pricebook(data.get('pricebook'),{m['id'] for m in (await self.dataset())['models']})
+            if path.endswith('publish'):
+                current=await self.db.query("SELECT value FROM portal_settings WHERE id='pricebook'")
+                previous=json.loads(current[0]['value']) if current else {'revision':''}
+                if data.get('base_revision')!=previous['revision']:raise PortalError(409,'Прайс обновился. Загрузите свежую версию')
+                if book['revision']==previous['revision']:raise PortalError(400,'Укажите новую ревизию прайса')
+                book['updated_at']=now
+                payload=json.dumps(book,ensure_ascii=False,sort_keys=True)
+                if current:
+                    saved=await self.db.query("UPDATE portal_settings SET value=? WHERE id='pricebook' AND value=? RETURNING id",(payload,current[0]['value']))
+                else:
+                    saved=await self.db.query("INSERT INTO portal_settings VALUES ('pricebook',?) ON CONFLICT(id) DO NOTHING RETURNING id",(payload,))
+                if not saved:raise PortalError(409,'Прайс обновился одновременно. Повторите проверку')
+                await self.audit(user['id'],'prices_published',book['revision'],{'models':len(book['entries'])})
+            return 200,{'pricebook':book,'models':len(book['entries'])},out_headers
         if path=='/admin/api/applications' and method=='GET' and admin:
             return 200,{'applications':await self.db.query('SELECT * FROM portal_applications ORDER BY created_at DESC LIMIT 200')},out_headers
         if path=='/admin/api/application-review' and method=='POST' and admin:

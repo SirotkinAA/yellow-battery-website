@@ -29,7 +29,7 @@ write_changed(target / "catalog_data.py", "DATASET = " + repr(dataset) + "\n")
 
 portal_target=target / "battery_portal"
 portal_target.mkdir(exist_ok=True)
-for name in ("__init__.py", "security.py", "service.py", "storage.py", "transport.py"):
+for name in ("__init__.py", "security.py", "service.py", "pricing.py", "storage.py", "transport.py"):
     copy_changed(ROOT / "battery_portal" / name, portal_target / name)
 
 copy_changed(ROOT / "crypto_bridge.mjs", target / "crypto_bridge.mjs")
