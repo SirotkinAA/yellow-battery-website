@@ -17,7 +17,7 @@
   header.className='site-header';
   header.innerHTML=`<a class="logo" href="/" aria-label="YELLOW"><img src="/assets/yellow.svg" alt="YELLOW" width="180" height="32"></a>
     <button type="button" class="menu-button" aria-expanded="false" aria-controls="site-nav">${text('Меню','Menu')} ☰</button>
-    <nav id="site-nav" aria-label="Основная навигация">${['catalog','applications','documents','runtime','partners'].map(key=>`<a href="/${key}/"${section===key?' class="current" aria-current="page"':''}>${text(...labels[key])}</a>`).join('')}</nav>
+    <nav id="site-nav" aria-label="Основная навигация">${['catalog','applications','documents','runtime','racks','partners'].map(key=>`<a href="/${key}/"${section===key?' class="current" aria-current="page"':''}>${text(...labels[key])}</a>`).join('')}</nav>
     <div id="language" class="language" role="group" aria-label="Язык"><button type="button" data-language="en" lang="en" aria-pressed="false">EN</button><button type="button" data-language="ru" lang="ru" aria-pressed="true">RU</button></div>
     <a href="/admin/" class="account-link">${text('Кабинет ↗','Account ↗')}</a>`;
   if(!document.querySelector('.test-strip')){

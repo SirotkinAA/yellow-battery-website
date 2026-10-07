@@ -1,5 +1,10 @@
 'use strict';
 const translationsEn = {
+'Максимум параллельных линеек':'Maximum parallel strings',
+'Выбор':'Select','Выбрано:':'Selected:','АКБ':'batteries',
+'С запасом автономии':'Additional runtime',
+'Время работы больше верхней границы выбранного диапазона.':'Runtime exceeds the upper limit of the selected range.', 
+'Подобрать стеллажи →':'Select racks →',
 'Кубический сплайн возрастает между узлами таблицы. Расчёт для этих условий требует проверки данных.':"The cubic spline increases between table nodes. These conditions require data review.",
 'Некоторые модели исключены: кубический сплайн возрастает между узлами таблицы. Требуется проверка данных.':"Some models were excluded: the cubic spline increases between table nodes. Data review is required.",
   "Главная":"Home", "Каталог":"Catalogue", "Документация":"Documents", "Кабинет":"Account",

@@ -34,6 +34,5 @@ for name in ("__init__.py", "security.py", "service.py", "pricing.py", "storage.
 
 copy_changed(ROOT / "crypto_bridge.mjs", target / "crypto_bridge.mjs")
 
-# Regenerate public pages from the reviewed datasheet metadata.
-import runpy
-runpy.run_path(str(ROOT / "site-source" / "build.py"))
+# Deploy the reviewed public snapshot committed with this release.
+# Regenerate it in the source workspace before publishing.

@@ -395,6 +395,7 @@ def select(models, required_minutes, max_parallel_strings=5, time_range_minutes=
     factors(kwargs.get("age_factor", 1), kwargs.get("reserve_factor", 1))
     groups = {"meets_target": [], "below_target": []}
     exclusions = []
+    reserve = []
     for model in models:
         for np in range(1, maximum+1):
             try:
@@ -405,6 +406,12 @@ def select(models, required_minutes, max_parallel_strings=5, time_range_minutes=
             time = r["runtime"]
             if r["current_check"]["status"] == "exceeded":
                 exclusions.append({"model_id": model.id, "parallel_strings": np, "code": "current_exceeded"})
+                continue
+            if (time_range_minutes is not None and upper is not None
+                    and time["kind"] in ("exact", "interval", "at_least")
+                    and time["minutes"] > upper):
+                if not any(item["model_id"] == r["model_id"] for item in reserve):
+                    reserve.append(r)
                 continue
             if time["kind"] not in ("exact", "interval"):
                 exclusions.append({"model_id": model.id, "parallel_strings": np,
@@ -417,8 +424,9 @@ def select(models, required_minutes, max_parallel_strings=5, time_range_minutes=
                 group = "meets_target" if minutes >= target else "below_target"
                 r["target_difference_minutes"] = minutes-target
                 groups[group].append(r)
+    reserve.sort(key=lambda r: (r["parallel_strings"], r["runtime"]["minutes"], r["model_id"]))
     for rows in groups.values():
         rows.sort(key=lambda r: (abs(r["target_difference_minutes"]), r["parallel_strings"], r["total_batteries"], r["model_id"]))
     return {"engine_version": ENGINE_VERSION, "interpolation": "mathcad_lspline_natural_cubic", "operation": "select", "target_minutes": target,
-            "band_minutes": [lower, upper], "time_range_minutes": time_range_minutes, "groups": groups, "exclusions": exclusions,
+            "band_minutes": [lower, upper], "time_range_minutes": time_range_minutes, "groups": groups, "exclusions": exclusions, "reserve_candidates": reserve,
             "display_limit": 10, "total_candidates": sum(len(v) for v in groups.values())}
