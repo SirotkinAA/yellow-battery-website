@@ -1,0 +1,287 @@
+<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>Анатомия стационарной АКБ — YELLOW</title><meta name="description" content="Аккумуляторные батареи YELLOW. Каталог AGM, документация и подбор автономии."><link rel="stylesheet" href="/assets/site.css"><link rel="stylesheet" href="/assets/navigation.css?v=cb3b2733df39"><script src="/assets/navigation.js?v=257ade5fb7e7" defer></script><script src="/assets/site.js?v=10d9dc345135" defer></script><script src="/assets/prices.js?v=14008061d458" defer></script></head><body><a class="skip" href="#main"><span data-lang="ru">К содержанию</span><span data-lang="en" hidden>Skip to content</span></a><div class="test-strip"><span data-lang="ru">YELLOW / Предварительная версия сайта</span><span data-lang="en" hidden>YELLOW / Website preview</span></div><header class="site-header"><a class="logo" href="/" aria-label="YELLOW"><img src="/assets/yellow.svg" alt="YELLOW" width="180" height="32"></a><button class="menu-button" aria-expanded="false" aria-controls="site-nav"><span data-lang="ru">Меню</span><span data-lang="en" hidden>Menu</span> ☰</button><nav id="site-nav" aria-label="Основная навигация"><a class="" href="/catalog/"><span data-lang="ru">Каталог</span><span data-lang="en" hidden>Catalogue</span></a><a class="" href="/applications/"><span data-lang="ru">Применение</span><span data-lang="en" hidden>Applications</span></a><a class="" href="/documents/"><span data-lang="ru">Документация</span><span data-lang="en" hidden>Documents</span></a><a class="" href="/runtime/"><span data-lang="ru">Калькулятор</span><span data-lang="en" hidden>Calculator</span></a><a class="" href="/racks/"><span data-lang="ru">Стеллажи</span><span data-lang="en" hidden>Racks</span></a><a class="current" href="/knowledge/"><span data-lang="ru">База знаний</span><span data-lang="en" hidden>Knowledge base</span></a><a class="" href="/partners/"><span data-lang="ru">Партнёрам</span><span data-lang="en" hidden>Partners</span></a></nav><div class="language" role="group" aria-label="Language"><button data-language="en" aria-pressed="false">EN</button><button data-language="ru" aria-pressed="true">RU</button></div><a class="account-link" href="/admin/"><span data-lang="ru">Кабинет ↗</span><span data-lang="en" hidden>Account ↗</span></a></header><main id="main"><link rel="stylesheet" href="/assets/battery-anatomy.css"><article class="battery-anatomy" lang="ru"><header class="hero" id="inside">
+ <div class="wrap">
+ <p class="eyebrow">БАЗА ЗНАНИЙ / ИНТЕРАКТИВНЫЙ ГИД</p>
+ <h1>Анатомия <br><span class="grad">стационарной АКБ.</span></h1>
+ <p class="lede">Шесть ячеек по 2 вольта, свинец, кислота и вода. Исследуйте устройство, соединения и диагностику батарей с помощью интерактивных схем.</p>
+ <p class="scope-note">Учебный материал о свинцово-кислотных АКБ. Числа и сценарии иллюстрируют принципы работы и не являются характеристиками моделей YELLOW. Режимы заряда, конечные напряжения и критерии обслуживания выбирают по документации конкретной батареи. Материал доступен на русском языке.</p>
+ <div class="hero-stage">
+ <svg id="hero" viewBox="0 0 720 362" data-state="charged" role="img" aria-label="Разрез моноблока 12 В: шесть ячеек с пластинами"></svg>
+ <div class="seg" id="heroSeg" role="group" aria-label="Состояние батареи">
+ <button data-v="charged" aria-pressed="true">Заряжена</button>
+ <button data-v="discharge" aria-pressed="false">Разряд</button>
+ <button data-v="gas" aria-pressed="false">Конец заряда</button>
+ </div>
+ <div class="react" aria-live="polite">Pb + PbO₂ + 2H₂SO₄ <span class="dir" id="heroDir">⇄</span> 2PbSO₄ + 2H₂O</div>
+ <p class="note hero-note" id="heroNote"></p>
+ </div>
+ </div>
+</header><nav class="nav" aria-label="Разделы">
+ <div class="wrap">
+ <div class="brand">АКБ<span>.</span></div>
+ <div class="links">
+ <a href="#inside">Устройство</a><a href="#connect">Соединение</a><a href="#table">Разрядная таблица</a><a href="#string">Цепочка</a><a href="#resist">Сопротивление</a><a href="#float">Флот</a><a href="#gas">Газ</a><a href="#indicator">Индикаторы</a><a href="#rules">Памятка</a>
+ </div>
+ </div>
+</nav>
+
+
+
+<section id="connect">
+ <div class="wrap">
+ <div class="head">
+ <p class="eyebrow c-energy">Из элементов — батарея</p>
+ <h2>Последовательно растёт вольтаж. Параллельно — ёмкость.</h2>
+ <p class="lede">Свинцово-кислотный элемент — это <b>2 В</b>, и так будет при любом числе пластин. Всё остальное собирают соединением.</p>
+ </div>
+ <div class="stage">
+ <div class="viz"><svg id="conSvg" viewBox="0 0 640 320" role="img" aria-label="Схема соединения элементов"></svg></div>
+ <div class="panel">
+ <div class="ctl"><span class="lbl">Схема</span>
+ <div class="seg" id="conMode" role="group" aria-label="Схема соединения">
+ <button data-v="s" aria-pressed="true">Последовательно</button>
+ <button data-v="p" aria-pressed="false">Параллельно</button>
+ </div>
+ </div>
+ <div class="ctl"><label for="conN">Элементов по 2 В, 1 А·ч <output id="conNo">6</output></label>
+ <input type="range" id="conN" min="1" max="8" step="1" value="6">
+ </div>
+ <div class="stats">
+ <div class="stat"><div class="k">Напряжение</div><div class="v"><span id="conV">12</span><small>В</small></div></div>
+ <div class="stat"><div class="k">Ёмкость</div><div class="v"><span id="conC">1</span><small>А·ч</small></div></div>
+ </div>
+ <p class="note" id="conNote"></p>
+ </div>
+ </div>
+ </div>
+</section>
+
+<section id="table">
+ <div class="wrap">
+ <div class="head">
+ <p class="eyebrow c-accent">Разрядная таблица</p>
+ <h2>Чем больше ток, тем меньше ампер-часов.</h2>
+ <p class="lede">В учебной разрядной таблице батарея отдаёт <b>100 А·ч</b> за 10 часов и около <b>56 А·ч</b> за час. Для выбранной батареи используйте её собственные разрядные характеристики.</p>
+ </div>
+ <div class="stage">
+ <div class="viz">
+ <svg id="pkSvg" viewBox="0 0 640 330" role="img" aria-label="Зависимость ёмкости от времени разряда"></svg>
+ <div>
+ <div class="lbl" style="margin-bottom:8px"><span>Снимается с батареи «100 А·ч»</span><span id="pkBarTxt" style="color:var(--fg)"></span></div>
+ <svg viewBox="0 0 640 54" aria-hidden="true">
+ <defs><linearGradient id="gBar" x1="0" x2="1"><stop offset="0" stop-color="var(--energy)"/><stop offset="1" stop-color="var(--energy-2)"/></linearGradient></defs>
+ <rect x="1" y="5" width="618" height="44" rx="14" fill="none" stroke="var(--fg-3)" stroke-width="2"/>
+ <rect x="623" y="18" width="10" height="18" rx="4" fill="var(--fg-3)"/>
+ <rect id="pkBar" x="6" y="10" width="300" height="34" rx="10" fill="url(#gBar)" style="transition:width.5s cubic-bezier(.3,.8,.4,1)"/>
+ </svg>
+ </div>
+ </div>
+ <div class="panel">
+ <div class="ctl"><label for="pkT">Время разряда <output id="pkTo">1 ч</output></label>
+ <input type="range" id="pkT" min="0" max="1000" step="1" value="434">
+ <div class="ticks" id="pkTicks">
+ <button class="chip" data-t="0.1667">10 мин</button><button class="chip on" data-t="1">1 ч</button><button class="chip" data-t="5">5 ч</button><button class="chip" data-t="10">10 ч</button><button class="chip" data-t="20">20 ч</button>
+ </div>
+ </div>
+ <div class="ctl"><span class="lbl">Конечное напряжение моноблока 12 В</span>
+ <div class="seg" id="pkEnd" role="group" aria-label="Конечное напряжение">
+ <button data-v="108" aria-pressed="true">10,8 В · 1,80 В/эл</button>
+ <button data-v="96" aria-pressed="false">9,6 В · 1,60 В/эл</button>
+ </div>
+ </div>
+ <div class="stats">
+ <div class="stat"><div class="k">Ток разряда</div><div class="v"><span id="pkI">56,3</span><small>А</small></div></div>
+ <div class="stat"><div class="k">Отдаст</div><div class="v"><span id="pkC">56,3</span><small>А·ч</small></div></div>
+ </div>
+ <p class="note" id="pkNote"></p>
+ <p class="foot">Разрядная таблица постоянным током при 25 °C для моноблока 12 В 100 А·ч из доклада: 12 режимов от 5 минут до 20 часов. Между точками — интерполяция.</p>
+ </div>
+ </div>
+ <div class="formula">
+ <div><b class="c-accent">Ток</b><span>с точностью ±1 % по разрядной таблице</span></div>
+ <div><b class="c-accent">× Время</b><span>до момента, когда первый элемент дошёл до конечного напряжения</span></div>
+ <div><b class="c-accent">= Ёмкость</b><span>при заданных токе, конечном напряжении и температуре</span></div>
+ </div>
+ </div>
+</section>
+
+<section id="string">
+ <div class="wrap">
+ <div class="head">
+ <p class="eyebrow c-bad">Батарея в составе ИБП</p>
+ <h2>Цепь рвётся в самом слабом звене.</h2>
+ <p class="lede">ИБП видит только напряжение на концах цепочки. Короткое замыкание ячейки он почти не заметит. <b>Обрыв одной перемычки заметит сразу, но будет уже поздно.</b> Нажимайте на моноблоки.</p>
+ </div>
+ <div class="stage">
+ <div class="viz">
+ <svg id="strSvg" viewBox="0 0 640 330" role="group" aria-label="Цепочка моноблоков, подключённая к ИБП"></svg>
+ <div class="legend">
+ <span><i style="border-color:var(--line)"></i>Норма</span>
+ <span><i style="border-color:var(--warn)"></i>КЗ ячейки, −2 В</span>
+ <span><i style="border-color:var(--hot)"></i>Незатянутая перемычка, нагрев</span>
+ <span><i style="border-color:var(--bad)"></i>Обрыв</span>
+ </div>
+ </div>
+ <div class="panel">
+ <div class="ctl"><span class="lbl">Моноблоков 12 В в цепочке</span>
+ <div class="seg" id="strN" role="group" aria-label="Количество моноблоков">
+ <button data-v="20" aria-pressed="true">20</button>
+ <button data-v="40" aria-pressed="false">40</button>
+ </div>
+ </div>
+ <div class="ctl"><label for="strCap">Остаточная ёмкость <output id="strCapO">100 %</output></label>
+ <input type="range" id="strCap" min="50" max="100" step="1" value="100">
+ </div>
+ <span class="pill ok" id="strPill">Нагрузка на батарее</span>
+ <div class="stats">
+ <div class="stat"><div class="k">На клеммах ИБП</div><div class="v"><span id="strV">240</span><small>В</small></div></div>
+ <div class="stat"><div class="k">Резервное время</div><div class="v"><span id="strT">30</span><small>мин</small></div></div>
+ </div>
+ <p class="note" id="strNote"></p>
+ <div class="row"><button class="btn ghost" id="strReset">Всё исправно</button><button class="btn ghost" id="strDemo">Сломать одну перемычку</button></div>
+ </div>
+ </div>
+ </div>
+</section>
+
+<section id="resist">
+ <div class="wrap">
+ <div class="head">
+ <p class="eyebrow c-warn">Внутреннее сопротивление</p>
+ <h2>Ёмкость им не измерить. Обрыв — легко.</h2>
+ <p class="lede">Сопротивление зависит от метода измерения, частоты, температуры и заряженности. Шкала ниже — условный пример сравнения при <b>1000 Гц</b>, а не критерий исправности любой батареи.</p>
+ </div>
+ <div class="stage">
+ <div class="viz">
+ <svg id="gSvg" viewBox="0 0 400 300" role="img" aria-label="Шкала отношения измеренного сопротивления к паспортному"></svg>
+ <p class="note" id="gVerdict" style="text-align:center;max-width:48ch;margin:0 auto"></p>
+ </div>
+ <div class="panel">
+ <div class="ctl"><label for="gPass">Паспорт, импеданс 1 кГц <output id="gPassO">4,0 мОм</output></label>
+ <input type="range" id="gPass" min="1" max="20" step="0.1" value="4">
+ </div>
+ <div class="ctl"><label for="gMeas">Измерено <output id="gMeasO">5,0 мОм</output></label>
+ <input type="range" id="gMeas" min="1" max="60" step="0.1" value="5">
+ </div>
+ <label class="switch" for="gLow"><span>Прибор меряет на 20–22 Гц</span><input type="checkbox" id="gLow"><i></i></label>
+ <p class="note" id="gLowNote"></p>
+ <p class="note">Сопротивление постоянному току и импеданс на переменном токе — разные показатели. Сравнивайте результаты одним методом; числовые границы шкалы здесь учебные.</p>
+ </div>
+ </div>
+ </div>
+</section>
+
+<section id="float">
+ <div class="wrap">
+ <div class="head">
+ <p class="eyebrow c-energy">Флотирующий заряд</p>
+ <h2>30 моноблоков. Одно среднее. Разброс напряжений.</h2>
+ <p class="lede">В этой модели напряжение цепи делится на 30 моноблоков. Зона ±0,3 В выбрана для демонстрации и не задаёт допустимый разброс для любой батареи. Тяните точки: зарядное устройство держит напряжение цепи, поэтому, если напряжение одного моноблока растёт, остальные проседают.</p>
+ </div>
+ <div class="stage">
+ <div class="viz"><svg id="flSvg" viewBox="0 0 640 310" role="img" aria-label="Напряжения 30 моноблоков относительно среднего" style="touch-action:none"></svg></div>
+ <div class="panel">
+ <div class="ctl"><label for="flSig">Разброс в группе <output id="flSigO">±0,08 В</output></label>
+ <input type="range" id="flSig" min="0.02" max="0.25" step="0.01" value="0.08">
+ </div>
+ <div class="row"><button class="btn ghost" id="flNew">Новая выборка</button><button class="btn" id="flRepl">Поставить одну новую батарею</button></div>
+ <div class="stats">
+ <div class="stat"><div class="k">Среднее на моноблок</div><div class="v"><span id="flMean">13,62</span><small>В</small></div></div>
+ <div class="stat"><div class="k">Вне учебной зоны</div><div class="v"><span id="flOut">0</span><small id="flOutU">из 30</small></div></div>
+ </div>
+ <p class="note" id="flNote"></p>
+ </div>
+ </div>
+ </div>
+</section>
+
+<section id="gas">
+ <div class="wrap">
+ <div class="head">
+ <p class="eyebrow c-gas">Газ в конце заряда</p>
+ <h2>4 % водорода — и воздух становится гремучей смесью.</h2>
+ <p class="lede">При заряде возможно выделение водорода. В этой учебной модели для VRLA задано в десять раз меньшее газовыделение. Реальные значения зависят от батарей и режима заряда; этот график не рассчитывает вентиляцию помещения.</p>
+ </div>
+ <div class="stage">
+ <div class="viz">
+ <svg id="gasRoom" viewBox="0 0 640 300" role="img" aria-label="Помещение с аккумуляторами: водород скапливается под потолком"></svg>
+ <svg id="gasChart" viewBox="0 0 640 190" role="img" aria-label="Концентрация водорода во времени"></svg>
+ </div>
+ <div class="panel">
+ <div class="ctl"><span class="lbl">Тип батарей</span>
+ <div class="seg" id="gasType" role="group" aria-label="Тип батарей">
+ <button data-v="open" aria-pressed="true">Открытые</button>
+ <button data-v="vrla" aria-pressed="false">VRLA (AGM, гель)</button>
+ </div>
+ </div>
+ <div class="ctl"><label for="gasN">Вентиляция <output id="gasNo">0,3 обмена/ч</output></label>
+ <input type="range" id="gasN" min="0" max="4" step="0.1" value="0.3">
+ </div>
+ <div class="ctl"><label for="gasT">Газовыделение длится <output id="gasTo">2 ч</output></label>
+ <input type="range" id="gasT" min="0" max="2" step="0.05" value="2">
+ </div>
+ <span class="pill bad" id="gasPill">Взрывоопасно</span>
+ <div class="stats">
+ <div class="stat"><div class="k">Водород под потолком</div><div class="v"><span id="gasC">4,5</span><small>%</small></div></div>
+ <div class="stat"><div class="k">4 % будет через</div><div class="v"><span id="gasTT">1:42</span><small id="gasTTu">ч</small></div></div>
+ </div>
+ <p class="foot">Условная модель с одинаковым помещением для обоих типов. Цифры иллюстративные; соотношение «на порядок меньше» — из лекции.</p>
+ </div>
+ </div>
+ </div>
+</section>
+
+<section id="indicator">
+ <div class="wrap">
+ <div class="head">
+ <p class="eyebrow c-bad">Случай из практики</p>
+ <h2>Индикатор показал 67 А·ч. Батарея села за 2 минуты.</h2>
+ <p class="lede">Учебный сценарий из вебинара: прибор оценивает ёмкость в <b>67 А·ч</b>, а модель разряда показывает иной результат. Сравните показание прибора с отдаваемой ёмкостью под нагрузкой 62 А.</p>
+ </div>
+ <div class="stage wide">
+ <div class="viz">
+ <div class="lt-grid">
+ <div class="device" aria-label="Индикатор ёмкости">
+ <div class="dev-label">Индикатор ёмкости</div>
+ <div class="screen"><span class="big">67 <span style="font-size:.45em;font-weight:600">А·ч</span></span><span class="ok">✓ Оценка прибора</span><span class="note" style="font-size:13px">R = 74 % от паспорта</span></div>
+ <div class="dev-label" style="opacity:.5">Не задаёт ни тока, ни времени, ни конечного напряжения</div>
+ </div>
+ <svg id="ltSvg" viewBox="0 0 640 290" role="img" aria-label="Напряжение батареи под нагрузкой 62 А"></svg>
+ </div>
+ </div>
+ <div class="panel">
+ <div class="row" style="align-items:center;justify-content:space-between">
+ <div class="row"><button class="btn" id="ltRun">Нагрузить током 62 А</button><button class="btn ghost" id="ltReset">Сбросить</button></div>
+ <div class="seg" id="ltZoom" role="group" aria-label="Масштаб времени" style="max-width:300px">
+ <button data-v="60" aria-pressed="true">Весь час</button>
+ <button data-v="3" aria-pressed="false">Первые 3 мин</button>
+ </div>
+ </div>
+ <div class="stats" style="grid-template-columns:repeat(3,minmax(0,1fr))">
+ <div class="stat"><div class="k">Время под нагрузкой</div><div class="v"><span id="ltTime">0:00</span></div></div>
+ <div class="stat"><div class="k">Напряжение</div><div class="v"><span id="ltV">12,6</span><small>В</small></div></div>
+ <div class="stat"><div class="k">Снято</div><div class="v"><span id="ltAh">0,0</span><small>А·ч</small></div></div>
+ </div>
+ <div class="verdict" id="ltVerdict" hidden></div>
+ </div>
+ </div>
+ </div>
+</section>
+
+<section id="rules">
+ <div class="wrap">
+ <div class="head">
+ <p class="eyebrow c-accent">Памятка</p>
+ <h2>Что проверить в документации батареи.</h2>
+ </div>
+<div class="rules"><div class="rule"><h3>Режим заряда</h3><p>Буферное напряжение, температурная компенсация и ограничение тока — по паспорту конкретной модели.</p></div><div class="rule"><h3>Условия разряда</h3><p>Сравнивайте ёмкость при одинаковом времени разряда, конечном напряжении и температуре.</p></div><div class="rule"><h3>Диагностика</h3><p>Сравнивайте сопротивление при одинаковом методе измерения. Фактическую отдаваемую ёмкость проверяют контрольным разрядом.</p></div><div class="rule"><h3>Обслуживание</h3><p>Периодичность проверок и критерии замены определяются документацией производителя и условиями эксплуатации.</p></div><div class="rule"><h3>Замена батарей</h3><p>Совместимость новых и существующих моноблоков оценивают по состоянию всей группы и рекомендациям производителя.</p></div><div class="rule"><h3>Вентиляция</h3><p>Газовыделение и вентиляцию проверяют для конкретной установки. Учебная анимация не заменяет проектный расчёт.</p></div></div>
+ </div>
+</section>
+
+<aside class="source-note">
+ <div class="wrap">
+ <p>По материалам вебинара «Эксплуатация стационарных свинцово-кислотных АКБ: нормативы, диагностика, инструментальный контроль» (МАК, проект Test Energy; спикер — Сергей Котов, «Системотехника»).</p>
+ <p>Схемы упрощены для наглядности. Модели газовыделения и кривая 9,6 В — иллюстрации, а не расчёт для конкретной батареи.</p>
+ </div>
+</aside>
+
+<div class="wrap next-steps"><a href="/runtime/">Рассчитать автономию →</a><a href="/catalog/">Выбрать батарею →</a><a href="/documents/">Документация YELLOW →</a></div></article><script src="/assets/battery-anatomy.js" defer></script></main><footer class="site-footer"><div class="footer-top"><a href="/" class="logo"><img src="/assets/yellow.svg" alt="YELLOW" width="180" height="32"></a><p><span data-lang="ru">Энергия для резервного питания.</span><span data-lang="en" hidden>Energy for standby power.</span></p><a class="" href="/contacts/"><span data-lang="ru">Контакты ↗</span><span data-lang="en" hidden>Contact ↗</span></a></div><div class="footer-bottom"><span>Harbin Haoneng New Energy Technology Co., Ltd.</span><div><a class="" href="/about/"><span data-lang="ru">О YELLOW</span><span data-lang="en" hidden>About YELLOW</span></a><a class="" href="/documents/"><span data-lang="ru">Документация</span><span data-lang="en" hidden>Documents</span></a><a class="" href="/admin/"><span data-lang="ru">Вход для партнёров</span><span data-lang="en" hidden>Partner sign-in</span></a></div><span>© 2026 YELLOW</span></div></footer></body></html>
