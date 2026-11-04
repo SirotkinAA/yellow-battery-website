@@ -40,3 +40,13 @@
     const status=form.querySelector('[data-brief-status]');status.textContent=text('Задание сохранено в файл. Передайте его специалисту для подбора комплектации.','Brief saved to a file. Share it with a specialist for equipment selection.');status.dataset.textRu='Задание сохранено в файл. Передайте его специалисту для подбора комплектации.';status.dataset.textEn='Brief saved to a file. Share it with a specialist for equipment selection.';
   }));
 })();
+
+// Local media playback: no redirects or third-party players.
+document.querySelectorAll('[data-video-play]').forEach(button=>{
+ const video=button.parentElement.querySelector('video');
+ button.addEventListener('click',async()=>{
+  try { await video.play(); button.hidden=true; } catch(error) { button.hidden=false; }
+ });
+ video.addEventListener('play',()=>{ button.hidden=true; document.querySelectorAll('video').forEach(other=>{if(other!==video)other.pause();}); });
+ video.addEventListener('ended',()=>{button.hidden=false;});
+});
