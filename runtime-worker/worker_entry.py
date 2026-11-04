@@ -11,6 +11,7 @@ from battery_calculator.core import CalculationError
 from battery_calculator.io import execute
 from battery_calculator.__main__ import reject_constant, unique_object
 from catalog_data import DATASET
+from shared_catalog import catalogue
 from battery_calculator.catalog import catalog_summary, example_requests
 
 HEADERS = {"Content-Type": "application/json; charset=utf-8", "Cache-Control": "no-store",
@@ -28,6 +29,17 @@ class Default(WorkerEntrypoint):
         origin=url.scheme+'://'+url.netloc
         binding=getattr(self.env,'PORTAL_DB',None)
         portal=Portal(D1Store(binding),DATASET,origin) if binding else None
+        if path == '/catalog/v1/products':
+            extra={**HEADERS,'Access-Control-Allow-Origin':'*','Access-Control-Allow-Methods':'GET, HEAD, OPTIONS'}
+            if request.method=='OPTIONS':return Response('',status=204,headers=extra)
+            if request.method not in ('GET','HEAD'):
+                return Response(json.dumps({'error':'method_not_allowed'}),status=405,headers={**extra,'Allow':'GET, HEAD, OPTIONS'})
+            try:
+                status,result=await catalogue(D1Store(binding) if binding else None,url.query)
+            except Exception:
+                return Response(json.dumps({'error':'catalogue_unavailable'}),status=503,headers=extra)
+            extra['X-Catalogue-Release']=result.get('release_id','')
+            return Response('' if request.method=='HEAD' else json.dumps(result,ensure_ascii=False,allow_nan=False),status=status,headers=extra)
         if path.startswith(('/admin/api/','/partner-api/')):
             if portal is None:return reply({'message':'Кабинет ещё не подключён к базе пользователей'},503)
             headers={key.lower():str(request.headers.get(key) or '') for key in ['Cookie','Origin','Content-Type','X-CSRF-Token','Authorization']}

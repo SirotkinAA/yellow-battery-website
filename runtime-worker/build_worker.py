@@ -36,3 +36,5 @@ copy_changed(ROOT / "crypto_bridge.mjs", target / "crypto_bridge.mjs")
 
 # Deploy the reviewed public snapshot committed with this release.
 # Regenerate it in the source workspace before publishing.
+
+copy_changed(ROOT / "shared_catalog.py", target / "shared_catalog.py")

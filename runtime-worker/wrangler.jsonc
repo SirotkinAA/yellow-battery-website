@@ -14,7 +14,8 @@
       "/admin",
       "/admin/*",
       "/partner-api/*",
-      "/embed/*"
+      "/embed/*",
+      "/catalog/v1/*"
     ]
   },
   "routes": [
