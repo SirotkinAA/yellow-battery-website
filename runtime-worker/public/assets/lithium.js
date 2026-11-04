@@ -1,44 +1,70 @@
 'use strict';
-function sizeVisionCabinets(models, input) {
-  const {power, minutes, voltage, efficiency, dod, reserve, series = 'all'} = input;
-  if (![power,minutes,voltage,efficiency,dod,reserve].every(Number.isFinite) || power <= 0 || minutes <= 0 || voltage <= 0 || efficiency <= 0 || efficiency > 100 || dod <= 0 || dod > 100 || reserve < 0) throw new RangeError('Invalid cabinet sizing inputs');
-  const requiredEnergy = power * minutes / 60 / (efficiency / 100) / (dod / 100) * (1 + reserve / 100);
-  const dcCurrent = power * 1000 / (voltage * efficiency / 100);
-  const rows = models.filter(m => m.nominal_voltage === voltage && (!series || series === 'all' || m.series === series) && !m.notes.length).map(model => {
-    const currentLimit = Math.min(model.capacity_ah * model.module_c_rate, model.bms_current_a);
-    const energyCount = Math.ceil(requiredEnergy / model.energy_kwh - 1e-12);
-    const currentCount = Math.ceil(dcCurrent / currentLimit - 1e-12);
-    const count = Math.max(1, energyCount, currentCount);
-    const totalEnergy = count * model.energy_kwh;
-    const runtime = totalEnergy * (dod / 100) * (efficiency / 100) / (1 + reserve / 100) / power * 60;
-    if (![count,totalEnergy,runtime].every(Number.isFinite)) throw new RangeError('Result out of range');
-    return {model,count,totalEnergy,runtime,modules:count * model.modules,currentPerCabinet:dcCurrent/count,currentLimit,limiting:currentCount > energyCount ? 'current' : 'energy'};
-  }).sort((a,b)=>a.count-b.count || a.totalEnergy-b.totalEnergy || a.model.id.localeCompare(b.model.id));
-  if (!Number.isFinite(requiredEnergy) || !Number.isFinite(dcCurrent)) throw new RangeError('Result out of range');
-  return {requiredEnergy,dcCurrent,rows};
+(async()=>{
+const root=document.getElementById('workbook-calculator');if(!root)return;
+let en=document.documentElement.lang.startsWith('en');const t=(ru,enText)=>en?enText:ru;
+const esc=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fmt=x=>visionIsError(x)?t('Нет результата: ','No result: ')+x.code:typeof x==='number'?new Intl.NumberFormat(en?'en':'ru',{maximumFractionDigits:3}).format(x):esc(x);
+try{
+const data=await fetch('/assets/vision/workbook-v2-5.json').then(r=>{if(!r.ok)throw Error(r.status);return r.json();});
+function mount(){
+en=document.documentElement.lang.startsWith('en');
+const saved=Object.fromEntries([...root.querySelectorAll('input,select')].map(x=>[x.name,x.value])),active=root.querySelector('[data-tab][aria-pressed=true]')?.dataset.tab;
+const volts=[204.8,256,307.2,358.4,409.6,460.8,512,563.2,614.4,665.6,716.8];
+const field=(cell,label,value,options,min=0.001,max=100000)=>({cell,label,value,options,min,max});
+const common=(sheet,power,series)=>[
+field(sheet+'!'+power,t('Активная мощность, кВт','Active power, kW'),200),
+field(sheet+'!'+series,t('Серия','Series'),'TP',['TP','TPL','TPH','SPL','TPpro','TPX'])];
+const sizing=[...common('Tool','H4','F4'),field('Tool!E4',t('Напряжение, В','Voltage, V'),512,volts),field('Tool!L4',t('Автономия, мин','Runtime, min'),10),field('Tool!D4',t('Доля нагрузки (0–1)','Load fraction (0–1)'),1,null,.001,1),field('Tool!G4',t('КПД (0–1)','Efficiency (0–1)'),.95,null,.001,1),field('Tool!J4',t('Старение','Aging'),'EOL125%',['BOL100%','EOL120%','EOL125%','EOL140%'])];
+const heat=[field('heat!H4',t('Мощность, кВт','Power, kW'),1440),field('heat!F4',t('Серия','Series'),'TPX',['TP50Ah','TP100Ah','TPL100Ah','TPL200Ah','TPH','TPX','TP2.5pro']),field('heat!E4',t('Напряжение, В','Voltage, V'),512,volts),field('heat!C4',t('Шкафы','Cabinets'),5,null,1,15),field('heat!D4',t('Доля нагрузки','Load fraction'),1,null,.001,1),field('heat!G4',t('КПД','Efficiency'),.95,null,.001,1),field('heat!J4',t('Разряд, мин','Discharge, min'),8),field('heat!L4',t('Заряд, мин (от 60)','Charge, min (60+)'),600,null,60)];
+const cable=[field('Cable!G4',t('Мощность, кВт','Power, kW'),1000),field('Cable!D4',t('Напряжение, В','Voltage, V'),563.2,volts),field('Cable!K4',t('Шкафы','Cabinets'),4,null,1,15),field('Cable!C4',t('Доля нагрузки','Load fraction'),1,null,.001,1),field('Cable!F4',t('КПД','Efficiency'),.95,null,.001,1),field('Cable!E59',t('Длина для экспериментальной оценки, м','Length for experimental estimate, m'),40)];
+const modelKeys=Object.keys(data.cells).filter(k=>/^Selection calculation!O\d+$/.test(k)).map(k=>data.cells[k].v).filter(v=>typeof v==='string'&&/^(TP|TPL|TPH|TPpro|TPX)\d/.test(v));
+const check=[field('Selection calculation!G6',t('Серия','Series'),'TP',['TP','TPH','TPL','TPpro','TPX']),field('Selection calculation!H6',t('Обозначение модели без серии','Model suffix without series'),'200',[...new Set(modelKeys.map(v=>v.replace(/^(TPpro|TPH|TPL|TPX|TP)/,'')))]),field('Selection calculation!E4',t('Мощность, кВт','Power, kW'),200),field('Selection calculation!I4',t('Время, мин','Time, min'),8),field('Selection calculation!K6',t('Шкафы','Cabinets'),1,null,1,15),field('Selection calculation!C4',t('Доля нагрузки','Load fraction'),1,null,.001,1),field('Selection calculation!D4',t('КПД','Efficiency'),.95,null,.001,1),field('Selection calculation!G4',t('Старение','Aging'),'BOL100%',['BOL100%','EOL120%','EOL125%','EOL140%'])];
+const configModels=Object.keys(data.cells).filter(k=>/^Sheet2 \(2\)!B\d+$/.test(k)).map(k=>data.cells[k].v).filter(v=>typeof v==='string'&&/^(TP|TPL|TPH|TPX)\d/.test(v));
+const config=[field('配置确认表!B2',t('Платформа','Platform'),'TP 2.5 Pro',['TP 2.5','TP 2.5S','TP 2.5 Pro','TPL 2.5','TPH 2.5','TPX 3.0']),field('配置确认表!D2',t('Модель','Model'),'TP240Pro',configModels),field('配置确认表!F2',t('Шкафы','Cabinets'),2,null,1,15),field('配置确认表!D3',t('Коэффициент старения','Aging factor'),1.25,null,1,2),field('配置确认表!B4',t('Нагрузка, кВт','Load, kW'),400),field('配置确认表!B5',t('Время, мин','Runtime, min'),10)];
+for(const [cell,label,value,options]of [['F7','MCCB','LS',['Schneider','LS','Nader']],['F8','RCD','N',['Y','N']],['F9',t('Нейтраль','Neutral'),'N',['Y','N']],['F10',t('Пожаротушение шкафа','Cabinet fire suppression'),'N',['Y','N']],['F11',t('Предохранитель модуля','Module fuse'),'BUSSMANN',['BUSSMANN','N']],['F12',t('Верхний кабельный короб','Top cable box'),'N',['Y','N']],['F13',t('Перевозка в сборе','Assembled transport'),'Y',['Y','N']],['F14',t('Газовый датчик','Gas detection'),'N',['Y','N']],['F15',t('Цвет шкафа','Cabinet color'),'RAL9005',['RAL9005','Other']],['F16',t('Цвет модулей','Module color'),'RAL9005',['RAL9005','Other']],['F17',t('Контроль сопротивления','Resistance monitoring'),'N',['Y','N']]])config.push(field('配置确认表!'+cell,label,value,options));
+const sections=[['sizing',t('Подбор','Sizing'),sizing],['heat',t('Тепло','Heat'),heat],['cable',t('Кабели','Cables'),cable],['check',t('Проверка модели','Model check'),check],['config',t('Конфигурация','Configuration'),config]];
+root.innerHTML='<nav class="wb-tabs" aria-label="'+t('Разделы калькулятора','Calculator sections')+'">'+sections.map(([id,label],i)=>`<button type="button" data-tab="${id}" aria-pressed="${i===0}">${label}</button>`).join('')+'</nav>'+sections.map(([id,label,fields],i)=>`<section data-panel="${id}" ${i?'hidden':''}><h3>${label}</h3><form class="wb-form" data-kind="${id}"><div class="lithium-fields">${fields.map(f=>`<label>${f.label}${f.options?`<select name="${esc(f.cell)}">${f.options.map(v=>`<option ${v===f.value?'selected':''}>${esc(v)}</option>`).join('')}</select>`:`<input name="${esc(f.cell)}" type="number" step="${/Шкафы|Cabinets/.test(f.label)?1:"any"}" min="${f.min}" max="${f.max}" required value="${f.value}">`}</label>`).join('')}</div><button class="button dark">${t('Рассчитать','Calculate')}</button></form><div class="wb-output" data-output="${id}"></div></section>`).join('');
+root.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{root.querySelectorAll('[data-tab]').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));root.querySelectorAll('[data-panel]').forEach(p=>p.hidden=p.dataset.panel!==b.dataset.tab);});
+const table=(headers,rows)=>'<div class="wb-scroll"><table><thead><tr>'+headers.map(x=>'<th>'+x+'</th>').join('')+'</tr></thead><tbody>'+rows.map(r=>'<tr>'+r.map(x=>'<td>'+x+'</td>').join('')+'</tr>').join('')+'</tbody></table></div>';
+const metrics=(wb,sheet,items)=>'<dl class="wb-metrics">'+items.map(([a,label])=>`<div><dt>${label}</dt><dd>${fmt(wb.get(sheet,a))}</dd></div>`).join('')+'</dl>';
+function render(form){
+const overrides={};for(const input of form.elements)if(input.name)overrides[input.name]=input.type==='number'?Number(input.value):input.value;
+const wb=new VisionWorkbook(data,overrides),kind=form.dataset.kind,out=root.querySelector(`[data-output="${kind}"]`);let html='';
+if(kind==='sizing'){
+const target=overrides['Tool!L4']*Number(overrides['Tool!J4'].match(/\d+/)[0])/100;
+html='<p>'+t('Целевое время со старением: ','Runtime target including aging: ')+fmt(target)+' min</p>';
+for(const [start,end,title]of [[8,15,t('Варианты напряжения','Voltage alternatives')],[16,17,t('При заданном напряжении','At requested voltage')]]){
+let rows=[];for(let r=start;r<=end;r++){const get=c=>wb.get('Tool',c+r),runtime=get('G');rows.push([fmt(get('C')),fmt(get('F')),fmt(get('E')),fmt(get('H')),fmt(runtime),fmt(get('L')),fmt(get('I')),fmt(get('J')),fmt(get('K')),fmt(get('M')),typeof get('B')==='number'?fmt(get('B')*100)+'%':fmt(get('B')),typeof runtime==='number'?(runtime>=target?t('Достигает цели','Meets target'):t('Ниже цели','Below target')):t('Вне диапазона Excel','Outside workbook range')]);}
+html+='<h4>'+title+'</h4>'+table([t('Модель','Model'),t('Шкафы','Cabinets'),t('Модулей/шкаф','Modules/cabinet'),'V','min',t('А/шкаф при Uкон','A/cabinet at cutoff'),t('Uкон, В','Cutoff, V'),t('Заряд, В','Charge, V'),t('Макс. заряд, В','Max charge, V'),t('Нейтраль','Neutral'),t('Запас Excel','Excel margin'),t('Проверка','Check')],rows);
+}html+='<p>'+t('Сопоставьте весь диапазон DC с ИБП. Строки с ошибками не являются подобранными решениями.','Check the full DC range against the UPS. Error rows are not valid selections.')+'</p>';
+}else if(kind==='heat'){
+html=metrics(wb,'heat',[['B8',t('Ёмкость ячейки, А·ч','Cell capacity, Ah')],['C8',t('Схема','Topology')],['E8',t('Ток заряда ячейки, А','Cell charge current, A')],['F8',t('DCR, мОм','DCR, mΩ')],['F16',t('Масса ячеек, кг','Cell mass, kg')],['J18',t('Поглощено ячейками, кДж','Cell absorbed heat, kJ')],['J20',t('Поглощено корпусом, кДж','Enclosure absorbed heat, kJ')],['H23',t('Отдано при разряде, кДж/система','Discharge released heat, kJ/system')],['H8',t('Ток ячейки, А','Cell current, A')],['I8',t('Доступный разряд, мин','Available discharge, min')],['J8',t('Тепло разряда, кДж/шкаф','Discharge heat, kJ/cabinet')],['K8',t('Тепло заряда, кДж/шкаф','Charge heat, kJ/cabinet')],['F13',t('Мгновенное тепло, кВт/шкаф','Instant heat, kW/cabinet')],['H18',t('Рост температуры, °C','Temperature rise, °C')],['H24',t('Полное тепло системы, кДж','Total system heat, kJ')],['J24',t('Полное тепло системы, кВт·ч','Total system heat, kWh')],['I25',t('Макс. воздушное охлаждение, кВт/шкаф','Max air cooling, kW/cabinet')],['I26',t('Макс. воздушное, кВт/система','Max air, kW/system')],['I27',t('Воздушное за заданный разряд, кВт/шкаф','Air at requested discharge, kW/cabinet')],['I28',t('Воздушное, кВт/система','Air, kW/system')],['I29',t('Макс. жидкостное, кВт/шкаф','Max liquid, kW/cabinet')],['I30',t('Макс. жидкостное, кВт/система','Max liquid, kW/system')],['I31',t('Жидкостное за разряд, кВт/шкаф','Liquid at discharge, kW/cabinet')],['I32',t('Жидкостное, кВт/система','Liquid, kW/system')]]);
+html+='<p>'+t('«Нет результата» или error: сочетание отсутствует в таблице либо превышен токовый предел. NA означает отсутствие жидкостного охлаждения. Тепловые коэффициенты сохранены из Excel; единицы теплоёмкости требуют инженерной сверки.','No result or error: unsupported table combination or current limit exceeded. NA means liquid cooling is unavailable. Source thermal coefficients are retained; heat-capacity units require engineering verification.')+'</p>';
+html+='<details><summary>'+t('Тепловая экспресс-таблица Excel (исходные условия)','Excel heat quick-reference table (source conditions)')+'</summary>'+table(['Excel',...Array.from({length:25},(_,i)=>String.fromCharCode(66+i))],wb.range('热量速查表','B2','Z73').map((r,i)=>[i+2,...r.map(fmt)]))+'</details>';
+}else if(kind==='cable'){
+html=metrics(wb,'Cable',[['J19',t('Общий ток, А','Total current, A')],['J22',t('Ток на шкаф, А','Current per cabinet, A')],['I25',t('Допустимый ток выбранного кабеля, А','Selected ampacity, A')],['F25',t('Сечение, мм²','Cross-section, mm²')]]);
+html+='<p>'+t('Таблица Excel: одножильная медь, XLPE 1–3 кВ, воздух; ссылка источника GB50217-2018 C.0.1-3. Выбирается ток строго выше расчётного. Выше 1177 А на шкаф таблица не даёт решения. В формуле используется 3,05 В на ячейку; серия и время разряда её не меняют.','Excel table: single-core copper, XLPE 1–3 kV, in air; source reference GB50217-2018 C.0.1-3. Ampacity is strictly greater than calculated current. Above 1177 A/cabinet no solution is available. The formula uses 3.05 V/cell; series and runtime do not change it.')+'</p>';
+html+='<details><summary>'+t('Экспериментальная оценка падения напряжения','Experimental voltage-drop estimate')+'</summary><p>'+t('Аппроксимация исходных измерений: 2 × 0,6364 + 0,1112 × длина = ','Fit to source measurements: 2 × 0.6364 + 0.1112 × length = ')+fmt(wb.get('Cable','G59'))+' V. '+t('Не связана с выбранным сечением и током.','Independent of selected gauge and current.')+'</p></details>';
+}else if(kind==='check'){
+html=metrics(wb,'Selection calculation',[['A25',t('Модель','Model')],['L19',t('Требуемая мощность DC, кВт','Required DC power, kW')],['L22',t('Требуемая энергия, кВт·ч','Required energy, kWh')],['I31',t('Мощность в первой точке × шкафы, кВт','First-point power × cabinets, kW')],['I32',t('Энергия по Excel × шкафы, кВт·ч','Workbook energy × cabinets, kWh')]]);
+html+=table([t('Время по таблице','Table time'),t('Мощность DC на шкаф, кВт','DC power/cabinet, kW'),t('Ток, А','Current, A')],['E','F','G','H','I'].map(c=>[27,28,29].map(r=>fmt(wb.get('Selection calculation',c+r)))));
+for(const [available,required,label]of [['I31','L19',t('Мощность','Power')],['I32','L22',t('Энергия','Energy')]]){const a=wb.get('Selection calculation',available),b=wb.get('Selection calculation',required);html+='<p>'+label+': '+(typeof a==='number'&&typeof b==='number'?(a>=b?t('Достаточно','Sufficient'):t('Недостаточно','Insufficient')):t('Модель отсутствует в таблице','Model absent from table'))+'</p>';}
+html+='<p>'+t('Для TPL время таблицы указано в часах, для других серий — в минутах. Проверка мощности использует первую точку, без интерполяции на заданное время. Номинальная энергия взята из Excel; встречаются расхождения со спецификациями.','TPL table times are hours; other families use minutes. Power uses the first table point without interpolation to requested runtime. Nominal energy is taken from Excel; some entries differ from specifications.')+'</p><p>'+t('Доступные модели: ','Available models: ')+esc(modelKeys.join(', '))+'</p>';
+}else{
+const labels=['Диапазон напряжения, В / Voltage range, V','Ячейка / Cell','Схема / Topology','Модулей / Modules','Номинал, В / Nominal V','Ёмкость, А·ч / Capacity, Ah','Энергия системы, кВт·ч / System energy, kWh','Ток заряда, А / Charge A','Uкон, В / Cutoff V','Заряд, В / Charge V','Циклы / Cycles','Ш × Г × В, мм / W × D × H, mm','Масса, кг / Weight, kg','Сопротивление (единицы Excel требуют сверки) / Resistance (verify source units)','Охлаждение / Cooling','Заряд, °C / Charge °C','Разряд, °C / Discharge °C','Влажность / Humidity','Интерфейсы / Interfaces','Сухие контакты / Dry contacts','Параллельные шкафы / Parallel cabinets','Срок службы, лет / Life, years','Защита полярности / Reverse protection','Контакты предохранителя / Fuse contacts','Марка предохранителя / Fuse brand','Пожаротушение модуля / Module fire suppression','Балансировка ячеек / Cell balancing','Балансировка шкафов / Cabinet balancing','Кольцевая связь / Ring communication','Питание BMS / BMS supply','ПО / Host software','Протокол / Protocol'];
+const translate=v=>({'有':t('Да','Yes'),'支持':t('Поддерживается','Supported'),'风冷':t('Воздушное','Air'),'主动均衡':t('Активная','Active')})[v]??v;
+html=metrics(wb,'配置确认表',[['D4',t('Максимальная мощность, кВт','Maximum power, kW')],['F4',t('Запас мощности, кВт','Power margin, kW')],['D5',t('Расчётное время, мин','Calculated runtime, min')],['F5',t('Запас времени, мин','Runtime margin, min')]]);
+html+=table([t('Параметр','Parameter'),t('Значение Excel','Excel value')],labels.map((label,i)=>[label,fmt(translate(wb.get('配置确认表','C'+(i+7))))]));
+html+='<p>'+t('Параметры корпуса относятся к версии Excel и могут отличаться от опубликованных паспортов. Выбранные опции фиксируют запрос, но не меняют электрический расчёт.','Enclosure data follows the workbook version and may differ from published datasheets. Options record the request and do not change electrical calculations.')+'</p>';
+html+='<button type="button" class="button outline" data-export>'+t('Сохранить конфигурацию','Save configuration')+'</button>';
 }
-if (typeof module !== 'undefined') module.exports = {sizeVisionCabinets};
-if (typeof document !== 'undefined') {
-  const form=document.querySelector('#vision-form');
-  if (form) {
-    const models=JSON.parse(document.querySelector('#vision-data').textContent).models;
-    const result=document.querySelector('#vision-result');
-    const render=()=>{
-      const en=document.documentElement.lang==='en';
-      const t=(ru,eng)=>en?eng:ru;
-      const n=(value,digits=2)=>value.toLocaleString(en?'en-US':'ru-RU',{maximumFractionDigits:digits});
-      if (!form.checkValidity()) {result.textContent=t('Введите значения в допустимых пределах.','Enter values within the allowed ranges.');return;}
-      const values=Object.fromEntries(Array.from(form.elements).filter(el=>el.name).map(el=>[el.name,el.name==='series'?el.value:Number(el.value)]));
-      const sized=sizeVisionCabinets(models,values);
-      result.innerHTML=`<div class="vision-summary"><p>${t('Требуемая номинальная энергия','Required nominal energy')}<strong>${n(sized.requiredEnergy)} kWh</strong></p><p>${t('Расчётный DC-ток всей системы','Estimated total system DC current')}<strong>${n(sized.dcCurrent)} A</strong></p></div><h3>${t('Предварительные варианты','Preliminary options')}</h3><p>${t('Сравниваются комплектации с выбранным номинальным напряжением. Количество шкафов — оценка для дальнейшего проектирования.','Configurations at the selected nominal voltage are compared. Cabinet quantities are estimates for further engineering.')}</p>`;
-      if (!sized.rows.length) {result.innerHTML+=`<p class="vision-empty">${t('Для этой серии и напряжения нет комплектаций без замечаний. Измените фильтры.','No configurations without source issues match this series and voltage. Change the filters.')}</p>`;return;}
-      result.innerHTML+=`<div class="vision-table"><table><thead><tr>${[t('Модель','Model'),t('Шкафов','Cabinets'),t('Модулей','Modules'),t('Номинальная энергия','Nominal energy'),t('Автономия, оценка','Estimated runtime'),t('Ток на шкаф','Current per cabinet'),t('Состав решения','Solution components')].map(h=>`<th scope="col">${h}</th>`).join('')}</tr></thead><tbody>${sized.rows.map(r=>`<tr><th scope="row"><a href="#${r.model.id.toLowerCase()}">${r.model.id}</a><small>${r.model.capacity_ah} Ah / ${r.model.module_c_rate}C</small></th><td>${n(r.count,0)}</td><td>${n(r.modules,0)}</td><td>${n(r.totalEnergy)} kWh</td><td>${n(r.runtime,1)} ${t('мин','min')}</td><td>${n(r.currentPerCabinet)} A<small>${t('предел оценки','estimate limit')}: ${r.currentLimit} A</small></td><td><details><summary>${t('Показать состав','Show components')}</summary><ul><li>${n(r.modules,0)} × ${r.model.module}</li><li>${n(r.count,0)} × ${r.model.rack}</li><li>${n(r.count,0)} × ${r.model.bms}</li><li>${n(r.count,0)} × ${r.model.gbms}</li></ul></details></td></tr>`).join('')}</tbody></table></div><p class="vision-calc-note">${t('Оценка токового предела получена из кратности модуля и номинала BMS в прайсе. Параллельная работа, реальные разрядные характеристики и совместимость с ИБП требуют подтверждения. TPL60A исключён до сверки BMS комплектации 2024 года с паспортом модели.','The current limit estimate uses module C-rate and the BMS rating in the source. Parallel operation, actual discharge performance and UPS compatibility require confirmation. TPL60A remains excluded until the 2024 configuration BMS is verified against its model datasheet.')}</p>`;
-    };
-    form.addEventListener('submit',e=>{e.preventDefault();render();});
-    form.addEventListener('input',render);
-    form.addEventListener('change',render);
-    form.addEventListener('reset',()=>setTimeout(render,0));
-    document.addEventListener('site-language-changed',render);
-    render();
-  }
+out.innerHTML=html;
+const exportButton=out.querySelector('[data-export]');if(exportButton)exportButton.onclick=()=>{const blob=new Blob([JSON.stringify({source:data.source,inputs:overrides,results:Object.fromEntries(Array.from({length:32},(_,i)=>['C'+(i+7),wb.get('配置确认表','C'+(i+7))]))},null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='vision-configuration.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);};
 }
+root.querySelectorAll('input,select').forEach(x=>{if(saved[x.name]!==undefined)x.value=saved[x.name];});
+if(active)root.querySelector(`[data-tab="${active}"]`)?.click();
+root.querySelectorAll('form').forEach(form=>{form.onsubmit=e=>{e.preventDefault();if(form.reportValidity())render(form);};render(form);});
+}
+mount();document.addEventListener('site-language-changed',mount);
+}catch(error){root.textContent=t('Не удалось загрузить расчётные таблицы. Обновите страницу.','Unable to load calculation tables. Reload the page.');console.error(error);}
+})();
