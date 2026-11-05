@@ -109,6 +109,20 @@ config.forEach((key,i)=>fields['配置确认表!C'+(i+7)]=key);
 window.visionHelpButton=(key)=>`<button type="button" class="vision-info" data-vision-help="${key}" aria-label="${ru()?'Пояснение параметра':'Parameter explanation'}">?</button>`;
 let fieldHelpId=0;
 function install(){
+ const cardLabels={
+  'модули':'modules','modules':'modules','номинальное напряжение':'voltage','nominal voltage':'voltage','ёмкость / номинальная энергия':'capacityEnergy','capacity / nominal energy':'capacityEnergy',
+  'корпус прайса 2024, ш × в × г':'dims','2024 price-list enclosure, w × h × d':'dims','диапазон напряжения':'voltageRange','voltage range':'voltageRange',
+  'рекомендуемый ток заряда':'chargeA','recommended charge current':'chargeA','напряжение заряда':'chargeV','charge voltage':'chargeV',
+  'масса по паспорту, прибл.':'weight','approx. datasheet weight':'weight','корпус по паспорту, ш × в × г':'dims','datasheet enclosure, w × h × d':'dims',
+  'температура заряда':'temperatureCharge','charge temperature':'temperatureCharge','температура разряда':'temperatureDischarge','discharge temperature':'temperatureDischarge',
+  'интерфейсы':'interfaces','interfaces':'interfaces','время, мин':'tableTime','time, min':'tableTime','kw dc':'tablePower'
+ };
+ // D1 can replace technical blocks. Enhance the resulting visible labels rather
+ // than putting interactive controls into the server's technical projections.
+ for(const node of document.querySelectorAll('.vision-card dt,.vision-card th')){
+  if(node.dataset.visionParameter||node.querySelector('[data-vision-parameter]'))continue;
+  const key=cardLabels[node.innerText.trim().toLowerCase()];if(key)node.dataset.visionParameter=key;
+ }
  for(const field of document.querySelectorAll('#workbook-calculator input[name],#workbook-calculator select[name]')){
   if(field.dataset.visionExplained)continue;const key=fields[field.name];if(!key)continue;
   field.dataset.visionExplained='true';const label=field.closest('label'),caption=document.createElement('span');caption.className='vision-field-caption';
