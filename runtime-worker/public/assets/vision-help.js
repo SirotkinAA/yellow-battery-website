@@ -122,7 +122,7 @@ function install(){
  for(const node of document.querySelectorAll('.vision-card dt,.vision-card th')){
   if(node.dataset.visionParameter||node.querySelector('[data-vision-parameter]'))continue;
   const translated=node.querySelector('[data-lang="'+(ru()?'ru':'en')+'"]');
-  const key=cardLabels[(translated?translated.textContent:node.innerText).trim().toLowerCase()];if(key)node.dataset.visionParameter=key;
+  const key=cardLabels[(translated?translated.textContent:node.textContent).trim().toLowerCase()];if(key)node.dataset.visionParameter=key;
  }
  for(const field of document.querySelectorAll('#workbook-calculator input[name],#workbook-calculator select[name]')){
   if(field.dataset.visionExplained)continue;const key=fields[field.name];if(!key)continue;
