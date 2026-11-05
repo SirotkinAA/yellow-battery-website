@@ -1,6 +1,6 @@
 """Cloudflare transport for the unchanged Python calculation core."""
 import json
-from urllib.parse import urlsplit
+from urllib.parse import urlsplit,parse_qs
 
 from workers import WorkerEntrypoint, Response
 from js import Request
@@ -12,6 +12,8 @@ from battery_calculator.io import execute
 from battery_calculator.__main__ import reject_constant, unique_object
 from catalog_data import DATASET
 from shared_catalog import catalogue
+from unified_catalog import dataset_api,Catalogue
+from yellow_catalog import DATA_SCRIPTS,CATALOGUE_PATHS,data_script,render_page,shelf_script
 from battery_calculator.catalog import catalog_summary, example_requests
 
 HEADERS = {"Content-Type": "application/json; charset=utf-8", "Cache-Control": "no-store",
@@ -28,7 +30,45 @@ class Default(WorkerEntrypoint):
         path=url.path
         origin=url.scheme+'://'+url.netloc
         binding=getattr(self.env,'PORTAL_DB',None)
-        portal=Portal(D1Store(binding),DATASET,origin) if binding else None
+        portal=Portal(D1Store(binding),None,origin) if binding else None
+        if path == '/assets/vision/workbook-v2-5.json':
+            if request.method not in ('GET','HEAD'):return reply({'error':'method_not_allowed'},405)
+            if not binding:return reply({'error':'catalogue_unavailable'},503)
+            try:
+                query=parse_qs(url.query)
+                revision,workbook=await Catalogue(D1Store(binding)).record('yellow','vision-workbook','active',query.get('catalog_release',[None])[0])
+                if workbook is None:return reply({'error':'catalogue_unavailable'},503)
+                headers={**HEADERS,'X-Catalogue-Release':revision}
+                return Response('' if request.method=='HEAD' else json.dumps(workbook,ensure_ascii=False,allow_nan=False),headers=headers)
+            except Exception:return reply({'error':'catalogue_unavailable'},503)
+        if path == '/catalog/v1/datasets':
+            extra={**HEADERS,'Access-Control-Allow-Origin':'*','Access-Control-Allow-Methods':'GET, HEAD, OPTIONS'}
+            if request.method=='OPTIONS':return Response('',status=204,headers=extra)
+            if request.method not in ('GET','HEAD'):return Response(json.dumps({'error':'method_not_allowed'}),status=405,headers=extra)
+            try:status,result=await dataset_api(D1Store(binding) if binding else None,url.query)
+            except Exception:status,result=503,{'error':'catalogue_unavailable'}
+            extra['X-Catalogue-Release']=result.get('release_id','')
+            return Response('' if request.method=='HEAD' else json.dumps(result,ensure_ascii=False,allow_nan=False),status=status,headers=extra)
+        is_catalogue_html=not path.startswith('/catalog/v1/') and path.startswith(CATALOGUE_PATHS) and (path.endswith(('/','.html')) or '.' not in path.rsplit('/',1)[-1])
+        if path in DATA_SCRIPTS or path=='/assets/cabinet-shelf-core.js' or is_catalogue_html:
+            if request.method not in ('GET','HEAD'):return reply({'error':'method_not_allowed'},405)
+            if not binding:return reply({'error':'catalogue_unavailable'},503)
+            try:
+                if path in DATA_SCRIPTS:
+                    revision,content=await data_script(D1Store(binding),path,url.query);mime='application/javascript; charset=utf-8'
+                else:
+                    asset=await self.env.ASSETS.fetch(request)
+                    if asset.status!=200:return asset
+                    content=await asset.text()
+                    if path=='/assets/cabinet-shelf-core.js':
+                        revision,content=await shelf_script(D1Store(binding),url.query,content);mime='application/javascript; charset=utf-8'
+                    else:
+                        revision,content=await render_page(D1Store(binding),path,content);mime='text/html; charset=utf-8'
+                extra={'Content-Type':mime,'Cache-Control':'no-store','X-Catalogue-Release':revision,'X-Content-Type-Options':'nosniff'}
+                return Response('' if request.method=='HEAD' else content,headers=extra)
+            except Exception:
+                if is_catalogue_html:return Response('<!doctype html><html lang="ru"><meta charset="utf-8"><title>Каталог временно недоступен</title><main><h1>Каталог временно недоступен</h1><p>Повторите загрузку страницы через несколько секунд.</p><p>Catalogue temporarily unavailable. Please reload.</p></main></html>',status=503,headers={'Content-Type':'text/html; charset=utf-8','Cache-Control':'no-store'})
+                return reply({'error':'catalogue_unavailable'},503)
         if path == '/catalog/v1/products':
             extra={**HEADERS,'Access-Control-Allow-Origin':'*','Access-Control-Allow-Methods':'GET, HEAD, OPTIONS'}
             if request.method=='OPTIONS':return Response('',status=204,headers=extra)
@@ -62,7 +102,9 @@ class Default(WorkerEntrypoint):
             if asset.status!=200:return asset
             headers={'Content-Type':str(asset.headers.get('Content-Type') or 'text/html'),'Cache-Control':'no-store','Content-Security-Policy':PAGE_CSP,'Referrer-Policy':'no-referrer','X-Content-Type-Options':'nosniff','X-Robots-Tag':'noindex, nofollow'}
             return Response(await asset.text(),headers=headers)
-        dataset=await portal.dataset() if portal else DATASET
+        if portal is None:return reply({'error':'catalogue_unavailable'},503)
+        try:dataset=await portal.dataset()
+        except PortalError:return reply({'error':'catalogue_unavailable'},503)
         if path == "/runtime/health" and request.method == "GET":
             return reply({"status": "ok", "demo": False, "production_ready": False})
         if path == "/runtime/api/catalog" and request.method == "GET":

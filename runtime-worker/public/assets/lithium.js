@@ -5,7 +5,8 @@ let en=document.documentElement.lang.startsWith('en');const t=(ru,enText)=>en?en
 const esc=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const fmt=x=>visionIsError(x)?t('Нет результата: ','No result: ')+x.code:typeof x==='number'?new Intl.NumberFormat(en?'en':'ru',{maximumFractionDigits:3}).format(x):esc(x);
 try{
-const data=await fetch('/assets/vision/workbook-v2-5.json').then(r=>{if(!r.ok)throw Error(r.status);return r.json();});
+const catalogueRelease=document.querySelector('meta[name="catalogue-release"]')?.content;
+const data=await fetch('/assets/vision/workbook-v2-5.json'+(catalogueRelease?'?catalog_release='+encodeURIComponent(catalogueRelease):''),{cache:'no-store'}).then(r=>{if(!r.ok)throw Error(r.status);return r.json();});
 let selection=null;
 function mount(){
 en=document.documentElement.lang.startsWith('en');
@@ -112,3 +113,4 @@ updateSizing();
 mount();document.addEventListener('site-language-changed',mount);
 }catch(error){root.textContent=t('Не удалось загрузить расчётные таблицы. Обновите страницу.','Unable to load calculation tables. Reload the page.');console.error(error);}
 })();
+

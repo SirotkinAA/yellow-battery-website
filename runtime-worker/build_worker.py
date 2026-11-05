@@ -38,3 +38,6 @@ copy_changed(ROOT / "crypto_bridge.mjs", target / "crypto_bridge.mjs")
 # Regenerate it in the source workspace before publishing.
 
 copy_changed(ROOT / "shared_catalog.py", target / "shared_catalog.py")
+
+for name in ("unified_catalog.py", "yellow_catalog.py"):
+    copy_changed(ROOT / name, target / name)

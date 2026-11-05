@@ -15,7 +15,21 @@
       "/admin/*",
       "/partner-api/*",
       "/embed/*",
-      "/catalog/v1/*"
+      "/catalog/v1/*",
+      "/catalog",
+      "/catalog/*",
+      "/bms",
+      "/bms/*",
+      "/lithium",
+      "/lithium/*",
+      "/racks",
+      "/racks/*",
+      "/assets/rack-components-data.js",
+      "/assets/rack-cladded-data.js",
+      "/assets/cabinet-shelf-core.js",
+      "/cabinets",
+      "/cabinets/*",
+      "/assets/vision/workbook-v2-5.json"
     ]
   },
   "routes": [

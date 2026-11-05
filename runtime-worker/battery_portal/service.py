@@ -52,7 +52,9 @@ class Portal:
         return f'{COOKIE}={raw}; Path=/; HttpOnly; SameSite=Strict; Max-Age={max_age}'+('; Secure' if self.secure else '')
     async def dataset(self):
         rows=await self.db.query("SELECT payload FROM portal_datasets WHERE id=(SELECT value FROM portal_settings WHERE id='active_dataset')")
-        return json.loads(rows[0]['payload']) if rows else self.base_dataset
+        if rows:return json.loads(rows[0]['payload'])
+        if self.base_dataset is None:raise PortalError(503,'Cloud catalogue is unavailable')
+        return self.base_dataset
     async def pricebook(self):
         rows=await self.db.query("SELECT value FROM portal_settings WHERE id='pricebook'")
         return json.loads(rows[0]['value']) if rows else {'revision':'','entries':[]}
