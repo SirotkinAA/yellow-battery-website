@@ -6,6 +6,7 @@ const esc=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&
 const fmt=x=>visionIsError(x)?t('Нет результата: ','No result: ')+x.code:typeof x==='number'?new Intl.NumberFormat(en?'en':'ru',{maximumFractionDigits:3}).format(x):esc(x);
 try{
 const data=await fetch('/assets/vision/workbook-v2-5.json').then(r=>{if(!r.ok)throw Error(r.status);return r.json();});
+let selection=null;
 function mount(){
 en=document.documentElement.lang.startsWith('en');
 const saved=Object.fromEntries([...root.querySelectorAll('input,select')].map(x=>[x.name,x.value])),active=root.querySelector('[data-tab][aria-pressed=true]')?.dataset.tab;
@@ -16,26 +17,34 @@ field(sheet+'!'+power,t('Активная мощность, кВт','Active powe
 field(sheet+'!'+series,t('Серия','Series'),'TP',['TP','TPL','TPH','SPL','TPpro','TPX'])];
 const sizing=[...common('Tool','H4','F4'),field('Tool!E4',t('Напряжение, В','Voltage, V'),512,volts),field('Tool!L4',t('Автономия, мин','Runtime, min'),10),field('Tool!D4',t('Доля нагрузки (0–1)','Load fraction (0–1)'),1,null,.001,1),field('Tool!G4',t('КПД (0–1)','Efficiency (0–1)'),.95,null,.001,1),field('Tool!J4',t('Старение','Aging'),'EOL125%',['BOL100%','EOL120%','EOL125%','EOL140%'])];
 const heat=[field('heat!H4',t('Мощность, кВт','Power, kW'),1440),field('heat!F4',t('Серия','Series'),'TPX',['TP50Ah','TP100Ah','TPL100Ah','TPL200Ah','TPH','TPX','TP2.5pro']),field('heat!E4',t('Напряжение, В','Voltage, V'),512,volts),field('heat!C4',t('Шкафы','Cabinets'),5,null,1,15),field('heat!D4',t('Доля нагрузки','Load fraction'),1,null,.001,1),field('heat!G4',t('КПД','Efficiency'),.95,null,.001,1),field('heat!J4',t('Разряд, мин','Discharge, min'),8),field('heat!L4',t('Заряд, мин (от 60)','Charge, min (60+)'),600,null,60)];
-const cable=[field('Cable!G4',t('Мощность, кВт','Power, kW'),1000),field('Cable!D4',t('Напряжение, В','Voltage, V'),563.2,volts),field('Cable!K4',t('Шкафы','Cabinets'),4,null,1,15),field('Cable!C4',t('Доля нагрузки','Load fraction'),1,null,.001,1),field('Cable!F4',t('КПД','Efficiency'),.95,null,.001,1),field('Cable!E59',t('Длина для экспериментальной оценки, м','Length for experimental estimate, m'),40)];
+const cable=[field('Cable!I4',t('Время разряда, мин','Discharge time, min'),10),field('Cable!G4',t('Мощность, кВт','Power, kW'),1000),field('Cable!D4',t('Напряжение, В','Voltage, V'),563.2,volts),field('Cable!K4',t('Шкафы','Cabinets'),4,null,1,15),field('Cable!C4',t('Доля нагрузки','Load fraction'),1,null,.001,1),field('Cable!F4',t('КПД','Efficiency'),.95,null,.001,1),field('Cable!E59',t('Длина для экспериментальной оценки, м','Length for experimental estimate, m'),40)];
 const modelKeys=Object.keys(data.cells).filter(k=>/^Selection calculation!O\d+$/.test(k)).map(k=>data.cells[k].v).filter(v=>typeof v==='string'&&/^(TP|TPL|TPH|TPpro|TPX)\d/.test(v));
 const check=[field('Selection calculation!G6',t('Серия','Series'),'TP',['TP','TPH','TPL','TPpro','TPX']),field('Selection calculation!H6',t('Обозначение модели без серии','Model suffix without series'),'200',[...new Set(modelKeys.map(v=>v.replace(/^(TPpro|TPH|TPL|TPX|TP)/,'')))]),field('Selection calculation!E4',t('Мощность, кВт','Power, kW'),200),field('Selection calculation!I4',t('Время, мин','Time, min'),8),field('Selection calculation!K6',t('Шкафы','Cabinets'),1,null,1,15),field('Selection calculation!C4',t('Доля нагрузки','Load fraction'),1,null,.001,1),field('Selection calculation!D4',t('КПД','Efficiency'),.95,null,.001,1),field('Selection calculation!G4',t('Старение','Aging'),'BOL100%',['BOL100%','EOL120%','EOL125%','EOL140%'])];
 const configModels=Object.keys(data.cells).filter(k=>/^Sheet2 \(2\)!B\d+$/.test(k)).map(k=>data.cells[k].v).filter(v=>typeof v==='string'&&/^(TP|TPL|TPH|TPX)\d/.test(v));
 const config=[field('配置确认表!B2',t('Платформа','Platform'),'TP 2.5 Pro',['TP 2.5','TP 2.5S','TP 2.5 Pro','TPL 2.5','TPH 2.5','TPX 3.0']),field('配置确认表!D2',t('Модель','Model'),'TP240Pro',configModels),field('配置确认表!F2',t('Шкафы','Cabinets'),2,null,1,15),field('配置确认表!D3',t('Коэффициент старения','Aging factor'),1.25,null,1,2),field('配置确认表!B4',t('Нагрузка, кВт','Load, kW'),400),field('配置确认表!B5',t('Время, мин','Runtime, min'),10)];
 for(const [cell,label,value,options]of [['F7','MCCB','LS',['Schneider','LS','Nader']],['F8','RCD','N',['Y','N']],['F9',t('Нейтраль','Neutral'),'N',['Y','N']],['F10',t('Пожаротушение шкафа','Cabinet fire suppression'),'N',['Y','N']],['F11',t('Предохранитель модуля','Module fuse'),'BUSSMANN',['BUSSMANN','N']],['F12',t('Верхний кабельный короб','Top cable box'),'N',['Y','N']],['F13',t('Перевозка в сборе','Assembled transport'),'Y',['Y','N']],['F14',t('Газовый датчик','Gas detection'),'N',['Y','N']],['F15',t('Цвет шкафа','Cabinet color'),'RAL9005',['RAL9005','Other']],['F16',t('Цвет модулей','Module color'),'RAL9005',['RAL9005','Other']],['F17',t('Контроль сопротивления','Resistance monitoring'),'N',['Y','N']]])config.push(field('配置确认表!'+cell,label,value,options));
 const sections=[['sizing',t('Подбор','Sizing'),sizing],['heat',t('Тепло','Heat'),heat],['cable',t('Кабели','Cables'),cable],['check',t('Проверка модели','Model check'),check],['config',t('Конфигурация','Configuration'),config]];
-root.innerHTML='<nav class="wb-tabs" aria-label="'+t('Разделы калькулятора','Calculator sections')+'">'+sections.map(([id,label],i)=>`<button type="button" data-tab="${id}" aria-pressed="${i===0}">${label}</button>`).join('')+'</nav>'+sections.map(([id,label,fields],i)=>`<section data-panel="${id}" ${i?'hidden':''}><h3>${label}</h3><form class="wb-form" data-kind="${id}"><div class="lithium-fields">${fields.map(f=>`<label>${f.label}${f.options?`<select name="${esc(f.cell)}">${f.options.map(v=>`<option ${v===f.value?'selected':''}>${esc(v)}</option>`).join('')}</select>`:`<input name="${esc(f.cell)}" type="number" step="${/Шкафы|Cabinets/.test(f.label)?1:"any"}" min="${f.min}" max="${f.max}" required value="${f.value}">`}</label>`).join('')}</div><button class="button dark">${t('Рассчитать','Calculate')}</button></form><div class="wb-output" data-output="${id}"></div></section>`).join('');
+let candidates=[],links=null;
+root.innerHTML='<aside class="wb-linked-summary" data-selection-summary></aside><nav class="wb-tabs" aria-label="'+t('Разделы калькулятора','Calculator sections')+'">'+sections.map(([id,label],i)=>`<button type="button" data-tab="${id}" aria-pressed="${i===0}">${label}</button>`).join('')+'</nav>'+sections.map(([id,label,fields],i)=>`<section data-panel="${id}" ${i?'hidden':''}><h3>${label}</h3>${id!=='sizing'?`<p class="wb-link-note">${t('Модель, шкафы и режим работы связаны с выбранной строкой подбора. Измените их в разделе «Подбор».','Model, cabinets and operating conditions follow the selected sizing row. Change them in Sizing.')}</p>`:''}<form class="wb-form" data-kind="${id}"><div class="lithium-fields">${fields.map(f=>`<label>${f.label}${f.options?`<select name="${esc(f.cell)}">${f.options.map(v=>`<option ${v===f.value?'selected':''}>${esc(v)}</option>`).join('')}</select>`:`<input name="${esc(f.cell)}" type="number" step="${/Шкафы|Cabinets/.test(f.label)?1:"any"}" min="${f.min}" max="${f.max}" required value="${f.value}">`}</label>`).join('')}</div><button class="button dark">${t('Рассчитать','Calculate')}</button></form><div class="wb-output" data-output="${id}"></div></section>`).join('');
 root.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{root.querySelectorAll('[data-tab]').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));root.querySelectorAll('[data-panel]').forEach(p=>p.hidden=p.dataset.panel!==b.dataset.tab);});
 const table=(headers,rows)=>'<div class="wb-scroll"><table><thead><tr>'+headers.map(x=>'<th>'+x+'</th>').join('')+'</tr></thead><tbody>'+rows.map(r=>'<tr>'+r.map(x=>'<td>'+x+'</td>').join('')+'</tr>').join('')+'</tbody></table></div>';
 const metrics=(wb,sheet,items)=>'<dl class="wb-metrics">'+items.map(([a,label])=>`<div><dt>${label}</dt><dd>${fmt(wb.get(sheet,a))}</dd></div>`).join('')+'</dl>';
 function render(form){
 const overrides={};for(const input of form.elements)if(input.name)overrides[input.name]=input.type==='number'?Number(input.value):input.value;
-const wb=new VisionWorkbook(data,overrides),kind=form.dataset.kind,out=root.querySelector(`[data-output="${kind}"]`);let html='';
+const kind=form.dataset.kind,out=root.querySelector(`[data-output="${kind}"]`);
+if(kind!=='sizing'){
+ if(!selection){out.innerHTML='<p>'+t('Укажите допустимые параметры и выберите шкафы в разделе «Подбор».','Enter valid parameters and select cabinets in Sizing.')+'</p>';return;}
+ if(links.unavailable[kind]){out.innerHTML='<p class="vision-issue">'+esc(selection.model)+' · '+fmt(selection.capacityAh)+' Ah · '+fmt(selection.voltage)+' V. '+t('В таблице этого раздела нет точного соответствия выбранному шкафу. Расчёт не выполнен.','This section has no exact table match for the selected cabinet. No calculation was performed.')+'</p>';return;}
+ Object.assign(overrides,links[kind]);
+}
+const wb=new VisionWorkbook(data,overrides);let html='';
 if(kind==='sizing'){
+candidates=[];
 const target=overrides['Tool!L4']*Number(overrides['Tool!J4'].match(/\d+/)[0])/100;
-html='<p>'+t('Целевое время со старением: ','Runtime target including aging: ')+fmt(target)+' min</p>';
+html='<p>'+t('Выберите строку: связанные разделы пересчитаются автоматически. ','Select a row: linked sections recalculate automatically. ')+t('Целевое время со старением: ','Runtime target including aging: ')+fmt(target)+' min</p>';
 for(const [start,end,title]of [[8,15,t('Варианты напряжения','Voltage alternatives')],[16,17,t('При заданном напряжении','At requested voltage')]]){
-let rows=[];for(let r=start;r<=end;r++){const get=c=>wb.get('Tool',c+r),runtime=get('G');rows.push([fmt(get('C')),fmt(get('F')),fmt(get('E')),fmt(get('H')),fmt(runtime),fmt(get('L')),fmt(get('I')),fmt(get('J')),fmt(get('K')),fmt(get('M')),typeof get('B')==='number'?fmt(get('B')*100)+'%':fmt(get('B')),typeof runtime==='number'?(runtime>=target?t('Достигает цели','Meets target'):t('Ниже цели','Below target')):t('Вне диапазона Excel','Outside workbook range')]);}
-html+='<h4>'+title+'</h4>'+table([t('Модель','Model'),t('Шкафы','Cabinets'),t('Модулей/шкаф','Modules/cabinet'),'V','min',t('А/шкаф при Uкон','A/cabinet at cutoff'),t('Uкон, В','Cutoff, V'),t('Заряд, В','Charge, V'),t('Макс. заряд, В','Max charge, V'),t('Нейтраль','Neutral'),t('Запас Excel','Excel margin'),t('Проверка','Check')],rows);
+let rows=[];for(let r=start;r<=end;r++){const get=c=>wb.get('Tool',c+r),runtime=get('G'),candidate=visionReadSelection(wb,r,overrides);if(candidate)candidates.push(candidate);rows.push([`<button type="button" class="wb-select" data-select-row="${r}" aria-pressed="${selection?.row===r}" ${candidate?'':'disabled'}>${selection?.row===r?t('Выбрано','Selected'):t('Выбрать','Select')}</button>`,fmt(get('C')),fmt(get('F')),fmt(get('E')),fmt(get('H')),fmt(runtime),fmt(get('L')),fmt(get('I')),fmt(get('J')),fmt(get('K')),fmt(get('M')),typeof get('B')==='number'?fmt(get('B')*100)+'%':fmt(get('B')),typeof runtime==='number'?(runtime>=target?t('Достигает цели','Meets target'):t('Ниже цели','Below target')):t('Вне диапазона Excel','Outside workbook range')]);}
+html+='<h4>'+title+'</h4>'+table([t('Выбор','Selection'),t('Модель','Model'),t('Шкафы','Cabinets'),t('Модулей/шкаф','Modules/cabinet'),'V','min',t('А/шкаф при Uкон','A/cabinet at cutoff'),t('Uкон, В','Cutoff, V'),t('Заряд, В','Charge, V'),t('Макс. заряд, В','Max charge, V'),t('Нейтраль','Neutral'),t('Запас Excel','Excel margin'),t('Проверка','Check')],rows);
 }html+='<p>'+t('Сопоставьте весь диапазон DC с ИБП. Строки с ошибками не являются подобранными решениями.','Check the full DC range against the UPS. Error rows are not valid selections.')+'</p>';
 }else if(kind==='heat'){
 html=metrics(wb,'heat',[['B8',t('Ёмкость ячейки, А·ч','Cell capacity, Ah')],['C8',t('Схема','Topology')],['E8',t('Ток заряда ячейки, А','Cell charge current, A')],['F8',t('DCR, мОм','DCR, mΩ')],['F16',t('Масса ячеек, кг','Cell mass, kg')],['J18',t('Поглощено ячейками, кДж','Cell absorbed heat, kJ')],['J20',t('Поглощено корпусом, кДж','Enclosure absorbed heat, kJ')],['H23',t('Отдано при разряде, кДж/система','Discharge released heat, kJ/system')],['H8',t('Ток ячейки, А','Cell current, A')],['I8',t('Доступный разряд, мин','Available discharge, min')],['J8',t('Тепло разряда, кДж/шкаф','Discharge heat, kJ/cabinet')],['K8',t('Тепло заряда, кДж/шкаф','Charge heat, kJ/cabinet')],['F13',t('Мгновенное тепло, кВт/шкаф','Instant heat, kW/cabinet')],['H18',t('Рост температуры, °C','Temperature rise, °C')],['H24',t('Полное тепло системы, кДж','Total system heat, kJ')],['J24',t('Полное тепло системы, кВт·ч','Total system heat, kWh')],['I25',t('Макс. воздушное охлаждение, кВт/шкаф','Max air cooling, kW/cabinet')],['I26',t('Макс. воздушное, кВт/система','Max air, kW/system')],['I27',t('Воздушное за заданный разряд, кВт/шкаф','Air at requested discharge, kW/cabinet')],['I28',t('Воздушное, кВт/система','Air, kW/system')],['I29',t('Макс. жидкостное, кВт/шкаф','Max liquid, kW/cabinet')],['I30',t('Макс. жидкостное, кВт/система','Max liquid, kW/system')],['I31',t('Жидкостное за разряд, кВт/шкаф','Liquid at discharge, kW/cabinet')],['I32',t('Жидкостное, кВт/система','Liquid, kW/system')]]);
@@ -55,15 +64,50 @@ const labels=['Диапазон напряжения, В / Voltage range, V','Я
 const translate=v=>({'有':t('Да','Yes'),'支持':t('Поддерживается','Supported'),'风冷':t('Воздушное','Air'),'主动均衡':t('Активная','Active')})[v]??v;
 html=metrics(wb,'配置确认表',[['D4',t('Максимальная мощность, кВт','Maximum power, kW')],['F4',t('Запас мощности, кВт','Power margin, kW')],['D5',t('Расчётное время, мин','Calculated runtime, min')],['F5',t('Запас времени, мин','Runtime margin, min')]]);
 html+=table([t('Параметр','Parameter'),t('Значение Excel','Excel value')],labels.map((label,i)=>[label,fmt(translate(wb.get('配置确认表','C'+(i+7))))]));
-html+='<p>'+t('Параметры корпуса относятся к версии Excel и могут отличаться от опубликованных паспортов. Выбранные опции фиксируют запрос, но не меняют электрический расчёт.','Enclosure data follows the workbook version and may differ from published datasheets. Options record the request and do not change electrical calculations.')+'</p>';
+html+='<p>'+t('Сводка Excel использует фиксированный КПД 95%. В нагрузку передаётся активная мощность с учётом доли нагрузки. ','The Excel summary uses fixed 95% efficiency. Load is transferred as active power multiplied by the load fraction. ')+t('Параметры корпуса относятся к версии Excel и могут отличаться от опубликованных паспортов. Выбранные опции фиксируют запрос, но не меняют электрический расчёт.','Enclosure data follows the workbook version and may differ from published datasheets. Options record the request and do not change electrical calculations.')+'</p>';
 html+='<button type="button" class="button outline" data-export>'+t('Сохранить конфигурацию','Save configuration')+'</button>';
 }
 out.innerHTML=html;
-const exportButton=out.querySelector('[data-export]');if(exportButton)exportButton.onclick=()=>{const blob=new Blob([JSON.stringify({source:data.source,inputs:overrides,results:Object.fromEntries(Array.from({length:32},(_,i)=>['C'+(i+7),wb.get('配置确认表','C'+(i+7))]))},null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='vision-configuration.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);};
+out.querySelectorAll('[data-select-row]').forEach(button=>button.onclick=()=>{
+ selection=candidates.find(c=>c.row===Number(button.dataset.selectRow));syncLinkedSections();render(form);
+});
+const exportButton=out.querySelector('[data-export]');if(exportButton)exportButton.onclick=()=>{const blob=new Blob([JSON.stringify({source:data.source,selection,inputs:overrides,results:Object.fromEntries(Array.from({length:32},(_,i)=>['C'+(i+7),wb.get('配置确认表','C'+(i+7))]))},null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='vision-configuration.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);};
+}
+function syncLinkedSections(){
+ links=visionSelectionLinks(data,selection);
+ const summary=root.querySelector('[data-selection-summary]');
+ summary.innerHTML=selection?'<strong>'+t('Выбрано: ','Selected: ')+esc(selection.model)+' × '+fmt(selection.racks)+'</strong><span>'+fmt(selection.capacityAh)+' Ah · '+fmt(selection.voltage)+' V · '+t('Нагрузка: ','Load: ')+fmt(selection.power*selection.load)+' kW · '+fmt(selection.minutes)+' min</span><span>'+t('Параметры автоматически применены к связанным разделам.','Parameters are automatically applied to linked sections.')+'</span>'+(!selection.meetsTarget?'<span class="vision-issue">'+t('Расчётное время ниже цели с учётом старения.','Calculated runtime is below the target including aging.')+'</span>':''):'<strong>'+t('Сначала задайте допустимые параметры подбора.','First enter valid sizing parameters.')+'</strong>';
+ for(const [kind,,fields]of sections){
+  if(kind==='sizing')continue;
+  const form=root.querySelector(`[data-kind="${kind}"]`),values=links?.[kind];
+  for(const input of form.elements){
+   if(!input.name)continue;
+   const linked=values&&Object.hasOwn(values,input.name);
+   input.disabled=!!linked||!selection;
+   if(linked)input.value=values[input.name];
+  }
+  render(form);
+ }
+}
+function updateSizing(){
+ const form=root.querySelector('[data-kind="sizing"]');
+ if(!form.checkValidity()){
+  selection=null;candidates=[];root.querySelector('[data-output="sizing"]').innerHTML='<p>'+t('Проверьте параметры подбора.','Check sizing parameters.')+'</p>';syncLinkedSections();return;
+ }
+ render(form);
+ const previous=selection;
+ selection=candidates.find(c=>previous&&c.model===previous.model&&c.voltage===previous.voltage&&c.capacityAh===previous.capacityAh)||candidates.find(c=>c.row>=16&&c.meetsTarget)||candidates.find(c=>c.row>=16)||candidates.find(c=>c.meetsTarget)||candidates[0]||null;
+ syncLinkedSections();render(form);
 }
 root.querySelectorAll('input,select').forEach(x=>{if(saved[x.name]!==undefined)x.value=saved[x.name];});
 if(active)root.querySelector(`[data-tab="${active}"]`)?.click();
-root.querySelectorAll('form').forEach(form=>{form.onsubmit=e=>{e.preventDefault();if(form.reportValidity())render(form);};render(form);});
+root.querySelectorAll('form').forEach(form=>{
+ const update=()=>{if(form.dataset.kind==='sizing')updateSizing();else if(form.checkValidity())render(form);};
+ form.oninput=update;
+ form.onsubmit=e=>{e.preventDefault();if(form.reportValidity())update();};
+ form.onchange=e=>{if(['Tool!E4','Tool!F4'].includes(e.target.name))selection=null;update();};
+});
+updateSizing();
 }
 mount();document.addEventListener('site-language-changed',mount);
 }catch(error){root.textContent=t('Не удалось загрузить расчётные таблицы. Обновите страницу.','Unable to load calculation tables. Reload the page.');console.error(error);}
