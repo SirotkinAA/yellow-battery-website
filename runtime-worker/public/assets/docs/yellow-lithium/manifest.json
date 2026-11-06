@@ -1,0 +1,278 @@
+[
+  {
+    "file": "YELLOW-Lithium-Catalogue-RU.pdf",
+    "pages": [
+      {
+        "id": "TP80",
+        "page": 1
+      },
+      {
+        "id": "TP100",
+        "page": 2
+      },
+      {
+        "id": "TP120",
+        "page": 3
+      },
+      {
+        "id": "TP160",
+        "page": 4
+      },
+      {
+        "id": "TP200",
+        "page": 5
+      },
+      {
+        "id": "TP240",
+        "page": 6
+      },
+      {
+        "id": "TPH160",
+        "page": 7
+      },
+      {
+        "id": "TPH200",
+        "page": 8
+      },
+      {
+        "id": "TPH240",
+        "page": 9
+      },
+      {
+        "id": "TPH280",
+        "page": 10
+      },
+      {
+        "id": "TPL40A",
+        "page": 11
+      },
+      {
+        "id": "TPL50A",
+        "page": 12
+      },
+      {
+        "id": "TPL60A",
+        "page": 13
+      },
+      {
+        "id": "TPL80",
+        "page": 14
+      },
+      {
+        "id": "TPL100",
+        "page": 15
+      },
+      {
+        "id": "TPL120",
+        "page": 16
+      },
+      {
+        "id": "LIBVISMOD100",
+        "page": 17
+      },
+      {
+        "id": "LIBVISMOD100-L",
+        "page": 18
+      },
+      {
+        "id": "LIBVISMOD200-L",
+        "page": 19
+      },
+      {
+        "id": "LIBVISMOD50",
+        "page": 20
+      },
+      {
+        "id": "LIBVISMOD50-H",
+        "page": 21
+      },
+      {
+        "id": "LIBVISRAC100Ah2000",
+        "page": 22
+      },
+      {
+        "id": "LIBVISRAC100Ah2000-L",
+        "page": 23
+      },
+      {
+        "id": "LIBVISRAC100Ah2300",
+        "page": 24
+      },
+      {
+        "id": "LIBVISRAC200Ah2000-L",
+        "page": 25
+      },
+      {
+        "id": "LIBVISRAC200Ah2300-L",
+        "page": 26
+      },
+      {
+        "id": "LIBVISRAC50Ah2000",
+        "page": 27
+      },
+      {
+        "id": "LIBVISRAC50Ah2000-H",
+        "page": 28
+      },
+      {
+        "id": "LIBVISBMSIEC125",
+        "page": 29
+      },
+      {
+        "id": "LIBVISBMSIEC250",
+        "page": 30
+      },
+      {
+        "id": "LIBVISBMSIEC630",
+        "page": 31
+      },
+      {
+        "id": "LIBVISGBMS",
+        "page": 32
+      },
+      {
+        "id": "TPL5A-reference",
+        "page": 33
+      }
+    ],
+    "sha256": "8c35c3c32a67a74ab4560c105a88fd3d0f2b2d21c5b26d8e1097d0c875ff5214"
+  },
+  {
+    "file": "YELLOW-Lithium-Catalogue-EN.pdf",
+    "pages": [
+      {
+        "id": "TP80",
+        "page": 1
+      },
+      {
+        "id": "TP100",
+        "page": 2
+      },
+      {
+        "id": "TP120",
+        "page": 3
+      },
+      {
+        "id": "TP160",
+        "page": 4
+      },
+      {
+        "id": "TP200",
+        "page": 5
+      },
+      {
+        "id": "TP240",
+        "page": 6
+      },
+      {
+        "id": "TPH160",
+        "page": 7
+      },
+      {
+        "id": "TPH200",
+        "page": 8
+      },
+      {
+        "id": "TPH240",
+        "page": 9
+      },
+      {
+        "id": "TPH280",
+        "page": 10
+      },
+      {
+        "id": "TPL40A",
+        "page": 11
+      },
+      {
+        "id": "TPL50A",
+        "page": 12
+      },
+      {
+        "id": "TPL60A",
+        "page": 13
+      },
+      {
+        "id": "TPL80",
+        "page": 14
+      },
+      {
+        "id": "TPL100",
+        "page": 15
+      },
+      {
+        "id": "TPL120",
+        "page": 16
+      },
+      {
+        "id": "LIBVISMOD100",
+        "page": 17
+      },
+      {
+        "id": "LIBVISMOD100-L",
+        "page": 18
+      },
+      {
+        "id": "LIBVISMOD200-L",
+        "page": 19
+      },
+      {
+        "id": "LIBVISMOD50",
+        "page": 20
+      },
+      {
+        "id": "LIBVISMOD50-H",
+        "page": 21
+      },
+      {
+        "id": "LIBVISRAC100Ah2000",
+        "page": 22
+      },
+      {
+        "id": "LIBVISRAC100Ah2000-L",
+        "page": 23
+      },
+      {
+        "id": "LIBVISRAC100Ah2300",
+        "page": 24
+      },
+      {
+        "id": "LIBVISRAC200Ah2000-L",
+        "page": 25
+      },
+      {
+        "id": "LIBVISRAC200Ah2300-L",
+        "page": 26
+      },
+      {
+        "id": "LIBVISRAC50Ah2000",
+        "page": 27
+      },
+      {
+        "id": "LIBVISRAC50Ah2000-H",
+        "page": 28
+      },
+      {
+        "id": "LIBVISBMSIEC125",
+        "page": 29
+      },
+      {
+        "id": "LIBVISBMSIEC250",
+        "page": 30
+      },
+      {
+        "id": "LIBVISBMSIEC630",
+        "page": 31
+      },
+      {
+        "id": "LIBVISGBMS",
+        "page": 32
+      },
+      {
+        "id": "TPL5A-reference",
+        "page": 33
+      }
+    ],
+    "sha256": "57833fe92246d25ec3038d7ae99be012fc046ecc73df4fd0d257c4f3afecc749"
+  }
+]
