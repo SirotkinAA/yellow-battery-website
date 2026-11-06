@@ -1,0 +1,36 @@
+{
+  "date": "2026-11-06",
+  "chat_id": 109893,
+  "author_id": 34,
+  "message_ids": [
+    3790629,
+    3790631,
+    3790635,
+    3790646,
+    3790657,
+    3790684,
+    3790688,
+    3790708,
+    3790726,
+    3790747
+  ],
+  "changes": [
+    "plain-language benefits",
+    "interactive isometric system diagram",
+    "three photographed assembly examples",
+    "14-row comparison",
+    "live preliminary selection with BOM and TXT export"
+  ],
+  "corrections": [
+    "BAT-Gate 4CL uses BAT61, four strings of 120 batteries; BAT600Pro 0–800V",
+    "BMS9000 uses 8C limits: 8x80=640; competitor 420 limit not copied",
+    "BMS9000Pro uses six strings of 70; 20–1000V; BMS-CM2 per string"
+  ],
+  "validation": [
+    "16 calculator boundary cases",
+    "browser RU/EN, comparison, diagram, invalid chemistry, kit prefill, downloaded TXT",
+    "390px responsive width without page overflow",
+    "updated catalogue pages visually rendered and inspected"
+  ],
+  "public_url": "https://test.yellow-battery.com/bms/"
+}

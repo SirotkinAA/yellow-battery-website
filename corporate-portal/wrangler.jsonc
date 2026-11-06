@@ -1,0 +1,9 @@
+{
+  "name":"sstmk-portal-test",
+  "main":"server/worker.mjs",
+  "compatibility_date":"2026-10-07",
+  "workers_dev":true,
+  "assets":{"directory":"./public","binding":"ASSETS","not_found_handling":"single-page-application","run_worker_first":true},
+  "d1_databases":[{"binding":"PORTAL_DB","database_name":"yellow-battery-portal-test","database_id":"3314d31c-216d-44e5-8118-8401f6e9f1da","migrations_dir":"migrations"}],
+  "vars":{"PORTAL_ORIGIN":"https://sstmk-portal-test.sysadws.workers.dev"}
+}

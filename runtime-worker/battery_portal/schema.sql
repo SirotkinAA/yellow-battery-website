@@ -1,0 +1,14 @@
+PRAGMA foreign_keys = ON;
+CREATE TABLE IF NOT EXISTS portal_users(id TEXT PRIMARY KEY,email TEXT NOT NULL UNIQUE,password_hash TEXT,role TEXT NOT NULL CHECK(role IN ('admin','partner')),active INTEGER NOT NULL DEFAULT 1,permissions TEXT NOT NULL DEFAULT '[]',created_at INTEGER NOT NULL);
+CREATE TABLE IF NOT EXISTS portal_sessions(token_hash TEXT PRIMARY KEY,user_id TEXT NOT NULL REFERENCES portal_users(id),csrf TEXT NOT NULL,expires_at INTEGER NOT NULL);
+CREATE INDEX IF NOT EXISTS portal_sessions_user ON portal_sessions(user_id);
+CREATE TABLE IF NOT EXISTS portal_invites(token_hash TEXT PRIMARY KEY,user_id TEXT NOT NULL REFERENCES portal_users(id),expires_at INTEGER NOT NULL,used_at INTEGER);
+CREATE TABLE IF NOT EXISTS portal_api_keys(id TEXT PRIMARY KEY,user_id TEXT NOT NULL REFERENCES portal_users(id),token_hash TEXT NOT NULL UNIQUE,prefix TEXT NOT NULL,name TEXT NOT NULL,scopes TEXT NOT NULL,expires_at INTEGER NOT NULL,revoked_at INTEGER,created_at INTEGER NOT NULL);
+CREATE TABLE IF NOT EXISTS portal_widgets(id TEXT PRIMARY KEY,user_id TEXT NOT NULL REFERENCES portal_users(id),name TEXT NOT NULL,config TEXT NOT NULL,origins TEXT NOT NULL,active INTEGER NOT NULL DEFAULT 1,updated_at INTEGER NOT NULL);
+CREATE TABLE IF NOT EXISTS portal_audit(id TEXT PRIMARY KEY,actor_id TEXT,action TEXT NOT NULL,target_id TEXT,detail TEXT NOT NULL,created_at INTEGER NOT NULL);
+CREATE TABLE IF NOT EXISTS portal_limits(id TEXT PRIMARY KEY,count INTEGER NOT NULL,expires_at INTEGER NOT NULL);
+CREATE TABLE IF NOT EXISTS portal_datasets(id TEXT PRIMARY KEY,payload TEXT NOT NULL,sha256 TEXT NOT NULL,created_by TEXT NOT NULL,created_at INTEGER NOT NULL);
+CREATE TABLE IF NOT EXISTS portal_settings(id TEXT PRIMARY KEY,value TEXT NOT NULL);
+CREATE TABLE IF NOT EXISTS portal_prices(model_id TEXT PRIMARY KEY,amount_minor INTEGER NOT NULL,currency TEXT NOT NULL,updated_at INTEGER NOT NULL);
+CREATE TABLE IF NOT EXISTS portal_applications(id TEXT PRIMARY KEY,email TEXT NOT NULL,company TEXT NOT NULL,website TEXT NOT NULL,message TEXT NOT NULL,status TEXT NOT NULL DEFAULT 'pending',created_at INTEGER NOT NULL,reviewed_by TEXT);
+CREATE UNIQUE INDEX IF NOT EXISTS portal_pending_email ON portal_applications(email) WHERE status='pending';

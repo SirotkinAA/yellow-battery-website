@@ -1,0 +1,197 @@
+.battery-anatomy{--bg:#f6f6ef;--surface:#fff;--surface-2:#efefe5;--fg:#202322;--fg-2:#62675d;--fg-3:#73796d;--line:#d9dcd2;--seg:#e4e5d9;--seg-on:#f4d838;--thumb:#202322;--on-energy:#fff;--accent:#746100;--energy:#6b731f;--energy-2:#887400;--ok:#34774a;--warn:#936200;--hot:#b64e16;--bad:#be3730;--lead:#737b7b;--pbo2:#8a4f2b;--sulfate:#dcd8cf;--acid:rgba(10,130,150,.12);--gas:#237c8a;--nav:#f6f6ef;--shadow:none;--font:Arial,Helvetica,sans-serif;color:var(--fg);font:17px/1.5 var(--font)}
+.battery-anatomy *{box-sizing:border-box}
+.battery-anatomy .wrap{max-width:1100px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.battery-anatomy a{color:var(--accent);text-decoration:none}
+.battery-anatomy button{font-family:inherit}
+.battery-anatomy :focus-visible{outline:3px solid color-mix(in srgb,var(--accent) 55%,transparent);outline-offset:2px;border-radius:8px}
+.battery-anatomy .nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--nav);backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);border-bottom:1px solid var(--line)}
+.battery-anatomy .nav .wrap{display:flex;align-items:center;gap:20px;height:52px}
+.battery-anatomy .brand{font-weight:700;font-size:19px;letter-spacing:-.02em;white-space:nowrap;color:var(--fg)}
+.battery-anatomy .brand span{background:linear-gradient(90deg,var(--energy),var(--energy-2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.battery-anatomy .links{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;min-width:0;mask-image:linear-gradient(90deg,#000 88%,transparent)}
+.battery-anatomy .links::-webkit-scrollbar{display:none}
+.battery-anatomy .links a{font-size:13px;color:var(--fg-2);padding:6px 10px;border-radius:980px;white-space:nowrap;transition:color .2s,background .2s}
+.battery-anatomy .links a:hover{color:var(--fg);background:var(--seg)}
+.battery-anatomy .eyebrow{font-size:17px;font-weight:600;letter-spacing:-.01em;margin:0 0 10px}
+.battery-anatomy h1,.battery-anatomy h2{margin:0;font-weight:700;text-wrap:balance}
+.battery-anatomy h1{font-size:clamp(44px,8.4vw,104px);line-height:1.02;letter-spacing:-.045em}
+.battery-anatomy h2{font-size:clamp(32px,5.4vw,60px);line-height:1.05;letter-spacing:-.035em;max-width:16ch}
+.battery-anatomy .lede{font-size:clamp(18px,2.1vw,22px);line-height:1.38;color:var(--fg-2);font-weight:500;max-width:46ch;margin:18px 0 0;letter-spacing:-.015em}
+.battery-anatomy .lede b{color:var(--fg);font-weight:600}
+.battery-anatomy .grad{background:linear-gradient(92deg,var(--energy) 10%,var(--energy-2) 90%);-webkit-background-clip:text;background-clip:text;color:transparent}
+.battery-anatomy .c-energy{color:var(--energy)}
+.battery-anatomy .c-accent{color:var(--accent)}
+.battery-anatomy .c-warn{color:var(--warn)}
+.battery-anatomy .c-bad{color:var(--bad)}
+.battery-anatomy .c-hot{color:var(--hot)}
+.battery-anatomy .c-gas{color:var(--gas)}
+.battery-anatomy section{padding-block:clamp(72px,10vw,128px) 0}
+.battery-anatomy .head{margin-bottom:40px}
+.battery-anatomy .stage{background:var(--surface);border-radius:30px;box-shadow:var(--shadow);display:grid;grid-template-columns:minmax(0,1.55fr) minmax(0,1fr);overflow:hidden}
+.battery-anatomy .viz{padding:28px;display:flex;flex-direction:column;gap:16px;justify-content:center;min-width:0}
+.battery-anatomy .viz svg{width:100%;height:auto;display:block;overflow:visible}
+.battery-anatomy .panel{padding:28px;display:flex;flex-direction:column;gap:22px;border-left:1px solid var(--line);background:var(--surface-2);min-width:0}
+@media (max-width:820px){.battery-anatomy .stage{grid-template-columns:1fr}
+.battery-anatomy .panel{border-left:0;border-top:1px solid var(--line)}
+.battery-anatomy .viz,.battery-anatomy .panel{padding:20px}
+}
+.battery-anatomy .stage.wide{grid-template-columns:1fr}
+.battery-anatomy .stage.wide .panel{border-left:0;border-top:1px solid var(--line)}
+.battery-anatomy .ctl{display:flex;flex-direction:column;gap:10px}
+.battery-anatomy .ctl label,.battery-anatomy .lbl{font-size:13px;font-weight:600;color:var(--fg-2);letter-spacing:.01em;display:flex;justify-content:space-between;gap:8px}
+.battery-anatomy .ctl label output{color:var(--fg);font-variant-numeric:tabular-nums}
+.battery-anatomy .seg{display:flex;background:var(--seg);border-radius:11px;padding:2px;gap:2px;width:100%}
+.battery-anatomy .seg button{flex:1;border:0;background:transparent;color:var(--fg);font-size:14px;font-weight:500;padding:8px 10px;border-radius:9px;cursor:pointer;transition:background .25s,box-shadow .25s;white-space:nowrap}
+.battery-anatomy .seg button[aria-pressed="true"]{background:var(--seg-on);box-shadow:0 1px 2px rgba(0,0,0,.08),0 3px 8px rgba(0,0,0,.08);font-weight:600}
+.battery-anatomy input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:28px;background:transparent;margin:0;cursor:pointer;--p:50%;--tc:var(--accent)}
+.battery-anatomy input[type=range]::-webkit-slider-runnable-track{height:6px;border-radius:3px;background:linear-gradient(to right,var(--tc) var(--p),var(--seg) var(--p))}
+.battery-anatomy input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:28px;height:28px;border-radius:50%;background:var(--thumb);margin-top:-11px;box-shadow:0 0 0 .5px rgba(0,0,0,.08),0 3px 8px rgba(0,0,0,.2);transition:transform .15s}
+.battery-anatomy input[type=range]:active::-webkit-slider-thumb{transform:scale(1.08)}
+.battery-anatomy input[type=range]::-moz-range-track{height:6px;border-radius:3px;background:var(--seg)}
+.battery-anatomy input[type=range]::-moz-range-progress{height:6px;border-radius:3px;background:var(--tc)}
+.battery-anatomy input[type=range]::-moz-range-thumb{width:28px;height:28px;border:0;border-radius:50%;background:var(--thumb);box-shadow:0 0 0 .5px rgba(0,0,0,.08),0 3px 8px rgba(0,0,0,.2)}
+.battery-anatomy .ticks{display:flex;gap:6px;flex-wrap:wrap}
+.battery-anatomy .chip{border:1px solid var(--line);background:var(--surface);color:var(--fg);font-size:13px;font-weight:500;padding:6px 12px;border-radius:980px;cursor:pointer;transition:background .2s,border-color .2s}
+.battery-anatomy .chip:hover{border-color:var(--fg-3)}
+.battery-anatomy .chip.on{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.battery-anatomy .btn{border:0;background:var(--accent);color:#fff;font-size:15px;font-weight:600;padding:12px 20px;border-radius:980px;cursor:pointer;transition:transform .15s,opacity .2s}
+.battery-anatomy .btn:active{transform:scale(.97)}
+.battery-anatomy .btn.ghost{background:var(--seg);color:var(--fg)}
+.battery-anatomy .btn[disabled]{opacity:.45;cursor:default}
+.battery-anatomy .row{display:flex;gap:10px;flex-wrap:wrap}
+.battery-anatomy .switch{display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:15px;font-weight:500;cursor:pointer}
+.battery-anatomy .switch input{position:absolute;opacity:0;width:1px;height:1px}
+.battery-anatomy .switch i{flex:none;width:51px;height:31px;border-radius:31px;background:var(--seg);position:relative;transition:background .25s}
+.battery-anatomy .switch i::after{content:"";position:absolute;top:2px;left:2px;width:27px;height:27px;border-radius:50%;background:var(--thumb);box-shadow:0 3px 8px rgba(0,0,0,.15),0 0 0 .5px rgba(0,0,0,.04);transition:transform .25s cubic-bezier(.3,.7,.4,1)}
+.battery-anatomy .switch input:checked + i{background:var(--ok)}
+.battery-anatomy .switch input:checked + i::after{transform:translateX(20px)}
+.battery-anatomy .switch input:focus-visible + i{outline:3px solid color-mix(in srgb,var(--accent) 55%,transparent);outline-offset:2px}
+.battery-anatomy .stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px 16px}
+.battery-anatomy .stat .k{font-size:13px;color:var(--fg-2);font-weight:500}
+.battery-anatomy .stat .v{font-size:clamp(30px,3.4vw,40px);font-weight:700;letter-spacing:-.03em;line-height:1.1;font-variant-numeric:tabular-nums;white-space:nowrap}
+.battery-anatomy .stat .v small{font-size:.5em;font-weight:600;color:var(--fg-2);margin-left:4px;letter-spacing:-.01em}
+.battery-anatomy .note{font-size:15px;line-height:1.45;color:var(--fg-2);margin:0}
+.battery-anatomy .note b{color:var(--fg);font-weight:600}
+.battery-anatomy .pill{display:inline-flex;align-items:center;gap:7px;font-size:14px;font-weight:600;padding:6px 12px;border-radius:980px;align-self:flex-start;transition:background .3s,color .3s}
+.battery-anatomy .pill::before{content:"";width:8px;height:8px;border-radius:50%;background:currentColor}
+.battery-anatomy .pill.ok{color:var(--ok);background:color-mix(in srgb,var(--ok) 13%,transparent)}
+.battery-anatomy .pill.warn{color:var(--warn);background:color-mix(in srgb,var(--warn) 15%,transparent)}
+.battery-anatomy .pill.hot{color:var(--hot);background:color-mix(in srgb,var(--hot) 14%,transparent)}
+.battery-anatomy .pill.bad{color:var(--bad);background:color-mix(in srgb,var(--bad) 13%,transparent)}
+.battery-anatomy .foot{font-size:12px;color:var(--fg-3);margin:0}
+.battery-anatomy .t{fill:var(--fg);font-family:var(--font)}
+.battery-anatomy .t2{fill:var(--fg-2);font-family:var(--font)}
+.battery-anatomy .t3{fill:var(--fg-3);font-family:var(--font)}
+.battery-anatomy .axis{stroke:var(--line);stroke-width:1}
+.battery-anatomy .wire{fill:none;stroke:var(--fg-3);stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+.battery-anatomy .flow{fill:none;stroke:var(--energy);stroke-width:3;stroke-dasharray:2 14;stroke-linecap:round;animation:flow .9s linear infinite}
+@keyframes flow{to{stroke-dashoffset:-16}}
+.battery-anatomy .hero{text-align:center;padding-block:clamp(56px,9vw,110px) 0}
+.battery-anatomy .hero .lede{margin-left:auto;margin-right:auto}
+.battery-anatomy .hero .eyebrow{color:var(--fg-2);font-size:15px}
+.battery-anatomy .hero-stage{margin-top:48px;background:var(--surface);border-radius:30px;box-shadow:var(--shadow);padding:clamp(18px,3vw,36px);display:flex;flex-direction:column;align-items:center;gap:22px}
+.battery-anatomy .hero-stage .seg{max-width:520px}
+.battery-anatomy .react{font-size:clamp(15px,2vw,19px);font-weight:600;letter-spacing:-.01em;font-variant-numeric:tabular-nums}
+.battery-anatomy .react .dir{color:var(--energy);display:inline-block;transition:transform .5s}
+.battery-anatomy .hero-note{max-width:60ch;text-align:center}
+.battery-anatomy #hero .neg{fill:var(--lead);transition:fill .9s}
+.battery-anatomy #hero .pos{fill:var(--pbo2);transition:fill .9s}
+.battery-anatomy #hero[data-state="discharge"] .plate{fill:var(--sulfate)}
+.battery-anatomy #hero .acidf{fill:var(--acid);transition:opacity .9s}
+.battery-anatomy #hero[data-state="discharge"] .acidf{opacity:.4}
+.battery-anatomy #hero .bub{fill:var(--gas);opacity:0}
+.battery-anatomy #hero[data-state="gas"] .bub{animation:rise 2.2s ease-in infinite}
+@keyframes rise{0%{opacity:0;transform:translateY(0)}15%{opacity:.85}100%{opacity:0;transform:translateY(-150px)}}
+.battery-anatomy #hero .case{fill:var(--surface-2);stroke:var(--line);stroke-width:1.5}
+.battery-anatomy #hero .lid{fill:var(--seg)}
+.battery-anatomy #hero .term{fill:var(--lead)}
+.battery-anatomy #hero .strap{fill:var(--lead)}
+.battery-anatomy #hero .wall{fill:var(--line)}
+.battery-anatomy .cell-
+.nub{fill:var(--fg-3)}
+.battery-anatomy .t-cell{fill:var(--on-energy);font-weight:700;font-family:var(--font)}
+.battery-anatomy .load{fill:var(--surface);stroke:var(--fg);stroke-width:1.5}
+.battery-anatomy .blk{cursor:pointer;outline:none}
+.battery-anatomy .blk .
+.blk .lvl{fill:url(#gStr);transition:height .4s,y .4s,opacity .3s}
+.battery-anatomy .blk .term{fill:var(--fg-3)}
+.battery-anatomy .blk .num{font-weight:700;font-size:13px;fill:var(--fg);font-family:var(--font)}
+.battery-anatomy .blk:hover .body,.battery-anatomy .blk:focus-visible .
+.blk.s1 .
+.blk.s1 .num{fill:var(--warn)}
+.battery-anatomy .blk.s2 .
+.blk .halo{fill:var(--hot);opacity:0;filter:blur(7px);transform-box:fill-box;transform-origin:center}
+.battery-anatomy .blk.s2 .halo{opacity:1;animation:pulse 1.4s ease-in-out infinite}
+@keyframes pulse{50%{transform:scale(1.15);opacity:.35}}
+.battery-anatomy .blk.s3 .
+.blk.s3 .lvl{opacity:.25}
+.battery-anatomy .blk .x{stroke:var(--bad);stroke-width:3;stroke-linecap:round;opacity:0}
+.battery-anatomy .blk.s3 .x{opacity:1}
+.battery-anatomy .legend{display:flex;flex-wrap:wrap;gap:8px 14px;font-size:13px;color:var(--fg-2)}
+.battery-anatomy .legend span{display:inline-flex;align-items:center;gap:6px}
+.battery-anatomy .legend i{width:12px;height:12px;border-radius:4px;border:2px solid var(--line)}
+.battery-anatomy .ups{fill:var(--surface);stroke:var(--fg);stroke-width:1.5}
+.battery-anatomy .needle{transition:transform .7s cubic-bezier(.3,1.3,.5,1);transform-box:view-box;transform-origin:200px 214px}
+.battery-anatomy .lol{cursor:ns-resize}
+.battery-anatomy .fan{transform-box:fill-box;transform-origin:center;animation:spin var(--fan,2s) linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.battery-anatomy .gbub{fill:var(--gas);animation:up var(--d,3s) ease-in infinite;animation-delay:var(--dl,0s);opacity:0}
+@keyframes up{0%{opacity:0;transform:translateY(0)}10%{opacity:.8}100%{opacity:0;transform:translateY(-170px)}}
+.battery-anatomy .device{background:linear-gradient(160deg,color-mix(in srgb,var(--fg) 92%,transparent),var(--fg));border-radius:26px;padding:16px;color:var(--bg);display:flex;flex-direction:column;gap:12px;min-width:0}
+.battery-anatomy .screen{background:var(--bg);color:var(--fg);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:4px}
+.battery-anatomy .screen .big{font-size:44px;font-weight:700;letter-spacing:-.03em;line-height:1;font-variant-numeric:tabular-nums}
+.battery-anatomy .screen .ok{color:var(--ok);font-weight:600;font-size:15px}
+.battery-anatomy .dev-label{font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;opacity:.7}
+.battery-anatomy .lt-grid{display:grid;grid-template-columns:minmax(0,200px) minmax(0,1fr);gap:22px;align-items:center}
+@media (max-width:600px){.battery-anatomy .lt-grid{grid-template-columns:1fr}
+}
+.battery-anatomy .verdict{border-radius:18px;padding:16px 18px;background:color-mix(in srgb,var(--bad) 10%,transparent);color:var(--fg);font-size:16px;font-weight:500;line-height:1.4}
+.battery-anatomy .verdict b{color:var(--bad)}
+.battery-anatomy .formula{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:20px}
+.battery-anatomy .formula div{background:var(--surface);border-radius:20px;padding:18px 20px;box-shadow:var(--shadow)}
+.battery-anatomy .formula b{display:block;font-size:22px;letter-spacing:-.02em}
+.battery-anatomy .formula span{font-size:14px;color:var(--fg-2)}
+@media (max-width:640px){.battery-anatomy .formula{grid-template-columns:1fr}
+}
+.battery-anatomy .rules{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+@media (max-width:900px){.battery-anatomy .rules{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (max-width:560px){.battery-anatomy .rules{grid-template-columns:1fr}
+}
+.battery-anatomy .rule{background:var(--surface);border-radius:24px;padding:24px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:8px}
+.battery-anatomy .rule .n{font-size:clamp(34px,4vw,46px);font-weight:700;letter-spacing:-.035em;line-height:1;font-variant-numeric:tabular-nums}
+.battery-anatomy .rule p{margin:0;color:var(--fg-2);font-size:15px;line-height:1.45}
+.battery-anatomy .rule p b{color:var(--fg);font-weight:600}
+.battery-anatomy .rule.span2{grid-column:span 2}
+@media (max-width:560px){.battery-anatomy .rule.span2{grid-column:auto}
+}
+.battery-anatomy footer{padding-block:80px 60px;color:var(--fg-3);font-size:13px}
+.battery-anatomy footer p{max-width:70ch;margin:0 0 8px}
+@media (prefers-reduced-motion:reduce){.battery-anatomy *,.battery-anatomy *::before,.battery-anatomy *::after{animation:none!important;transition:none!important}
+
+
+}
+
+
+.battery-anatomy .hero{display:block;padding:56px 0 0;text-align:left}
+.battery-anatomy h1{font-size:clamp(42px,6.5vw,88px);font-weight:500;letter-spacing:-.065em;line-height:1.03}
+.battery-anatomy h2{font-size:clamp(30px,4vw,52px);font-weight:500;max-width:23ch;letter-spacing:-.045em}
+.battery-anatomy .grad{background:none;color:var(--fg);text-decoration:underline;text-decoration-color:#f4d838;text-decoration-thickness:.18em;text-underline-offset:.08em}
+.battery-anatomy .hero .lede{margin-left:0;max-width:65ch}
+.battery-anatomy .hero-stage,.battery-anatomy .stage,.battery-anatomy .rule,.battery-anatomy .formula div{border:1px solid var(--line);border-radius:0}
+.battery-anatomy .hero-stage{background:#eeefdf;margin-top:32px}
+.battery-anatomy .eyebrow{font-size:11px;letter-spacing:.12em;text-transform:uppercase}
+.battery-anatomy .nav{top:0;border-top:1px solid var(--line);margin-top:24px;backdrop-filter:none}
+.battery-anatomy .nav .wrap{height:auto;min-height:58px;padding-top:10px;padding-bottom:10px}
+.battery-anatomy .links{mask-image:none}.battery-anatomy .links a{border-radius:0}
+.battery-anatomy .btn{background:#202322;color:white;border-radius:0;min-height:44px}
+.battery-anatomy .btn.ghost{background:var(--seg);color:var(--fg)}
+.battery-anatomy .seg,.battery-anatomy .seg button{border-radius:2px}
+.battery-anatomy .seg button{min-height:44px;white-space:normal}
+.battery-anatomy .chip{border-radius:0;min-height:40px}
+.battery-anatomy section{scroll-margin-top:96px}
+.battery-anatomy .scope-note{border-left:4px solid #f4d838;padding:18px 22px;background:#efefe5;margin-top:24px;font-size:15px;max-width:78ch}
+.battery-anatomy .source-note{margin-top:60px;padding-top:28px;padding-bottom:20px;border-top:1px solid var(--line);font-size:13px;color:var(--fg-2)}
+.battery-anatomy .next-steps{padding-top:30px;padding-bottom:30px;display:flex;gap:16px;flex-wrap:wrap}
+.battery-anatomy .next-steps a{border-bottom:1px solid var(--fg);padding:10px 0;color:var(--fg)}
+@media(max-width:580px){.battery-anatomy .nav .wrap{display:block}.battery-anatomy .brand{display:none}.battery-anatomy .viz,.battery-anatomy .panel{padding:14px}.battery-anatomy .stats{gap:12px}.battery-anatomy .stat .v{font-size:28px}.battery-anatomy .hero{padding-top:32px}.battery-anatomy .lede{font-size:17px}.battery-anatomy section{padding-top:60px}}
