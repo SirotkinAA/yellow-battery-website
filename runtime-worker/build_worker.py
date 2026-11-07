@@ -41,3 +41,7 @@ copy_changed(ROOT / "shared_catalog.py", target / "shared_catalog.py")
 
 for name in ("unified_catalog.py", "yellow_catalog.py"):
     copy_changed(ROOT / name, target / name)
+
+# Reviewed public catalogue data only; uses the existing CI token without exposing it.
+from catalog_publication import publish_reviewed_catalog
+publish_reviewed_catalog(ROOT)
