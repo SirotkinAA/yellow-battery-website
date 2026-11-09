@@ -2,6 +2,21 @@
   "name": "yellow-battery-website",
   "compatibility_date": "2026-09-20",
   "assets": {
-    "directory": "./public"
-  }
+    "directory": "./public",
+    "binding": "ASSETS",
+    "run_worker_first": [
+      "/bms",
+      "/bms/*",
+      "/assets/bms/*",
+      "/assets/docs/yellow-bms/*",
+      "/assets/site.css",
+      "/assets/site.js",
+      "/assets/navigation.css",
+      "/assets/yellow.svg",
+      "/assets/bms.css",
+      "/assets/bms.js",
+      "/assets/bms-sizing.js"
+    ]
+  },
+  "main": "bms-gateway.mjs"
 }
