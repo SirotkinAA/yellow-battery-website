@@ -1,0 +1,14 @@
+/* Shared header and breadcrumbs, independent of page/form styles. */
+.test-strip{background:#202322;color:#f4f4eb;text-align:center;padding:7px;font:10px Arial,Helvetica,sans-serif;letter-spacing:.12em;line-height:normal}
+.site-header{max-width:1600px;margin:auto;display:flex;justify-content:normal;align-items:center;gap:28px;padding:25px 5%;border-bottom:1px solid #d9dcd2;font-family:Arial,Helvetica,sans-serif;line-height:normal;color:#202322;background:#f6f6ef}
+.site-header a{color:inherit;text-decoration:none}.site-header .logo{flex-shrink:0}.site-header .logo img{display:block;max-width:100%;width:162px;height:32px;object-fit:contain}
+.site-header nav{display:flex;gap:23px;margin-left:auto;align-items:center;font-size:13px}.site-header nav a{padding:8px 0;white-space:nowrap}.site-header nav a:hover,.site-header nav .current{box-shadow:0 2px #202322}
+.site-header button{font:inherit;color:inherit;cursor:pointer;border-radius:0;box-shadow:none;min-width:0;min-height:0;line-height:normal}
+.site-header .language{display:flex;gap:2px}.site-header .language button{border:0;background:transparent;padding:8px;font-size:12px;font-weight:700}.site-header .language button[aria-pressed=true]{background:#f4d838}
+.site-header .account-link{font-size:13px;white-space:nowrap}.site-header .menu-button{display:none}
+.site-header a:focus-visible,.site-header button:focus-visible,.site-breadcrumb a:focus-visible{outline:3px solid #887400;outline-offset:4px}
+.site-breadcrumb{max-width:1440px;margin:auto;padding:26px 5% 0;font:12px/1.6 Arial,Helvetica,sans-serif;color:#71756d}.site-breadcrumb ol{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 0;list-style:none;margin:0;padding:0}.site-breadcrumb li{display:flex;align-items:baseline;min-width:0}.site-breadcrumb li+li:before{content:'/';padding:0 12px;color:#9a9e93}.site-breadcrumb a{color:#202322;text-decoration:none}.site-breadcrumb a:hover{text-decoration:underline;text-underline-offset:3px}.site-breadcrumb [aria-current]{overflow-wrap:anywhere}
+.site-breadcrumb+.page-intro{padding-top:30px}.site-breadcrumb+.product-detail{margin-top:32px}
+body.calculator-page main>.site-breadcrumb{padding:0 0 28px}body.embedded .site-header,body.embedded .test-strip,body.embedded .site-breadcrumb{display:none!important}
+@media(max-width:1100px){.site-header{position:relative;flex-wrap:wrap}.site-header .menu-button{display:block;background:none;border:0;margin-left:auto;padding:8px;font-size:13px}.site-header nav{display:none;flex-basis:100%;order:5;margin:10px 0 0;border-top:1px solid #d9dcd2;padding-top:14px;flex-wrap:wrap;gap:20px}.site-header nav.is-open{display:flex}}
+@media(max-width:580px){.site-header{padding:18px 6%;gap:13px}.site-header .logo img{width:126px}.site-header .account-link{display:none}.site-breadcrumb{padding-left:6%;padding-right:6%}}

@@ -1,0 +1,3 @@
+CREATE TABLE IF NOT EXISTS catalog_unified_revisions(id TEXT PRIMARY KEY,channel TEXT NOT NULL,manifest TEXT NOT NULL CHECK(json_valid(manifest)),created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP);
+CREATE TABLE IF NOT EXISTS catalog_unified_items(revision_id TEXT NOT NULL REFERENCES catalog_unified_revisions(id),collection TEXT NOT NULL,entity_id TEXT NOT NULL,payload TEXT NOT NULL CHECK(json_valid(payload)),PRIMARY KEY(revision_id,collection,entity_id));
+CREATE TABLE IF NOT EXISTS catalog_unified_heads(channel TEXT PRIMARY KEY,revision_id TEXT NOT NULL REFERENCES catalog_unified_revisions(id));

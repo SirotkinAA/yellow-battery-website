@@ -1,7 +1,26 @@
 {
   "name": "yellow-battery-website",
+  "main": "catalogue-gateway.mjs",
   "compatibility_date": "2026-09-20",
   "assets": {
-    "directory": "./public"
+    "directory": "./public",
+    "binding": "ASSETS",
+    "run_worker_first": [
+      "/catalog",
+      "/catalog/*",
+      "/bms",
+      "/bms/*",
+      "/lithium",
+      "/lithium/*",
+      "/racks",
+      "/racks/*",
+      "/cabinets",
+      "/cabinets/*",
+      "/runtime",
+      "/runtime/*",
+      "/assets/*",
+      "/downloads/*",
+      "/admin/api/prices"
+    ]
   }
 }
