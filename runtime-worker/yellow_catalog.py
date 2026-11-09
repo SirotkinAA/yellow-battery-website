@@ -37,7 +37,13 @@ async def render_page(store,path,source):
    if '<input' in match[0] or '<button' in match[0]:return match[0]
    block=next(values,None)
    if not block or block['tag']!=match[1]:raise ValueError('Technical projection/template mismatch')
-   return block['html']
+   # Keep the full comparison available while older catalogue releases have fewer parameters.
+   template = match[0]
+   projected = block['html']
+   if urlpath == '/bms/' and match[1] == 'table' and 'data-bms-column=' in template:
+    if len(re.findall(r'<tr\b', projected)) < len(re.findall(r'<tr\b', template)):
+     return template
+   return projected
   source=re.sub(r'<(dl|table)\b[^>]*>.*?</\1>',project,source,flags=re.S)
   if next(values,None):raise ValueError('Incomplete technical projection')
  if path.startswith('/catalog/'):
