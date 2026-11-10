@@ -2,8 +2,8 @@
 'use strict';
 (() => {
   const labels = {
-    lithium:['Литиевые решения','Lithium solutions'], catalog:['Каталог','Catalogue'], applications:['Применение','Applications'],
-    documents:['Документация','Documents'], runtime:['Калькулятор','Calculator'],
+    'lead-acid':['Свинцовые решения','Lead-acid solutions'], calculators:['Калькуляторы','Calculators'], lithium:['Литиевые решения','Lithium solutions'], catalog:['Каталог','Catalogue'], applications:['Применение','Applications'],
+    documents:['Документация','Documents'], runtime:['Калькулятор свинцовых АКБ','Lead-acid calculator'],
     knowledge:['База знаний','Knowledge base'], racks:['Стеллажи','Racks'], bms:['BMS','BMS'], partners:['Партнёрам','Partners'],
     about:['О YELLOW','About YELLOW'], contacts:['Контакты','Contact'],
     '404':['Страница не найдена','Page not found']
@@ -17,9 +17,25 @@
   header.className='site-header';
   header.innerHTML=`<a class="logo" href="/" aria-label="YELLOW"><img src="/assets/yellow.svg" alt="YELLOW" width="180" height="32"></a>
     <button type="button" class="menu-button" aria-expanded="false" aria-controls="site-nav">${text('Меню','Menu')} ☰</button>
-    <nav id="site-nav" aria-label="Основная навигация">${['catalog','applications','lithium','documents','runtime','racks','bms','knowledge','partners'].map(key=>`<a href="/${key}/"${section===key?' class="current" aria-current="page"':''}>${text(...labels[key])}</a>`).join('')}</nav>
+    <nav id="site-nav" aria-label="Основная навигация">${[
+      ['/lead-acid/','Свинцовые решения','Lead-acid', ['lead-acid','catalog','runtime','racks','bms','cabinets','documents'].includes(section)],
+      ['/lithium/','Литиевые решения','Lithium',section==='lithium'],
+      ['/calculators/','Калькуляторы','Calculators',section==='calculators'],
+      ['/about/','О YELLOW','About YELLOW',section==='about'],
+      ['/contacts/','Контакты','Contact',section==='contacts']
+    ].map(([url,ru,en,active])=>`<a href="${url}"${active?' class="current"':''}>${text(ru,en)}</a>`).join('')}</nav>
     <div id="language" class="language" role="group" aria-label="Язык"><button type="button" data-language="en" lang="en" aria-pressed="false">EN</button><button type="button" data-language="ru" lang="ru" aria-pressed="true">RU</button></div>
     <a href="/admin/" class="account-link">${text('Кабинет ↗','Account ↗')}</a>`;
+  const lead=['lead-acid','catalog','runtime','racks','bms','cabinets','documents'].includes(section);
+  if(lead || section==='lithium'){
+    const bar=document.createElement('div');bar.className='direction-nav';
+    const links=lead?[
+      ['/catalog/','Каталог AGM','AGM catalogue'],['/runtime/','Калькулятор свинцовых АКБ','Lead-acid calculator'],
+      ['/racks/','Стеллажи','Racks'],['/bms/','BMS для свинцовых АКБ','Lead-acid BMS'],['/documents/','Документация AGM','AGM documents']
+    ]:[['/lithium/#vision-catalog','Каталог решений','Solutions catalogue'],['/lithium/#battery-calculator','Литиевый калькулятор','Lithium calculator'],['/lithium/#lithium-documents','Документация','Documents']];
+    bar.innerHTML=`<strong>${text(lead?'Свинцовые АКБ':'Литиевые решения',lead?'Lead-acid batteries':'Lithium solutions')}</strong>`+links.map(([url,ru,en])=>`<a href="${url}"${url.includes('calculator')||url==='/runtime/'?' class="calculator-shortcut"':''}>${text(ru,en)}</a>`).join('');
+    header.after(bar);
+  }
   if(!document.querySelector('.test-strip')){
     const strip=document.createElement('div');strip.className='test-strip';strip.innerHTML=text('YELLOW / Предварительная версия сайта','YELLOW / Website preview');header.before(strip);
   }
