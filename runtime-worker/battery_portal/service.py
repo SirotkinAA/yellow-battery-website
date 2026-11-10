@@ -234,14 +234,15 @@ class Portal:
             if not admin:
                 raise PortalError(403,'Требуются права администратора товарной базы')
             rows=await self.db.query('''
-                SELECT private.product_id, item.entity_id AS vendor_model_name,
+                SELECT private.product_id, json_extract(item.payload,'$.data.entity_id') AS vendor_model_name,
                        private.manufacturer_brand, private.manufacturer_model_name
                 FROM catalog_private_manufacturer_names AS private
                 JOIN catalog_unified_heads AS head ON head.channel='yellow'
                 JOIN catalog_unified_items AS item
-                  ON item.revision_id=head.revision_id AND item.collection='batteries'
-                  AND json_extract(item.payload,'$.model_id')=private.product_id
-                ORDER BY item.entity_id
+                  ON item.revision_id=head.revision_id AND item.collection='product-index'
+                  AND item.entity_id=private.product_id
+                  AND json_extract(item.payload,'$.data.collection')='batteries'
+                ORDER BY vendor_model_name
             ''')
             return 200,{'models':rows},{'Cache-Control':'private, no-store'}
         if path=='/admin/api/catalog' and method=='GET' and admin:
