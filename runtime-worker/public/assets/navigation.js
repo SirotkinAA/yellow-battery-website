@@ -18,7 +18,7 @@
   header.innerHTML=`<a class="logo" href="/" aria-label="YELLOW"><img src="/assets/yellow.svg" alt="YELLOW" width="180" height="32"></a>
     <button type="button" class="menu-button" aria-expanded="false" aria-controls="site-nav">${text('Меню','Menu')} ☰</button>
     <nav id="site-nav" aria-label="Основная навигация">${[
-      ['/lead-acid/','Свинцовые решения','Lead-acid', ['lead-acid','catalog','runtime','racks','bms','cabinets','documents'].includes(section)],
+      ['/catalog/','Свинцовые решения','Lead-acid', ['lead-acid','catalog','runtime','racks','bms','cabinets','documents'].includes(section)],
       ['/lithium/','Литиевые решения','Lithium',section==='lithium'],
       ['/calculators/','Калькуляторы','Calculators',section==='calculators'],
       ['/about/','О YELLOW','About YELLOW',section==='about'],

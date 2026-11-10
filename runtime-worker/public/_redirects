@@ -31,3 +31,7 @@
 /assets/bms/video/yellow-pbms9000.mp4 /assets/bms/video/yellow-bms9000.mp4 301
 /assets/bms/pbat-gate-video-poster.svg /assets/bms/bat-gate-video-poster.svg 301
 /assets/bms/video/yellow-pbat-gate.mp4 /assets/bms/video/yellow-bat-gate.mp4 301
+
+# Retired lead-acid landing page
+/lead-acid /catalog/ 301
+/lead-acid/ /catalog/ 301
