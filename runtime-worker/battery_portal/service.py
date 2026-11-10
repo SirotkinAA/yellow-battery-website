@@ -230,6 +230,20 @@ class Portal:
             await self.db.query('INSERT INTO portal_widgets VALUES (?,?,?,?,?,?,?) ON CONFLICT(id) DO UPDATE SET name=excluded.name,config=excluded.config,origins=excluded.origins,active=excluded.active,updated_at=excluded.updated_at',(ident,uid,name,json.dumps(config,ensure_ascii=False),json.dumps(hosts),int(active),now))
             await self.audit(user['id'],'widget_saved',ident,{'owner':uid,'origins':hosts,'active':active})
             return 200,{'id':ident,'url':self.origin+'/embed/'+ident},out_headers
+        if path=='/admin/api/catalog/manufacturer-names' and method=='GET':
+            if not admin:
+                raise PortalError(403,'Требуются права администратора товарной базы')
+            rows=await self.db.query('''
+                SELECT private.product_id, item.entity_id AS vendor_model_name,
+                       private.manufacturer_brand, private.manufacturer_model_name
+                FROM catalog_private_manufacturer_names AS private
+                JOIN catalog_unified_heads AS head ON head.channel='yellow'
+                JOIN catalog_unified_items AS item
+                  ON item.revision_id=head.revision_id AND item.collection='batteries'
+                  AND json_extract(item.payload,'$.model_id')=private.product_id
+                ORDER BY item.entity_id
+            ''')
+            return 200,{'models':rows},{'Cache-Control':'private, no-store'}
         if path=='/admin/api/catalog' and method=='GET' and admin:
             return 200,{'dataset':await self.dataset()},out_headers
         if path in ('/admin/api/catalog-validate','/admin/api/catalog-publish') and method=='POST' and admin:
