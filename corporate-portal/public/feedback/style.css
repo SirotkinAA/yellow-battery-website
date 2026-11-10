@@ -1,0 +1,10 @@
+body{margin:0;background:#f5f6f8;color:#1c2933;font:16px system-ui,sans-serif}
+main{max-width:720px;margin:auto;padding:32px 20px}
+a{color:#235c95;overflow-wrap:anywhere}
+label{display:block;margin:16px 0;font-weight:600}
+textarea{display:block;width:100%;box-sizing:border-box;margin-top:6px;padding:10px;font:inherit;resize:vertical}
+button{border:0;border-radius:6px;background:#20394f;color:white;padding:11px 16px;font:inherit;cursor:pointer}
+button:disabled{opacity:.55}
+article,form{background:white;border:1px solid #dce1e7;border-radius:8px;padding:16px;margin:12px 0}
+blockquote{margin:12px 0;padding-left:12px;border-left:3px solid #cad6e0}
+blockquote,article p{white-space:pre-wrap;overflow-wrap:anywhere}

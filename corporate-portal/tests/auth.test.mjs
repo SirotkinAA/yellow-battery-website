@@ -86,3 +86,21 @@ test('provider errors are detected, secrets and codes never enter request URLs',
  await assert.rejects(send.email('employee@example.com','subject','link'));await assert.rejects(send.sms('+79991234567','123456'));
  for(const c of calls){assert(!c.url.includes('key'));assert(!c.url.includes('123456'));assert.equal(c.opts.redirect,'error');}
 });
+
+test('site feedback is saved once and visible only to administrators',async()=>{
+ const f=fixture();
+ f.sql.exec(readFileSync(new URL('../migrations/0002_site_feedback.sql',import.meta.url),'utf8'));
+ const employee=await f.seed(),admin=await f.seed(['admin']);
+ const draft={id:crypto.randomUUID(),pageUrl:'https://test.yellow-battery.com/lithium/#battery-calculator',excerpt:'160S2P',comment:'Уточнить схему'};
+ const feedback=(body,session,requestOrigin)=>worker.fetch(f.req('/api/feedback',body,session,requestOrigin),f.env);
+ assert.equal((await feedback(draft)).status,401);
+ assert.equal((await feedback(draft,employee.session,'https://elsewhere.example')).status,403);
+ assert.equal((await feedback({...draft,pageUrl:'https://elsewhere.example/lithium/'},employee.session)).status,400);
+ assert.equal((await feedback(draft,employee.session)).status,201);
+ assert.equal((await feedback(draft,employee.session)).status,201);
+ assert.equal((await feedback(undefined,employee.session)).status,403);
+ const {items}=await (await feedback(undefined,admin.session)).json();
+ assert.equal(items.length,1);
+ assert.equal(items[0].excerpt,'160S2P');
+ assert.equal(items[0].author,'Test User');
+});
