@@ -1,6 +1,7 @@
 (() => {
  const main=document.querySelector('main');
  if(!main||location.origin!=='https://test.yellow-battery.com')return;
+ const portalReady=document.currentScript?.dataset.portalReady==='true';
  const portal='https://sstmk-portal-test.sysadws.workers.dev/feedback/';
  const dialog=document.createElement('dialog');
  dialog.className='vision-help-dialog';
@@ -12,8 +13,9 @@
    <p>Выделите текст на странице перед открытием формы или вставьте его сюда.</p>
    <label>Фрагмент<textarea name="excerpt" rows="3" maxlength="1200" required></textarea></label>
    <label>Что нужно исправить?<textarea name="comment" rows="4" maxlength="2000" required></textarea></label>
-   <p>В корппортале можно проверить замечание перед отправкой.</p>
-   <button class="button dark">Продолжить в корппортале</button>
+   <p id="site-feedback-status" role="status"></p>
+   <button class="button dark">${portalReady?'Продолжить в корппортале':'Скопировать замечание'}</button>
+   <textarea id="site-feedback-copy" rows="6" readonly hidden aria-label="Замечание для копирования"></textarea>
   </form>`;
  const stylesheet=document.createElement('link');
  stylesheet.rel='stylesheet';
@@ -54,11 +56,26 @@
  main.prepend(slot);
  const help=document.querySelector('dialog.vision-help-dialog:not([aria-labelledby="site-feedback-title"])');
  if(help)help.append(launcher());
- form.addEventListener('submit',event=>{
+ form.addEventListener('submit',async event=>{
   event.preventDefault();
   const fragment=form.elements.excerpt.value.trim(),comment=form.elements.comment.value.trim();
   if(!fragment||!comment)return;
   const draft={id:crypto.randomUUID(),pageUrl:location.origin+location.pathname+location.hash,excerpt:fragment,comment};
-  location.assign(portal+'#'+new URLSearchParams({draft:JSON.stringify(draft)}));
+  if(portalReady){
+   location.assign(portal+'#'+new URLSearchParams({draft:JSON.stringify(draft)}));
+   return;
+  }
+  const message=`Страница: ${draft.pageUrl}\nФрагмент: ${fragment}\nКомментарий: ${comment}`;
+  const status=dialog.querySelector('#site-feedback-status');
+  try{
+   await navigator.clipboard.writeText(message);
+   status.textContent='Замечание скопировано. Вставьте его в рабочий чат.';
+  }catch{
+   const copy=dialog.querySelector('#site-feedback-copy');
+   copy.hidden=false;
+   copy.value=message;
+   copy.select();
+   status.textContent='Скопируйте выделенный текст.';
+  }
  });
 })();
