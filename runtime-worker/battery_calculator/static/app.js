@@ -36,7 +36,7 @@ function render(data){
  const r=data.result;result.replaceChildren();
  if(r.operation==='select'){
   result.append(node('h2','Варианты в выбранном диапазоне'));
-  if(r.exclusions.some(x=>x.code==='nonmonotone_spline'))result.append(node('p','Некоторые модели исключены: кубический сплайн возрастает между узлами таблицы. Требуется проверка данных.','notice'));
+  if(r.exclusions.some(x=>x.code==='nonmonotone_spline'))result.append(node('p','Некоторые варианты исключены: сплайн немонотонен на участке для этой нагрузки. Остальные варианты рассчитаны.','notice'));
   const action=node('div',undefined,'rack-selection-action'),selection=node('p'),radios=[];
   function selectItem(item){localizedText(selection,'Выбрано:');selection.append(document.createTextNode(' '+item.model_id+' · '+item.parallel_strings+' × '+(item.total_batteries/item.parallel_strings)+' = '+item.total_batteries+' '+t('АКБ')));action.replaceChildren(selection,rackLink(item));}
   function tableFor(items){

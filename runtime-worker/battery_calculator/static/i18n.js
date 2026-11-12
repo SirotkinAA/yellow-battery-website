@@ -6,7 +6,7 @@ const translationsEn = {
 'Время работы больше верхней границы выбранного диапазона.':'Runtime exceeds the upper limit of the selected range.', 
 'Подобрать стеллажи →':'Select racks →',
 'Кубический сплайн возрастает между узлами таблицы. Расчёт для этих условий требует проверки данных.':"The cubic spline increases between table nodes. These conditions require data review.",
-'Некоторые модели исключены: кубический сплайн возрастает между узлами таблицы. Требуется проверка данных.':"Some models were excluded: the cubic spline increases between table nodes. Data review is required.",
+'Некоторые варианты исключены: сплайн немонотонен на участке для этой нагрузки. Остальные варианты рассчитаны.':"Some configurations were excluded: the spline is nonmonotonic in the interval for this load. Other configurations have been calculated.",
   "Главная":"Home", "Каталог":"Catalogue", "Документация":"Documents", "Кабинет":"Account",
   "Тестовая версия": "Test version",
   "ИНЖЕНЕРНЫЕ ИНСТРУМЕНТЫ / 01": "ENGINEERING TOOLS / 01",

@@ -8,7 +8,7 @@ import math
 from functools import cached_property
 from typing import Optional, Tuple
 
-ENGINE_VERSION = "0.2.0"
+ENGINE_VERSION = "0.2.1"
 SERIES = {"HR-M", "HR-WM"}
 COMPONENTS = ("battery", "terminals", "interconnects", "protection")
 
@@ -134,22 +134,26 @@ class Curve:
                       second[i]/2, (second[i+1]-second[i])/(6*h[i])) for i in range(n-1))
 
     @cached_property
-    def spline_is_monotone(self):
-        # A cubic can overshoot monotone input. Check derivative extrema exactly,
-        # rather than silently replacing Mathcad's spline with another algorithm.
+    def spline_monotone_segments(self):
+        # Keep the full-table Mathcad spline; validate each original segment.
+        result = []
         for i, (_, b, c, d) in enumerate(self.spline_segments):
             h = self.times_minutes[i+1]-self.times_minutes[i]
             points = [0.0, h]
             if d and 0 < -c/(3*d) < h:
                 points.append(-c/(3*d))
             tolerance = 1e-12*max(self.values)/h
-            if max(b+2*c*u+3*d*u*u for u in points) > tolerance:
-                return False
-        return True
+            result.append(max(b+2*c*u+3*d*u*u for u in points) <= tolerance)
+        return tuple(result)
 
-    def _require_monotone_spline(self):
-        if not self.spline_is_monotone:
-            raise CalculationError("nonmonotone_spline", "Mathcad natural spline increases between table nodes; engineering review required")
+    @cached_property
+    def spline_is_monotone(self):
+        return all(self.spline_monotone_segments)
+
+    def _require_monotone_spline(self, segment=None):
+        valid = self.spline_is_monotone if segment is None else self.spline_monotone_segments[segment]
+        if not valid:
+            raise CalculationError("nonmonotone_spline", "Mathcad natural spline increases on the required table interval; engineering review required")
 
     def at(self, minutes):
         t = positive(minutes, "duration_minutes")
@@ -158,9 +162,9 @@ class Curve:
         for time, value in zip(self.times_minutes, self.values):
             if t == time:
                 return value
-        self._require_monotone_spline()
         for i, (a, b) in enumerate(zip(self.times_minutes, self.times_minutes[1:])):
             if a < t < b:
+                self._require_monotone_spline(i)
                 u = t-a
                 v, slope, quadratic, cubic = self.spline_segments[i]
                 return ((cubic*u+quadratic)*u+slope)*u+v
@@ -168,13 +172,37 @@ class Curve:
 
     def inverse(self, value):
         v = positive(value, "required_discharge")
-        self._require_monotone_spline()
         if v > self.values[0]:
+            self._require_monotone_spline()
             return {"kind": "less_than", "minutes": self.times_minutes[0]}
         if v < self.values[-1]:
+            self._require_monotone_spline()
             return {"kind": "at_least", "minutes": self.times_minutes[-1]}
+        # A remote overshoot matters only if it can also reach this load.
+        # Include interior extrema, not merely the tabulated endpoints.
+        for i, (a, b, c, d) in enumerate(self.spline_segments):
+            if self.spline_monotone_segments[i]:
+                continue
+            h = self.times_minutes[i+1]-self.times_minutes[i]
+            points = [0.0, h]
+            if d:
+                discriminant = 4*c*c-12*d*b
+                if discriminant >= 0:
+                    points.extend(u for u in ((-2*c-math.sqrt(discriminant))/(6*d),
+                                               (-2*c+math.sqrt(discriminant))/(6*d)) if 0 < u < h)
+            elif c:
+                u = -b/(2*c)
+                if 0 < u < h:
+                    points.append(u)
+            levels = [((d*u+c)*u+b)*u+a for u in points]
+            if min(levels) <= v <= max(levels):
+                self._require_monotone_spline(i)
         equal = [t for t, x in zip(self.times_minutes, self.values) if x == v]
         if equal:
+            # Validate all segments touching a matching node (including plateaus).
+            for i in range(len(self.values)-1):
+                if self.values[i] == v or self.values[i+1] == v:
+                    self._require_monotone_spline(i)
             if len(equal) > 1:
                 return {"kind": "interval", "minutes": equal[0], "upper_minutes": equal[-1]}
             return {"kind": "exact", "minutes": equal[0]}
@@ -182,6 +210,7 @@ class Curve:
         # not a new spline with exchanged axes. Bracketing prevents extrapolation.
         for i, (a, b) in enumerate(zip(self.values, self.values[1:])):
             if a > v > b:
+                self._require_monotone_spline(i)
                 lo, hi = self.times_minutes[i:i+2]
                 for _ in range(60):
                     mid = (lo+hi)/2
@@ -401,7 +430,9 @@ def select(models, required_minutes, max_parallel_strings=5, time_range_minutes=
             try:
                 r = runtime(model, parallel_strings=np, **kwargs)
             except CalculationError as exc:
-                exclusions.append({"model_id": model.id, "code": exc.code, "message": str(exc)})
+                exclusions.append({"model_id": model.id, "parallel_strings": np, "code": exc.code, "message": str(exc)})
+                if exc.code == "nonmonotone_spline":
+                    continue  # Each parallel count can use a different table segment.
                 break  # Model/curve/input eligibility is independent of parallel count.
             time = r["runtime"]
             if r["current_check"]["status"] == "exceeded":
