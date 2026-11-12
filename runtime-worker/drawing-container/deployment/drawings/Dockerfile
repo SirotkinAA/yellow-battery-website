@@ -9,7 +9,10 @@ WORKDIR /build/libredwg-0.13.4
 RUN patch -p1 < /build/ru.patch \
  && ./configure --prefix=/opt/libredwg --disable-bindings --disable-docs --disable-python --disable-shared \
  && make -j2 && make install \
- && cp examples/dwgadd /opt/libredwg/bin/dwgadd-ru
+ && mkdir -p /runtime-cad/bin \
+ && cp examples/dwgadd /runtime-cad/bin/dwgadd-ru \
+ && cp /opt/libredwg/bin/dwg2dxf /runtime-cad/bin/dwg2dxf \
+ && strip /runtime-cad/bin/dwgadd-ru /runtime-cad/bin/dwg2dxf
 
 FROM python:3.12-slim-bookworm
 RUN apt-get update && apt-get install -y --no-install-recommends fonts-liberation libpcre2-8-0 zlib1g \
@@ -18,7 +21,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends fonts-liberatio
 WORKDIR /app
 COPY deployment/drawings/requirements.txt /app/requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
-COPY --from=cad-build /opt/libredwg /opt/libredwg
+COPY --from=cad-build /runtime-cad /opt/libredwg
 COPY interconnect_documents /app/interconnect_documents
 COPY data/interconnects/dkc-tml.json /app/data/interconnects/dkc-tml.json
 COPY deployment/drawings/server.py deployment/drawings/smoke.py /app/
