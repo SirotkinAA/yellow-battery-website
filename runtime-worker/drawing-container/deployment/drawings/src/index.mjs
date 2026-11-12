@@ -1,5 +1,4 @@
 import { DurableObject } from 'cloudflare:workers';
-import { scheduler } from 'cloudflare:timers';
 
 export class DrawingContainer extends DurableObject {
   starting;
