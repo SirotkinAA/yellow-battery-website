@@ -1,0 +1,802 @@
+{
+  "schema_version": 1,
+  "verified_on": "2026-11-12",
+  "source": {
+    "publisher": "ДКС",
+    "catalog": "Решения для автоматизации, каталог №38",
+    "url": "https://www.dkc.ru/upload/dkc/pub/Downloads/Catalog/38/Solutions_for_automation/Solutions_for_automation__DKC_38.pdf",
+    "local_pdf": "research/interconnects/dkc/automation-38.pdf",
+    "sha256": "f0fc878537ef50fa1d0ca32215ab37f3478ef8257b9c9a3546d57ddf0c340fa6",
+    "pdf_pages": [
+      625,
+      626
+    ],
+    "printed_pages": [
+      "18.73",
+      "18.74"
+    ],
+    "verification": "19 articles: reference dimensions and diagram visually checked against official DKC catalog 38 pages 18.73–18.74; original 16 product titles cross-checked."
+  },
+  "dimension_symbols": {
+    "E": "Диаметр отверстия под крепёж",
+    "A": "Внутренний диаметр трубки",
+    "C": "Наружный диаметр трубки",
+    "B": "Длина цилиндрической части по чертежу",
+    "J": "Общая длина",
+    "F": "Толщина контактной лопатки",
+    "D": "Ширина контактной лопатки",
+    "G": "От торца лопатки до оси крепёжного отверстия",
+    "H": "От оси крепёжного отверстия до начала перехода по чертежу"
+  },
+  "notes_ru": [
+    "Размеры справочные, без учета допусков при производстве — примечание ДКС на странице 18.74.",
+    "Каталожный номинальный ток наконечника не является допустимым током перемычки в сборе.",
+    "B не принимается автоматически за глубину ввода жилы или длину зачистки.",
+    "Производственная длина провода требует отдельных данных об оконцевании и ориентации наконечников."
+  ],
+  "aliases": {
+    "2СТ6": "2CT6",
+    "2СТ8": "2CT8",
+    "2СТ10": "2CT10",
+    "2D6": "2D6",
+    "2G6": "2G6",
+    "2G8": "2G8",
+    "2G10": "2G10",
+    "2D10": "2D10",
+    "2E8": "2E8",
+    "2F8": "2F8",
+    "2H8": "2H8",
+    "2H10": "2H10",
+    "2L6": "2L6",
+    "2L8": "2L8",
+    "2L10": "2L10",
+    "2M10": "2M10",
+    "2I8": "2I8",
+    "2I10": "2I10",
+    "2I12": "2I12"
+  },
+  "missing_requested_wire_sections_mm2": [],
+  "items": [
+    {
+      "article": "2CT6",
+      "supplied_article": "2СТ6",
+      "manufacturer": "ДКС",
+      "family": "ТМЛ",
+      "section_mm2": 6,
+      "bolt_metric_mm": 6,
+      "dimensions_mm": {
+        "E": 6.6,
+        "A": 3.8,
+        "C": 5.5,
+        "B": 9.5,
+        "J": 27.5,
+        "F": 1.1,
+        "D": 10.8,
+        "G": 6.2,
+        "H": 7.8
+      },
+      "catalog_nominal_current_a": 50.0,
+      "current_is_assembled_link_rating": false,
+      "product_url": "https://www.dkc.ru/ru/catalog/340/2ct6/",
+      "product_title": "Наконечник кабельный из трубки медной луженой, 6 кв.мм, М6 (ТМЛ)",
+      "source_pdf_page": 625,
+      "source_printed_page": "18.73",
+      "dimension_status": "manufacturer_catalog_reference_without_tolerances",
+      "geometry_derived_mm": {
+        "hole_center_to_cable_entry": 21.3
+      },
+      "manufacturing": {
+        "tolerances": null,
+        "wire_insertion_depth_mm": null,
+        "strip_length_mm": null,
+        "crimp_tool": null,
+        "crimp_die": null,
+        "crimp_count": null,
+        "pugv_hka_compatibility": "not_yet_verified"
+      },
+      "manufacturing_release_ready": false
+    },
+    {
+      "article": "2CT8",
+      "supplied_article": "2СТ8",
+      "manufacturer": "ДКС",
+      "family": "ТМЛ",
+      "section_mm2": 6,
+      "bolt_metric_mm": 8,
+      "dimensions_mm": {
+        "E": 9.0,
+        "A": 3.8,
+        "C": 5.5,
+        "B": 11.0,
+        "J": 30.5,
+        "F": 1.0,
+        "D": 13.0,
+        "G": 8.0,
+        "H": 8.0
+      },
+      "catalog_nominal_current_a": 50.0,
+      "current_is_assembled_link_rating": false,
+      "product_url": "https://www.dkc.ru/ru/catalog/340/2ct8/",
+      "product_title": "Наконечник кабельный из трубки медной луженой, 6 кв.мм, М8 (ТМЛ)",
+      "source_pdf_page": 625,
+      "source_printed_page": "18.73",
+      "dimension_status": "manufacturer_catalog_reference_without_tolerances",
+      "geometry_derived_mm": {
+        "hole_center_to_cable_entry": 22.5
+      },
+      "manufacturing": {
+        "tolerances": null,
+        "wire_insertion_depth_mm": null,
+        "strip_length_mm": null,
+        "crimp_tool": null,
+        "crimp_die": null,
+        "crimp_count": null,
+        "pugv_hka_compatibility": "not_yet_verified"
+      },
+      "manufacturing_release_ready": false
+    },
+    {
+      "article": "2CT10",
+      "supplied_article": "2СТ10",
+      "manufacturer": "ДКС",
+      "family": "ТМЛ",
+      "section_mm2": 6,
+      "bolt_metric_mm": 10,
+      "dimensions_mm": {
+        "E": 11.0,
+        "A": 3.8,
+        "C": 6.0,
+        "B": 11.0,
+        "J": 33.5,
+        "F": 1.0,
+        "D": 15.0,
+        "G": 8.0,
+        "H": 11.0
+      },
+      "catalog_nominal_current_a": 50.0,
+      "current_is_assembled_link_rating": false,
+      "product_url": "https://www.dkc.ru/ru/catalog/340/2ct10/",
+      "product_title": "Наконечник кабельный из трубки медной луженой, 6 кв.мм, М10 (ТМЛ)",
+      "source_pdf_page": 626,
+      "source_printed_page": "18.74",
+      "dimension_status": "manufacturer_catalog_reference_without_tolerances",
+      "geometry_derived_mm": {
+        "hole_center_to_cable_entry": 25.5
+      },
+      "manufacturing": {
+        "tolerances": null,
+        "wire_insertion_depth_mm": null,
+        "strip_length_mm": null,
+        "crimp_tool": null,
+        "crimp_die": null,
+        "crimp_count": null,
+        "pugv_hka_compatibility": "not_yet_verified"
+      },
+      "manufacturing_release_ready": false
+    },
+    {
+      "article": "2D6",
+      "supplied_article": "2D6",
+      "manufacturer": "ДКС",
+      "family": "ТМЛ",
+      "section_mm2": 10,
+      "bolt_metric_mm": 6,
+      "dimensions_mm": {
+        "E": 6.6,
+        "A": 4.5,
+        "C": 6.2,
+        "B": 11.0,
+        "J": 30.8,
+        "F": 1.2,
+        "D": 11.0,
+        "G": 6.0,
+        "H": 9.8
+      },
+      "catalog_nominal_current_a": 80.0,
+      "current_is_assembled_link_rating": false,
+      "product_url": "https://www.dkc.ru/ru/catalog/340/2d6/",
+      "product_title": "Наконечник кабельный из трубки медной луженой, 10 кв.мм, М6 (ТМЛ)",
+      "source_pdf_page": 625,
+      "source_printed_page": "18.73",
+      "dimension_status": "manufacturer_catalog_reference_without_tolerances",
+      "geometry_derived_mm": {
+        "hole_center_to_cable_entry": 24.8
+      },
+      "manufacturing": {
+        "tolerances": null,
+        "wire_insertion_depth_mm": null,
+        "strip_length_mm": null,
+        "crimp_tool": null,
+        "crimp_die": null,
+        "crimp_count": null,
+        "pugv_hka_compatibility": "not_yet_verified"
+      },
+      "manufacturing_release_ready": false
+    },
+    {
+      "article": "2G6",
+      "supplied_article": "2G6",
+      "manufacturer": "ДКС",
+      "family": "ТМЛ",
+      "section_mm2": 35,
+      "bolt_metric_mm": 6,
+      "dimensions_mm": {
+        "E": 6.5,
+        "A": 8.2,
+        "C": 10.4,
+        "B": 17.5,
+        "J": 42.0,
+        "F": 2.0,
+        "D": 15.5,
+        "G": 8.5,
+        "H": 12.3
+      },
+      "catalog_nominal_current_a": 170.0,
+      "current_is_assembled_link_rating": false,
+      "product_url": "https://www.dkc.ru/ru/catalog/340/2g6/",
+      "product_title": "Наконечник кабельный из трубки медной луженой, 35 кв.мм, М6 (ТМЛ)",
+      "source_pdf_page": 625,
+      "source_printed_page": "18.73",
+      "dimension_status": "manufacturer_catalog_reference_without_tolerances",
+      "geometry_derived_mm": {
+        "hole_center_to_cable_entry": 33.5
+      },
+      "manufacturing": {
+        "tolerances": null,
+        "wire_insertion_depth_mm": null,
+        "strip_length_mm": null,
+        "crimp_tool": null,
+        "crimp_die": null,
+        "crimp_count": null,
+        "pugv_hka_compatibility": "not_yet_verified"
+      },
+      "manufacturing_release_ready": false
+    },
+    {
+      "article": "2G8",
+      "supplied_article": "2G8",
+      "manufacturer": "ДКС",
+      "family": "ТМЛ",
+      "section_mm2": 35,
+      "bolt_metric_mm": 8,
+      "dimensions_mm": {
+        "E": 8.4,
+        "A": 8.2,
+        "C": 10.4,
+        "B": 17.5,
+        "J": 42.0,
+        "F": 2.0,
+        "D": 15.5,
+        "G": 8.5,
+        "H": 12.3
+      },
+      "catalog_nominal_current_a": 170.0,
+      "current_is_assembled_link_rating": false,
+      "product_url": "https://www.dkc.ru/ru/catalog/340/2g8/",
+      "product_title": "Наконечник кабельный из трубки медной луженой, 35 кв.мм, М8 (ТМЛ)",
+      "source_pdf_page": 625,
+      "source_printed_page": "18.73",
+      "dimension_status": "manufacturer_catalog_reference_without_tolerances",
+      "geometry_derived_mm": {
+        "hole_center_to_cable_entry": 33.5
+      },
+      "manufacturing": {
+        "tolerances": null,
+        "wire_insertion_depth_mm": null,
+        "strip_length_mm": null,
+        "crimp_tool": null,
+        "crimp_die": null,
+        "crimp_count": null,
+        "pugv_hka_compatibility": "not_yet_verified"
+      },
+      "manufacturing_release_ready": false
+    },
+    {
+      "article": "2G10",
+      "supplied_article": "2G10",
+      "manufacturer": "ДКС",
+      "family": "ТМЛ",
+      "section_mm2": 35,
+      "bolt_metric_mm": 10,
+      "dimensions_mm": {
+        "E": 10.5,
+        "A": 8.2,
+        "C": 10.4,
+        "B": 17.5,
+        "J": 42.0,
+        "F": 2.0,
+        "D": 15.5,
+        "G": 8.5,
+        "H": 12.3
+      },
+      "catalog_nominal_current_a": 170.0,
+      "current_is_assembled_link_rating": false,
+      "product_url": "https://www.dkc.ru/ru/catalog/340/2g10/",
+      "product_title": "Наконечник кабельный из трубки медной луженой, 35 кв.мм, М10 (ТМЛ)",
+      "source_pdf_page": 626,
+      "source_printed_page": "18.74",
+      "dimension_status": "manufacturer_catalog_reference_without_tolerances",
+      "geometry_derived_mm": {
+        "hole_center_to_cable_entry": 33.5
+      },
+      "manufacturing": {
+        "tolerances": null,
+        "wire_insertion_depth_mm": null,
+        "strip_length_mm": null,
+        "crimp_tool": null,
+        "crimp_die": null,
+        "crimp_count": null,
+        "pugv_hka_compatibility": "not_yet_verified"
+      },
+      "manufacturing_release_ready": false
+    },
+    {
+      "article": "2D10",
+      "supplied_article": "2D10",
+      "manufacturer": "ДКС",
+      "family": "ТМЛ",
+      "section_mm2": 10,
+      "bolt_metric_mm": 10,
+      "dimensions_mm": {
+        "E": 11.0,
+        "A": 4.5,
+        "C": 7.1,
+        "B": 11.5,
+        "J": 33.5,
+        "F": 1.6,
+        "D": 14.5,
+        "G": 8.0,
+        "H": 11.2
+      },
+      "catalog_nominal_current_a": 80.0,
+      "current_is_assembled_link_rating": false,
+      "product_url": "https://www.dkc.ru/ru/catalog/340/2d10/",
+      "product_title": "Наконечник кабельный из трубки медной луженой, 10 кв.мм, М10 (ТМЛ)",
+      "source_pdf_page": 626,
+      "source_printed_page": "18.74",
+      "dimension_status": "manufacturer_catalog_reference_without_tolerances",
+      "geometry_derived_mm": {
+        "hole_center_to_cable_entry": 25.5
+      },
+      "manufacturing": {
+        "tolerances": null,
+        "wire_insertion_depth_mm": null,
+        "strip_length_mm": null,
+        "crimp_tool": null,
+        "crimp_die": null,
+        "crimp_count": null,
+        "pugv_hka_compatibility": "not_yet_verified"
+      },
+      "manufacturing_release_ready": false
+    },
+    {
+      "article": "2E8",
+      "supplied_article": "2E8",
+      "manufacturer": "ДКС",
+      "family": "ТМЛ",
+      "section_mm2": 16,
+      "bolt_metric_mm": 8,
+      "dimensions_mm": {
+        "E": 9.0,
+        "A": 5.5,
+        "C": 7.2,
+        "B": 14.5,
+        "J": 34.5,
+        "F": 1.2,
+        "D": 13.0,
+        "G": 6.5,
+        "H": 10.3
+      },
+      "catalog_nominal_current_a": 100.0,
+      "current_is_assembled_link_rating": false,
+      "product_url": "https://www.dkc.ru/ru/catalog/340/2e8/",
+      "product_title": "Наконечник кабельный кольцевой для жилы 16кв.мм под болт М8 (ТМЛ)",
+      "source_pdf_page": 625,
+      "source_printed_page": "18.73",
+      "dimension_status": "manufacturer_catalog_reference_without_tolerances",
+      "geometry_derived_mm": {
+        "hole_center_to_cable_entry": 28.0
+      },
+      "manufacturing": {
+        "tolerances": null,
+        "wire_insertion_depth_mm": null,
+        "strip_length_mm": null,
+        "crimp_tool": null,
+        "crimp_die": null,
+        "crimp_count": null,
+        "pugv_hka_compatibility": "not_yet_verified"
+      },
+      "manufacturing_release_ready": false
+    },
+    {
+      "article": "2F8",
+      "supplied_article": "2F8",
+      "manufacturer": "ДКС",
+      "family": "ТМЛ",
+      "section_mm2": 25,
+      "bolt_metric_mm": 8,
+      "dimensions_mm": {
+        "E": 8.4,
+        "A": 6.9,
+        "C": 8.8,
+        "B": 15.0,
+        "J": 37.0,
+        "F": 1.6,
+        "D": 15.5,
+        "G": 8.0,
+        "H": 10.0
+      },
+      "catalog_nominal_current_a": 140.0,
+      "current_is_assembled_link_rating": false,
+      "product_url": "https://www.dkc.ru/ru/catalog/340/2f8/",
+      "product_title": "Наконечник кабельный из трубки медной луженой, 25 кв.мм, М8 (ТМЛ)",
+      "source_pdf_page": 625,
+      "source_printed_page": "18.73",
+      "dimension_status": "manufacturer_catalog_reference_without_tolerances",
+      "geometry_derived_mm": {
+        "hole_center_to_cable_entry": 29.0
+      },
+      "manufacturing": {
+        "tolerances": null,
+        "wire_insertion_depth_mm": null,
+        "strip_length_mm": null,
+        "crimp_tool": null,
+        "crimp_die": null,
+        "crimp_count": null,
+        "pugv_hka_compatibility": "not_yet_verified"
+      },
+      "manufacturing_release_ready": false
+    },
+    {
+      "article": "2H8",
+      "supplied_article": "2H8",
+      "manufacturer": "ДКС",
+      "family": "ТМЛ",
+      "section_mm2": 50,
+      "bolt_metric_mm": 8,
+      "dimensions_mm": {
+        "E": 9.0,
+        "A": 9.8,
+        "C": 12.3,
+        "B": 20.3,
+        "J": 46.5,
+        "F": 2.5,
+        "D": 18.0,
+        "G": 10.0,
+        "H": 11.5
+      },
+      "catalog_nominal_current_a": 215.0,
+      "current_is_assembled_link_rating": false,
+      "product_url": "https://www.dkc.ru/ru/catalog/340/2h8/",
+      "product_title": "Наконечник кабельный из трубки медной луженой, 50 кв.мм, М8 (ТМЛ)",
+      "source_pdf_page": 625,
+      "source_printed_page": "18.73",
+      "dimension_status": "manufacturer_catalog_reference_without_tolerances",
+      "geometry_derived_mm": {
+        "hole_center_to_cable_entry": 36.5
+      },
+      "manufacturing": {
+        "tolerances": null,
+        "wire_insertion_depth_mm": null,
+        "strip_length_mm": null,
+        "crimp_tool": null,
+        "crimp_die": null,
+        "crimp_count": null,
+        "pugv_hka_compatibility": "not_yet_verified"
+      },
+      "manufacturing_release_ready": false
+    },
+    {
+      "article": "2H10",
+      "supplied_article": "2H10",
+      "manufacturer": "ДКС",
+      "family": "ТМЛ",
+      "section_mm2": 50,
+      "bolt_metric_mm": 10,
+      "dimensions_mm": {
+        "E": 11.0,
+        "A": 9.8,
+        "C": 12.3,
+        "B": 20.3,
+        "J": 46.5,
+        "F": 2.5,
+        "D": 18.0,
+        "G": 10.0,
+        "H": 11.5
+      },
+      "catalog_nominal_current_a": 215.0,
+      "current_is_assembled_link_rating": false,
+      "product_url": "https://www.dkc.ru/ru/catalog/340/2h10/",
+      "product_title": "Наконечник кабельный из трубки медной луженой, 50 кв.мм, М10 (ТМЛ)",
+      "source_pdf_page": 626,
+      "source_printed_page": "18.74",
+      "dimension_status": "manufacturer_catalog_reference_without_tolerances",
+      "geometry_derived_mm": {
+        "hole_center_to_cable_entry": 36.5
+      },
+      "manufacturing": {
+        "tolerances": null,
+        "wire_insertion_depth_mm": null,
+        "strip_length_mm": null,
+        "crimp_tool": null,
+        "crimp_die": null,
+        "crimp_count": null,
+        "pugv_hka_compatibility": "not_yet_verified"
+      },
+      "manufacturing_release_ready": false
+    },
+    {
+      "article": "2L6",
+      "supplied_article": "2L6",
+      "manufacturer": "ДКС",
+      "family": "ТМЛ",
+      "section_mm2": 95,
+      "bolt_metric_mm": 6,
+      "dimensions_mm": {
+        "E": 6.5,
+        "A": 13.5,
+        "C": 16.5,
+        "B": 24.5,
+        "J": 60.5,
+        "F": 3.0,
+        "D": 24.5,
+        "G": 13.5,
+        "H": 15.0
+      },
+      "catalog_nominal_current_a": 270.0,
+      "current_is_assembled_link_rating": false,
+      "product_url": "https://www.dkc.ru/ru/catalog/340/2l6/",
+      "product_title": "Наконечник кабельный из трубки медной луженой, 95 кв.мм, М6 (ТМЛ)",
+      "source_pdf_page": 625,
+      "source_printed_page": "18.73",
+      "dimension_status": "manufacturer_catalog_reference_without_tolerances",
+      "geometry_derived_mm": {
+        "hole_center_to_cable_entry": 47.0
+      },
+      "manufacturing": {
+        "tolerances": null,
+        "wire_insertion_depth_mm": null,
+        "strip_length_mm": null,
+        "crimp_tool": null,
+        "crimp_die": null,
+        "crimp_count": null,
+        "pugv_hka_compatibility": "not_yet_verified"
+      },
+      "manufacturing_release_ready": false
+    },
+    {
+      "article": "2L8",
+      "supplied_article": "2L8",
+      "manufacturer": "ДКС",
+      "family": "ТМЛ",
+      "section_mm2": 95,
+      "bolt_metric_mm": 8,
+      "dimensions_mm": {
+        "E": 9.0,
+        "A": 13.5,
+        "C": 16.5,
+        "B": 24.5,
+        "J": 60.5,
+        "F": 3.0,
+        "D": 24.5,
+        "G": 13.5,
+        "H": 15.0
+      },
+      "catalog_nominal_current_a": 270.0,
+      "current_is_assembled_link_rating": false,
+      "product_url": "https://www.dkc.ru/ru/catalog/340/2l8/",
+      "product_title": "Наконечник кабельный из трубки медной луженой, 95 кв.мм, М8 (ТМЛ)",
+      "source_pdf_page": 625,
+      "source_printed_page": "18.73",
+      "dimension_status": "manufacturer_catalog_reference_without_tolerances",
+      "geometry_derived_mm": {
+        "hole_center_to_cable_entry": 47.0
+      },
+      "manufacturing": {
+        "tolerances": null,
+        "wire_insertion_depth_mm": null,
+        "strip_length_mm": null,
+        "crimp_tool": null,
+        "crimp_die": null,
+        "crimp_count": null,
+        "pugv_hka_compatibility": "not_yet_verified"
+      },
+      "manufacturing_release_ready": false
+    },
+    {
+      "article": "2L10",
+      "supplied_article": "2L10",
+      "manufacturer": "ДКС",
+      "family": "ТМЛ",
+      "section_mm2": 95,
+      "bolt_metric_mm": 10,
+      "dimensions_mm": {
+        "E": 11.0,
+        "A": 13.5,
+        "C": 16.5,
+        "B": 24.5,
+        "J": 60.5,
+        "F": 3.0,
+        "D": 24.5,
+        "G": 13.5,
+        "H": 15.0
+      },
+      "catalog_nominal_current_a": 270.0,
+      "current_is_assembled_link_rating": false,
+      "product_url": "https://www.dkc.ru/ru/catalog/340/2l10/",
+      "product_title": "Наконечник кабельный из трубки медной луженой, 95 кв.мм, М10 (ТМЛ)",
+      "source_pdf_page": 626,
+      "source_printed_page": "18.74",
+      "dimension_status": "manufacturer_catalog_reference_without_tolerances",
+      "geometry_derived_mm": {
+        "hole_center_to_cable_entry": 47.0
+      },
+      "manufacturing": {
+        "tolerances": null,
+        "wire_insertion_depth_mm": null,
+        "strip_length_mm": null,
+        "crimp_tool": null,
+        "crimp_die": null,
+        "crimp_count": null,
+        "pugv_hka_compatibility": "not_yet_verified"
+      },
+      "manufacturing_release_ready": false
+    },
+    {
+      "article": "2M10",
+      "supplied_article": "2M10",
+      "manufacturer": "ДКС",
+      "family": "ТМЛ",
+      "section_mm2": 120,
+      "bolt_metric_mm": 10,
+      "dimensions_mm": {
+        "E": 11.0,
+        "A": 15.2,
+        "C": 18.6,
+        "B": 24.5,
+        "J": 65.0,
+        "F": 3.5,
+        "D": 27.5,
+        "G": 14.5,
+        "H": 15.5
+      },
+      "catalog_nominal_current_a": 285.0,
+      "current_is_assembled_link_rating": false,
+      "product_url": "https://www.dkc.ru/ru/catalog/340/2m10/",
+      "product_title": "Наконечник кабельный из трубки медной луженой, 120 кв.мм, М10 (ТМЛ)",
+      "source_pdf_page": 626,
+      "source_printed_page": "18.74",
+      "dimension_status": "manufacturer_catalog_reference_without_tolerances",
+      "geometry_derived_mm": {
+        "hole_center_to_cable_entry": 50.5
+      },
+      "manufacturing": {
+        "tolerances": null,
+        "wire_insertion_depth_mm": null,
+        "strip_length_mm": null,
+        "crimp_tool": null,
+        "crimp_die": null,
+        "crimp_count": null,
+        "pugv_hka_compatibility": "not_yet_verified"
+      },
+      "manufacturing_release_ready": false
+    },
+    {
+      "article": "2I8",
+      "supplied_article": "2I8",
+      "manufacturer": "ДКС",
+      "family": "ТМЛ",
+      "section_mm2": 70,
+      "bolt_metric_mm": 8,
+      "dimensions_mm": {
+        "E": 9.0,
+        "A": 11.5,
+        "C": 14.2,
+        "B": 23.3,
+        "J": 53.5,
+        "F": 2.8,
+        "D": 20.8,
+        "G": 11.5,
+        "H": 14.5
+      },
+      "catalog_nominal_current_a": 270.0,
+      "current_is_assembled_link_rating": false,
+      "product_url": "https://www.dkc.ru/ru/catalog/340/2i8/",
+      "product_title": "Наконечник кабельный из трубки медной луженой, 70 кв.мм, М8 (ТМЛ)",
+      "source_pdf_page": 625,
+      "source_printed_page": "18.73",
+      "dimension_status": "manufacturer_catalog_reference_without_tolerances",
+      "geometry_derived_mm": {
+        "hole_center_to_cable_entry": 42
+      },
+      "manufacturing": {
+        "tolerances": null,
+        "wire_insertion_depth_mm": null,
+        "strip_length_mm": null,
+        "crimp_tool": null,
+        "crimp_die": null,
+        "crimp_count": null,
+        "pugv_hka_compatibility": "not_yet_verified"
+      },
+      "manufacturing_release_ready": false
+    },
+    {
+      "article": "2I10",
+      "supplied_article": "2I10",
+      "manufacturer": "ДКС",
+      "family": "ТМЛ",
+      "section_mm2": 70,
+      "bolt_metric_mm": 10,
+      "dimensions_mm": {
+        "E": 11.0,
+        "A": 11.5,
+        "C": 14.2,
+        "B": 23.3,
+        "J": 53.5,
+        "F": 2.8,
+        "D": 20.8,
+        "G": 11.5,
+        "H": 14.5
+      },
+      "catalog_nominal_current_a": 270.0,
+      "current_is_assembled_link_rating": false,
+      "product_url": "https://www.dkc.ru/ru/catalog/340/2i10/",
+      "product_title": "Наконечник кабельный из трубки медной луженой, 70 кв.мм, М10 (ТМЛ)",
+      "source_pdf_page": 626,
+      "source_printed_page": "18.74",
+      "dimension_status": "manufacturer_catalog_reference_without_tolerances",
+      "geometry_derived_mm": {
+        "hole_center_to_cable_entry": 42
+      },
+      "manufacturing": {
+        "tolerances": null,
+        "wire_insertion_depth_mm": null,
+        "strip_length_mm": null,
+        "crimp_tool": null,
+        "crimp_die": null,
+        "crimp_count": null,
+        "pugv_hka_compatibility": "not_yet_verified"
+      },
+      "manufacturing_release_ready": false
+    },
+    {
+      "article": "2I12",
+      "supplied_article": "2I12",
+      "manufacturer": "ДКС",
+      "family": "ТМЛ",
+      "section_mm2": 70,
+      "bolt_metric_mm": 12,
+      "dimensions_mm": {
+        "E": 14.0,
+        "A": 11.5,
+        "C": 14.2,
+        "B": 23.3,
+        "J": 53.5,
+        "F": 2.8,
+        "D": 20.8,
+        "G": 11.5,
+        "H": 14.5
+      },
+      "catalog_nominal_current_a": 270.0,
+      "current_is_assembled_link_rating": false,
+      "product_url": "https://www.dkc.ru/ru/catalog/340/2i12/",
+      "product_title": "Наконечник кабельный из трубки медной луженой, 70 кв.мм, М12 (ТМЛ)",
+      "source_pdf_page": 626,
+      "source_printed_page": "18.74",
+      "dimension_status": "manufacturer_catalog_reference_without_tolerances",
+      "geometry_derived_mm": {
+        "hole_center_to_cable_entry": 42
+      },
+      "manufacturing": {
+        "tolerances": null,
+        "wire_insertion_depth_mm": null,
+        "strip_length_mm": null,
+        "crimp_tool": null,
+        "crimp_die": null,
+        "crimp_count": null,
+        "pugv_hka_compatibility": "not_yet_verified"
+      },
+      "manufacturing_release_ready": false
+    }
+  ]
+}

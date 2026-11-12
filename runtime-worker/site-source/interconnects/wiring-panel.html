@@ -1,0 +1,27 @@
+<section class="wrap" id="rack-wiring">
+<h2>3. Соединения и перемычки</h2><p id="wiring-layout-context"></p>
+<p>Расчёт для выбранной компоновки. Электрическая линейка — последовательная цепь; она может занимать несколько рядов и ярусов.</p>
+<form id="wiring-form"><div class="planner-fields">
+<label>АКБ в линейке<input id="wiring-series" type="number" min="1" max="200" value="40" required></label>
+<label>Количество линеек<input id="wiring-strings" type="number" min="1" max="200" value="1" required></label>
+<label>Шина постоянного тока ИБП<select id="wiring-topology" required><option value="">Выберите схему</option><option value="two">Два вывода: − и +</option><option value="midpoint">Три вывода: −, средняя точка, +</option></select></label>
+</div>
+<details open><summary>Клеммы и поворот батарей</summary><p id="terminal-note">Выберите компоновку батарей.</p><p>Вид сверху на неповёрнутую АКБ: X вдоль длины, Y вдоль ширины, начало в левом верхнем углу. Высота клемм принята по полной высоте батареи.</p><div class="planner-fields">
+<label>Клемма −: X, мм<input id="terminal-mx" type="number" min="0" step="any" required></label>
+<label>Клемма −: Y, мм<input id="terminal-my" type="number" min="0" step="any" required></label>
+<label>Клемма +: X, мм<input id="terminal-px" type="number" min="0" step="any" required></label>
+<label>Клемма +: Y, мм<input id="terminal-py" type="number" min="0" step="any" required></label>
+</div><label><input id="terminal-confirmed" type="checkbox"> Координаты и полярность сверены с размерным чертежом или измерением</label><br><label><input id="wire-flip" type="checkbox" checked> Разрешить поворот отдельных батарей на 180° в горизонтальной плоскости</label></details>
+<details open><summary>Кабели, наконечники и монтажные запасы</summary><div class="planner-fields">
+<label>Сечение ПуГВ, мм²<input id="wire-section" type="number" min="1" step="any" placeholder="Введите выбранное сечение" required></label>
+<label>ДКС — одинаковые наконечники у АКБ<select id="wire-lug" required></select></label>
+
+<label>Подъём трассы над клеммами, мм<input id="wire-rise" type="number" min="1" value="20" required></label>
+<label>Запас на перемычку, мм<input id="wire-allowance" type="number" min="0" value="50" required></label>
+<label>Округление вверх, мм<input id="wire-round" type="number" min="1" value="10" required></label>
+<label>Термоусадка на конец, мм<input id="wire-shrink" type="number" min="0" value="40" required></label>
+</div><p>Считаются внутренние соединения выбранной компоновки. Кабели к размыкателю, ИБП и между шкафами требуют координат аппаратов и отдельной трассы. Длина трассы с запасом не является длиной отрезка провода для изготовления.</p></details>
+<details><summary>Электрические потери по полученным длинам</summary><div class="planner-fields"><label>Ток линейки, А<input id="wire-current" type="number" min="0.000001" step="any" placeholder="Из расчёта автономии"></label><label>Температура жилы, °C<input id="wire-temp" type="number" min="-20" max="120" value="20"></label><label>Сопротивление кабеля R20, Ом/км<input id="wire-r20" type="number" min="0.000001" step="any" placeholder="Без значения — оценка по меди"></label></div><p>Без заданного тока выдаётся геометрия. Контакты, нагрев и допустимый ток не проверяются.</p></details><button type="submit" class="button dark">Рассчитать соединения</button></form>
+<p id="wiring-message" role="status">Сначала выберите компоновку батарей.</p><div id="wiring-result"></div>
+<button type="button" id="wiring-svg" disabled>Скачать схему SVG</button> <button type="button" id="wiring-csv" disabled>Спецификация для Excel (CSV)</button>
+</section>

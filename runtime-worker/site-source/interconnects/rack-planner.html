@@ -1,0 +1,25 @@
+<section class="wrap rack-planner" data-battery-models="__MODELS__">
+<h2>Батареи и варианты размещения</h2><p>Компоновка на одном условном стеллаже. Проверка несущей способности ещё не выполнена.</p>
+<form id="battery-form"><div class="planner-fields">
+<label>Модель батареи<select id="battery-model"><option value="manual">Ручной ввод</option></select></label>
+<label>Исполнение стеллажа<select id="rack-execution"><option value="open">Открытый</option><option value="closed">Закрытый</option></select></label>
+<label>Количество<input id="bat-count" type="number" min="1" max="200" step="1" value="40" required></label>
+<label>Длина батареи, мм<input id="bat-l" type="number" min="1" step="any" required></label>
+<label>Ширина батареи, мм<input id="bat-w" type="number" min="1" step="any" required></label>
+<label>Высота с клеммами, мм<input id="bat-h" type="number" min="1" step="any" required></label>
+<label>Масса батареи, кг<input id="bat-mass" type="number" min="0.01" step="any" required></label>
+<label>Зазор между батареями, мм<input id="bat-gap" type="number" min="0" step="any" value="10" required></label>
+<label>Свободно над батареей, мм<input id="bat-clearance" type="number" min="0" step="any" value="100" required></label>
+</div><p id="battery-source"></p><button type="submit" class="button dark">Рассчитать варианты</button><p id="planner-error" role="alert"></p></form>
+<p class="rack-notice" id="concept-help">Размеры концепта: отступ до оси крайней опоры 30 мм для открытых моделей, 40 мм для закрытых, нижний уровень 190 мм, резерв под балку 25 мм. Реальные сечения, пролёты, устойчивость, допуски и кабельные зазоры требуют проверки. Предварительная компоновка. Модель стеллажа и состав комплекта ещё не подобраны.</p>
+<p id="open-layout-help">Поворот 0°/90° выполняется в горизонтальной плоскости, клеммами вверх. В рекомендациях показаны разные варианты числа ярусов с минимальными подходящими размерами стеллажа. На карточках указаны длина, глубина и полная высота с батареями. Для 3D-подбора доступны __REFERENCE_COUNT__ конфигураций с двумя, четырьмя и пятью ярусами; длиной 600–3450 мм; полный список 114 артикулов семейства вынесен в каталог. В проекте шины переставляются под батареи; допустимость перестановки ещё не подтверждена.</p>
+<p id="closed-layout-help" class="rack-notice" hidden>Закрытое исполнение: предварительное сравнение с семействами 4E / 5E при согласованных данных BOM. 3D показывает сборочную схему выбранного артикула: рамы, опорные профили и облицовку. Число рам и панелей — из BOM, уровни — из чертежей серии. Сечения, порядок пролётов и расположение крепежа схематические; перестановка шин и нагрузка требуют проверки.</p>
+<div id="placement-options" class="placement-options" aria-label="Варианты размещения"></div><p id="placement-summary" aria-live="polite"></p>
+<section id="rack-comparison" aria-live="polite"></section><h3>3D и чертёж</h3><button type="button" id="show-placement">Схема батарей</button> <button type="button" id="show-reference">Конструкция выбранного артикула</button><p id="geometry-status" aria-live="polite"></p><p id="geometry-source"></p><p>Перетаскивание — поворот; колесо — масштаб. С клавиатуры: стрелки влево и вправо.</p>
+<label id="cladding-control" hidden><input type="checkbox" id="rack-hide-cladding" checked> Скрыть облицовку для осмотра батарей (3D и эскиз)</label>
+<label><input type="checkbox" id="rack-hide-batteries"> Скрыть батареи в 3D для осмотра узлов</label>
+<canvas id="rack-3d" width="1000" height="500" tabindex="0" aria-label="Вращаемая 3D-компоновка стеллажа с батареями"></canvas><button type="button" id="reset-view">Сбросить вид</button>
+<h3>Габаритный эскиз и изометрия</h3><button id="drawing-download" type="button" disabled>Скачать чертёж SVG</button><div id="rack-drawing"></div>
+</section>
+
+<p class="wrap"><a id="placement-cabinet-link" class="button outline" href="/cabinets/shelf/">Разместить в шкафу →</a> <a class="button dark" href="#rack-wiring">Соединения и перемычки ↓</a></p>__WIRING_PANEL__

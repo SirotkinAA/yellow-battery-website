@@ -44,5 +44,6 @@
     if(['shelf-length','shelf-width','shelf-mass'].includes(e.target.id)) {selector.value='manual';$('source').textContent='Свои параметры AGM — проверьте размеры и массу по листовке.';}
     if(e.target!==selector) render();
   });
+  const params=new URLSearchParams(location.search),index=models.findIndex(m=>m.id===params.get('model'));if(index>=0)selector.value=String(index);if(params.has('count'))$('count').value=params.get('count');
   setModel(); render();
 })();

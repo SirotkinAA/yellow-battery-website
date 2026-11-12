@@ -26,7 +26,8 @@ function modelLink(id){const path=modelPages[id];if(!path)return node("span",id)
 
 function rackLink(item){
  const link=node('a','Подобрать стеллажи →','rack-select-link');
- link.href='/racks/?'+new URLSearchParams({model:item.model_id,count:String(item.total_batteries)});
+ link.href='/racks/?'+new URLSearchParams({model:item.model_id,count:String(item.total_batteries),series:String(item.total_batteries/item.parallel_strings),strings:String(item.parallel_strings)});
+ if(item.current_check){const u=new URL(link.href,location.origin);u.searchParams.set('current_a',String(item.current_check.string_current_a));link.href=u.pathname+u.search;}
  link.target='_blank';link.rel='noopener';
  link.setAttribute('aria-label',t('Подобрать стеллажи →')+' '+item.model_id+' · '+item.total_batteries);
  return link;

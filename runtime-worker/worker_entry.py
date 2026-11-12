@@ -31,6 +31,17 @@ class Default(WorkerEntrypoint):
         origin=url.scheme+'://'+url.netloc
         binding=getattr(self.env,'PORTAL_DB',None)
         portal=Portal(D1Store(binding),None,origin) if binding else None
+        if path.startswith('/interconnects/api/drawing/'):
+            if path.rsplit('/',1)[-1] not in ('pdf','dwg','dxf'):
+                return reply({'error':'not_found'},404)
+            if request.method!='POST':return reply({'error':'POST required'},405)
+            supplied_origin=request.headers.get('Origin')
+            if supplied_origin and supplied_origin!=origin:
+                return reply({'error':'Origin rejected'},403)
+            service=getattr(self.env,'DRAWINGS_SERVICE',None)
+            if service is None:return reply({'error':'Сервис чертежей ещё не подключён'},503)
+            try:return await service.fetch(request)
+            except Exception:return reply({'error':'Сервис чертежей временно недоступен'},503)
         if path == '/assets/vision/workbook-v2-5.json':
             if request.method not in ('GET','HEAD'):return reply({'error':'method_not_allowed'},405)
             if not binding:return reply({'error':'catalogue_unavailable'},503)

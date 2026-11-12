@@ -6,6 +6,7 @@
   const fmt=n=>n.toLocaleString('ru-RU',{maximumFractionDigits:2});
   let lastInput=null, lastResult=null;
   function clear(message){
+    document.dispatchEvent(new CustomEvent('rack-layout-cleared'));
     lastResult=null; $('error').textContent=message; $('error').hidden=false;
     for(const id of ['result','front','top','levels','bom','level','fleet','selected']) $(id).replaceChildren();
   }
@@ -56,6 +57,7 @@
       // Model names are user/catalogue text, assigned via textContent below.
       $('bom').innerHTML=`<h3>Ведомость выбранного шкафа</h3><table><thead><tr><th>Компонент</th><th>Шт.</th><th>Масса, кг</th></tr></thead><tbody><tr><td>Корпус Rittal ${m.article}</td><td>1</td><td>${fmt(m.mass)}</td></tr><tr><td>Полка ${m.shelfArticle} с комплектным крепежом</td><td>${r.levels.length}</td><td>${fmt(r.shelfMass)}</td></tr><tr><td id="cabinet-battery-name"></td><td>${r.placed}</td><td>${fmt(r.batteryMass)}</td></tr><tr><td>Коммутация с креплением (введённая масса)</td><td>${r.switchZone?1:0}</td><td>${fmt(r.equipmentMass)}</td></tr><tr><td>Прочая комплектация (введённая масса)</td><td>—</td><td>${fmt(settings.extraMass)}</td></tr></tbody></table><p class="shelf-small">Ведомость для размещённых ${r.placed} АКБ. Боковые панели, основание, цоколь, кабели, защита и вентиляция ещё не подобраны. Массу коммутации с креплением задайте в её разделе, остальных элементов — в поле «Прочая комплектация». Не учитывайте одни и те же компоненты дважды. Это не спецификация для заказа.</p>`;
       const model=document.getElementById('shelf-model');
+      document.dispatchEvent(new CustomEvent('rack-layout-updated',{detail:{geometry:LayoutInterconnects.cabinetGeometry(r,input,settings),model:model.value==='manual'?'Ручной ввод':model.selectedOptions[0].textContent,length:input.length,width:input.width,scope:`Шкаф ${index+1} из ${fleet.cabinets.length} · Rittal ${m.article}. Только соединения внутри выбранного шкафа.`,cabinetCount:fleet.cabinets.length}}));
       $('battery-name').textContent=model.value==='manual'?'AGM по введённым параметрам':model.selectedOptions[0].textContent;
     }catch(e){clear(e.message);}
   }
