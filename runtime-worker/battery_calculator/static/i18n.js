@@ -1,5 +1,7 @@
 'use strict';
 const translationsEn = {
+'Подробности расчёта':'Calculation details',
+'Скачать технические данные (JSON)':'Download technical data (JSON)',
 'Максимум параллельных линеек':'Maximum parallel strings',
 'Выбор':'Select','Выбрано:':'Selected:','АКБ':'batteries',
 'С запасом автономии':'Additional runtime',
