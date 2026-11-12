@@ -1,0 +1,22 @@
+{
+  "libredwg": {
+    "version": "0.13.4",
+    "source": "https://ftp.gnu.org/gnu/libredwg/libredwg-0.13.4.tar.xz",
+    "sha256": "7e153ea4dac4cbf3dc9c50b9ef7a5604e09cdd4c5520bcf8017877bbe1422cd5",
+    "local_patch": "libredwg-0.13.4-ru.patch",
+    "changes": [
+      "dwgadd UTF-8 input buffers expanded to 4096 bytes",
+      "dwgadd codepage ANSI-1251",
+      "CP1251 byte 0xFF mapping for Cyrillic small ya fixed in both directions"
+    ],
+    "license": "GPL-3.0-or-later",
+    "export_version": "DWG R2000 / AC1015",
+    "validation": "Each exported file is read back with dwg2dxf; ezdxf verifies units, all text, all primitive coordinates and Arial text style."
+  },
+  "pkgconf": {
+    "version": "2.5.1",
+    "source": "https://distfiles.ariadne.space/pkgconf/pkgconf-2.5.1.tar.xz",
+    "sha256": "cd05c9589b9f86ecf044c10a2269822bc9eb001eced2582cfffd658b0a50c243"
+  },
+  "ezdxf": "1.4.5"
+}

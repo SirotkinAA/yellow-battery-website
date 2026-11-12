@@ -1,0 +1,15 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "yellow-drawings-test",
+  "main": "src/index.mjs",
+  "compatibility_date": "2026-11-12",
+  "workers_dev": false,
+  "preview_urls": false,
+  "containers": [{
+    "class_name": "DrawingContainer",
+    "scheduling_policy": "durable_object",
+    "images": {"base": {"dockerfile": "./Dockerfile", "build_context": "../.."}}
+  }],
+  "durable_objects": {"bindings": [{"name": "DRAWINGS", "class_name": "DrawingContainer"}]},
+  "exports": {"DrawingContainer": {"type": "durable-object", "storage": "sqlite"}}
+}

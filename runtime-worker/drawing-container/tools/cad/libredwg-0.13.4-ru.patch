@@ -1,0 +1,69 @@
+--- a/examples/dwgadd.c
++++ b/examples/dwgadd.c
+@@ -75,11 +75,11 @@
+ #else
+ #  define SSCANF_S sscanf
+ #  define SZ
+-#  define FMT_NAME "%119[a-zA-Z0-9_]"
+-#  define FMT_TAG "%119[^ !]"
+-#  define FMT_TBL "\"%119[a-zA-Z0-9._ -]\""
+-#  define FMT_PATH "\"%119[a-zA-Z0-9_. \\-/]\""
+-#  define FMT_ANY "\"%119[^\"]\""
++#  define FMT_NAME "%4095[a-zA-Z0-9_]"
++#  define FMT_TAG "%4095[^ !]"
++#  define FMT_TBL "\"%4095[a-zA-Z0-9._ -]\""
++#  define FMT_PATH "\"%4095[a-zA-Z0-9_. \\-/]\""
++#  define FMT_ANY "\"%4095[^\"]\""
+ #endif
+ 
+ static int
+@@ -691,10 +691,10 @@
+     } u;
+   } lastent_t;
+   lastent_t ent, insert, dict, mtext;
+-  char text[120];
+-  char prompt[120];
+-  char tag[120];
+-  char default_text[120];
++  char text[4096];
++  char prompt[4096];
++  char tag[4096];
++  char default_text[4096];
+   const char *hdr_s = "mspace";
+ 
+   LOG_TRACE ("==========================================\n");
+@@ -716,7 +716,7 @@
+   // read dat line by line and call the matching add API
+   while (p && p < end)
+     {
+-      char s1[120];
++      char s1[4096];
+       dwg_point_2d p2 = { 0.0, 0.0 };
+       dwg_point_2d p3 = { 0.0, 0.0 };
+       dwg_point_2d p4 = { 0.0, 0.0 };
+@@ -881,6 +881,7 @@
+             dwg = dwg_new_Document (version, imperial, 0);
+           else
+             dwg_add_Document (dwg, imperial);
++          dwg->header.codepage = 29; /* Local Russian drawing exporter: ANSI-1251 */
+           *dwgp = dwg;
+           ADD_INITIAL;
+           LOG_TRACE ("==========================================\n");
+--- a/src/codepages.c
++++ b/src/codepages.c
+@@ -335,6 +335,7 @@
+ wchar_t
+ dwg_codepage_uc (Dwg_Codepage cp, unsigned char c)
+ {
++  if (cp == CP_ANSI_1251 && c == 0xff) return 0x044f;
+   if (c < 128)
+     return (wchar_t)c;
+   else if (cp == CP_US_ASCII)
+@@ -364,6 +365,7 @@
+ unsigned char
+ dwg_codepage_c (Dwg_Codepage cp, wchar_t wc)
+ {
++  if (cp == CP_ANSI_1251 && wc == 0x044f) return 0xff;
+   if (wc < 128)
+     {
+       if (cp == CP_US_ASCII || cp == CP_UTF8 || cp == CP_UTF16)

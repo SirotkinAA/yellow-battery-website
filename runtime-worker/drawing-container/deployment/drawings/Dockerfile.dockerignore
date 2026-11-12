@@ -1,0 +1,16 @@
+**
+!deployment/
+!deployment/drawings/
+!deployment/drawings/Dockerfile
+!deployment/drawings/requirements.txt
+!deployment/drawings/server.py
+!deployment/drawings/smoke.py
+!interconnect_documents/
+!interconnect_documents/__init__.py
+!interconnect_documents/drawing.py
+!data/
+!data/interconnects/
+!data/interconnects/dkc-tml.json
+!tools/
+!tools/cad/
+!tools/cad/libredwg-0.13.4-ru.patch

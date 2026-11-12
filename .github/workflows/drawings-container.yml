@@ -1,0 +1,25 @@
+name: Verify drawing container
+on:
+  push:
+    branches: [codex/drawings-container]
+    paths: ['runtime-worker/drawing-container/**', '.github/workflows/drawings-container.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  linux-cad:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: runtime-worker/drawing-container
+      - name: Build Linux CAD image and run Cyrillic PDF-DWG-DXF smoke tests
+        run: docker build --platform linux/amd64 --progress=plain -f runtime-worker/drawing-container/deployment/drawings/Dockerfile -t yellow-drawings-test runtime-worker/drawing-container
+      - name: Verify unprivileged HTTP service
+        run: |
+          docker run --rm -d --name yellow-cad-test -p 127.0.0.1:8080:8080 yellow-drawings-test
+          trap 'docker stop yellow-cad-test' EXIT
+          for i in $(seq 1 30); do curl -fsS http://127.0.0.1:8080/health && break; sleep 1; done
+          curl -fsS -H 'Content-Type: application/json' -d '{"section_mm2":70,"length_m":0.66,"series_batteries":2,"parallel_strings":1,"lug_left":"2I8","lug_right":"2I8"}' http://127.0.0.1:8080/interconnects/api/drawing/dwg -o /tmp/test.dwg
+          test "$(head -c 6 /tmp/test.dwg)" = AC1015
