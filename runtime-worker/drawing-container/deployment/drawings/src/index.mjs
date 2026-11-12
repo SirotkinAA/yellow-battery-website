@@ -21,7 +21,8 @@ export class DrawingContainer extends DurableObject {
     this.observeExit();
     await c.setInactivityTimeout(60000);
     const port=c.getTcpPort(8080);
-    for(let attempt=0;attempt<100;attempt++) {
+    const deadline=Date.now()+90000;
+    while(Date.now()<deadline) {
       try {
         const r=await port.fetch('http://container/health',{signal:AbortSignal.timeout(1000)});
         await r.body?.cancel();
