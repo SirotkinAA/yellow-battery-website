@@ -17,11 +17,16 @@ function publicPage(response) {
     .on('.test-strip, .account-link, meta[name="robots"], script[src^="/assets/prices.js"], script[src^="/assets/navigation.js"]', {
       element(element) { element.remove(); }
     })
+    .on('.bms-catalog-hero .button-row', {
+      element(element) {
+        element.append('<a class="button" href="/hmi/"><span data-lang="ru">Открыть демо HMI</span><span data-lang="en" hidden>Explore HMI demo</span></a>', {html: true});
+      }
+    })
     .on('a[href^="/"]', {
       element(element) {
         const href = element.getAttribute('href');
         const path = new URL(href, service).pathname;
-        if (path === '/' || isBmsPage(path) || isBmsAsset(path)) return;
+        if (path === '/' || path === '/hmi/' || isBmsPage(path) || isBmsAsset(path)) return;
         if (path === '/contacts/') element.setAttribute('href', contact);
         else if (path === '/documents/') element.setAttribute('href', '/bms/#documentation');
         else element.remove();
