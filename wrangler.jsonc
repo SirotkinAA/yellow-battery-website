@@ -4,19 +4,13 @@
   "assets": {
     "directory": "./public",
     "binding": "ASSETS",
-    "run_worker_first": [
-      "/bms",
-      "/bms/*",
-      "/assets/bms/*",
-      "/assets/docs/yellow-bms/*",
-      "/assets/site.css",
-      "/assets/site.js",
-      "/assets/navigation.css",
-      "/assets/yellow.svg",
-      "/assets/bms.css",
-      "/assets/bms.js",
-      "/assets/bms-sizing.js"
-    ]
+    "run_worker_first": true
   },
-  "main": "bms-gateway.mjs"
+  "main": "bms-gateway.mjs",
+  "services": [
+    {
+      "binding": "CATALOGUE",
+      "service": "yellow-battery-runtime-test"
+    }
+  ]
 }
