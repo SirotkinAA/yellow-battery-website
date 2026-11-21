@@ -63,6 +63,11 @@ function isPrivatePath(path) {
 
 function publicPage(response, url) {
   return new HTMLRewriter()
+    .on('#monitor-example', {
+      element(element) {
+        if (url.pathname === '/bms' || url.pathname === '/bms/') element.remove();
+      }
+    })
     .on('.test-strip, meta[name="robots"]', {
       element(element) { element.remove(); }
     })
