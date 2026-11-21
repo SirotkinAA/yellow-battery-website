@@ -15,6 +15,9 @@ function publicPage(response, url) {
         element.append('<a class="button" href="/hmi/"><span data-lang="ru">Открыть демо HMI</span><span data-lang="en" hidden>Explore HMI demo</span></a>', {html: true});
       }
     })
+    .on('script[src^="/assets/navigation.js"]', {
+      element(element) { element.setAttribute('src', '/assets/navigation.js?v=main-20261121'); }
+    })
     .on('[href], [src], [action]', {
       element(element) {
         for (const attribute of ['href', 'src', 'action']) {
@@ -38,6 +41,16 @@ export default {
       // The original request origin is retained for cookies, CSRF and generated links.
       const response = await env.CATALOGUE.fetch(request);
       const headers = new Headers(response.headers);
+      if (url.pathname === '/assets/navigation.js' && response.ok && request.method === 'GET') {
+        const source = (await response.text()).replace(
+          "if(!document.querySelector('.test-strip'))",
+          "if(location.hostname.startsWith('test.')&&!document.querySelector('.test-strip'))"
+        );
+        headers.delete('Content-Length');
+        headers.delete('ETag');
+        headers.set('Cache-Control', 'no-cache');
+        return new Response(source, {status: response.status, headers});
+      }
       const location = headers.get('Location');
       if (location) {
         const target = new URL(location, url);
