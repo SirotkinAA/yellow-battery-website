@@ -2,6 +2,7 @@
 <html lang="en">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="/assets/polish.js?v=pl-20261122"></script>
 <title>YELLOW HMI · Demo</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#f2f3f5;color:#243443;font:15px system-ui,sans-serif}header{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:16px 24px;background:#1c2b38;color:white}header strong{color:#ffda39;letter-spacing:.08em}.layout{display:grid;grid-template-columns:210px minmax(0,1fr);min-height:calc(100vh - 58px)}nav{background:#253747;color:white;padding:20px 12px}button,select{font:inherit;padding:8px 12px;border:1px solid #a7b5c1;border-radius:4px;background:white;color:#243443}button{cursor:pointer}nav button{display:block;width:100%;text-align:left;margin-bottom:8px;background:transparent;color:white;border-color:transparent}nav button[aria-pressed=true]{background:#ffda39;color:#243443}main{padding:clamp(12px,3vw,32px)}h1{margin:0 0 6px;font-size:clamp(22px,4vw,32px)}h2{font-size:18px}.panel{background:white;padding:clamp(12px,3vw,24px);border:1px solid #d4dce3;margin-top:20px}.controls,.metrics{display:flex;gap:14px;flex-wrap:wrap;align-items:center}.metrics{margin-bottom:20px;gap:32px}.metrics strong{display:block;font-size:22px}.chart{display:grid;gap:8px;grid-template-columns:repeat(8,minmax(0,1fr));min-height:190px;align-items:end;text-align:center;margin:20px 0}.column{display:grid;grid-template-rows:auto 120px auto;gap:5px;font-variant-numeric:tabular-nums;font-size:12px}.track{height:120px;display:flex;align-items:end;background:#edf1f4}.bar{background:#167766;width:100%}.alert .bar{background:#a62935}.table-wrap{overflow:auto}table{width:100%;border-collapse:collapse}th,td{padding:10px;text-align:left;border-bottom:1px solid #d4dce3}.alert{color:#9d2630}.muted{color:#536578}@media(max-width:700px){.layout{display:block}nav{display:flex;flex-wrap:wrap;gap:4px;padding:8px}nav button{width:auto;margin:0}.chart{grid-template-columns:repeat(4,minmax(0,1fr))}}
@@ -50,7 +51,7 @@ nav button { display: flex; align-items: center; }
 <p class="muted" data-en="Demo sign-in" data-ru="Демонстрационный вход">Demo sign-in</p>
 <label><span data-en="Username" data-ru="Пользователь">Username</span> <input id="login-user" type="text" value="demo-admin" required autocomplete="off"></label>
 <label><span data-en="Password" data-ru="Пароль">Password</span> <input id="login-password" type="password" value="yellow-demo-admin" required autocomplete="off"></label>
-<label><span data-en="Language" data-ru="Язык">Language</span><select id="language"><option value="ru">Русский</option><option value="en" selected>English</option>
+<label><span data-en="Language" data-ru="Язык">Language</span><select id="language"><option value="ru">Русский</option><option value="en" selected>English</option><option value="pl" lang="pl">Polski</option>
 <option value="tr" lang="tr">Türkçe</option>
 <option value="zh-Hans" lang="zh-Hans">简体中文</option>
 <option value="zh-Hant" lang="zh-Hant">繁體中文</option></select></label>
@@ -494,6 +495,7 @@ const translationIndex = {tr:0,'zh-Hans':1,'zh-Hant':2};
 function tr(ru,en) {
  const language=document.documentElement.lang;
  if(language==='ru') return ru;
+ if(language==='pl') return window.yellowPolish(en);
  const translation=Object.hasOwn(translatedText,en)?translatedText[en]:undefined;
  return translation?.[translationIndex[language]]??en;
 }
@@ -1998,6 +2000,7 @@ byId('logout').addEventListener('click',()=>{
 });
 function applyLanguage() {
  document.documentElement.lang=byId('language').value;
+ try { localStorage.setItem('yellow-site-language',document.documentElement.lang); } catch {}
  document.title=tr('YELLOW HMI · Демонстрация','YELLOW HMI · Demo');
  for(const node of document.querySelectorAll('[data-en]')){
   node.dataset.ru??=node.textContent.trim();
@@ -2014,6 +2017,7 @@ function applyLanguage() {
  byId('login-error').textContent='';
  render();
 }
+try { if(localStorage.getItem('yellow-site-language')==='pl') byId('language').value='pl'; } catch {}
 byId('language').addEventListener('change',applyLanguage);
 window.addEventListener('hashchange',()=>{
  if(sessionRole) showPage(requestedPage());
