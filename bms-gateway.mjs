@@ -63,6 +63,7 @@ function isPrivatePath(path) {
 
 function publicPage(response, url) {
   return new HTMLRewriter()
+    .on('head', { element(element) { element.append('<script src="/assets/polish.js?v=pl-20261122"></script>', {html:true}); } })
     .on('#monitor-example', {
       element(element) {
         if (url.pathname === '/bms' || url.pathname === '/bms/') element.remove();
@@ -77,8 +78,15 @@ function publicPage(response, url) {
       }
     })
     .on('script[src^="/assets/navigation.js"]', {
-      element(element) { element.setAttribute('src', '/assets/navigation.js?v=main-20261121'); }
+      element(element) { element.setAttribute('src', '/assets/navigation.js?v=pl-20261122'); }
     })
+    .on('script[src]', { element(element) {
+      const src=element.getAttribute('src');
+      if(src && (/^\/assets\/[^/]+\.js(?:\?|$)/.test(src) || /^\/runtime\/(app|i18n|help)\.js(?:\?|$)/.test(src))) {
+        const asset=new URL(src,url.origin); asset.searchParams.set('v','pl-20261122');
+        element.setAttribute('src',asset.pathname+asset.search);
+      }
+    } })
     .on('[href], [src], [action]', {
       element(element) {
         for (const attribute of ['href', 'src', 'action']) {
@@ -92,9 +100,32 @@ function publicPage(response, url) {
     .transform(response);
 }
 
+// Polish uses the existing English rendering paths, then the shared dictionary.
+function localizeScript(source, path) {
+  source = source.replaceAll("document.documentElement.lang.startsWith('en')", "['en','pl'].includes(document.documentElement.lang)")
+    .replaceAll(/document\.documentElement\.lang\s*===\s*'en'/g, "['en','pl'].includes(document.documentElement.lang)")
+    .replaceAll("el.dataset.lang !== language", "el.dataset.lang !== (language==='pl'?'en':language)")
+    .replaceAll("el.dataset.lang!==language", "el.dataset.lang!==(language==='pl'?'en':language)");
+  if (path === '/assets/navigation.js') {
+    source = source.replace("if(!document.querySelector('.test-strip'))", "if(location.hostname.startsWith('test.')&&!document.querySelector('.test-strip'))")
+      .replace('<button type="button" data-language="ru"', '<button type="button" data-language="pl" lang="pl" aria-pressed="false">PL</button><button type="button" data-language="ru"');
+  }
+  if (path === '/assets/site.js') {
+    source = source.replace("['ru', 'en']", "['ru', 'en', 'pl']")
+      .replace("'data-text-'+language", "'data-text-'+(language==='pl'?'en':language)")
+      .replace("'data-alt-'+language", "'data-alt-'+(language==='pl'?'en':language)");
+  }
+  if (path === '/runtime/i18n.js') {
+    source = source.replace("saved==='en'||saved==='ru'", "saved==='en'||saved==='ru'||saved==='pl'");
+  }
+  source = source.replaceAll("language==='ru'?'ru-RU':'en-GB'", "language==='pl'?'pl-PL':language==='ru'?'ru-RU':'en-GB'");
+  return source;
+}
+
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
+    if (url.pathname === '/assets/polish.js') return env.ASSETS.fetch(request);
     if (url.pathname === '/hmi' || url.pathname.startsWith('/hmi/')) {
       return env.ASSETS.fetch(request);
     }
@@ -102,13 +133,10 @@ export default {
       // The original request origin is retained for cookies, CSRF and generated links.
       const response = await env.CATALOGUE.fetch(request);
       const headers = new Headers(response.headers);
-      if (url.pathname === '/assets/navigation.js' && response.ok && request.method === 'GET') {
-        const source = (await response.text()).replace(
-          "if(!document.querySelector('.test-strip'))",
-          "if(location.hostname.startsWith('test.')&&!document.querySelector('.test-strip'))"
-        );
-        headers.delete('Content-Length');
-        headers.delete('ETag');
+      if (request.method === 'GET' && response.ok && (
+        /^\/assets\/[^/]+\.js$/.test(url.pathname) || /^\/runtime\/(i18n|app|help)\.js$/.test(url.pathname))) {
+        const source = localizeScript(await response.text(), url.pathname);
+        headers.delete('Content-Length'); headers.delete('ETag');
         headers.set('Cache-Control', 'no-cache');
         return new Response(source, {status: response.status, headers});
       }
