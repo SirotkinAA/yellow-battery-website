@@ -119,6 +119,7 @@ function localizeScript(source, path) {
     source = source.replace("saved==='en'||saved==='ru'", "saved==='en'||saved==='ru'||saved==='pl'");
   }
   source = source.replaceAll("language==='ru'?'ru-RU':'en-GB'", "language==='pl'?'pl-PL':language==='ru'?'ru-RU':'en-GB'");
+  if(path==='/assets/lithium.js') source=source.replaceAll("en?'en':'ru'","document.documentElement.lang==='pl'?'pl-PL':en?'en':'ru'");
   return source;
 }
 
