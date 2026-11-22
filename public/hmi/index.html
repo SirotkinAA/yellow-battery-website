@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-native-i18n="true">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script src="/assets/polish.js?v=pl-20261122"></script>
@@ -495,7 +495,7 @@ const translationIndex = {tr:0,'zh-Hans':1,'zh-Hant':2};
 function tr(ru,en) {
  const language=document.documentElement.lang;
  if(language==='ru') return ru;
- if(language==='pl') return window.yellowPolish(en);
+ if(language==='pl') return ru==='Начало'?'Początek':window.yellowPolish(en);
  const translation=Object.hasOwn(translatedText,en)?translatedText[en]:undefined;
  return translation?.[translationIndex[language]]??en;
 }
@@ -694,9 +694,10 @@ const unit = index => tr(['В','°C','мОм','%','%'][index],['V','°C','mΩ','
 const englishUnits = {'В':'V','А':'A','мин':'min'};
 function logValue(value) {
  const language=document.documentElement.lang;
+ if(language==='pl'&&typeof value==='number') return value.toLocaleString('pl-PL',{useGrouping:false,maximumFractionDigits:10});
  if(language==='ru'||typeof value!=='string') return value;
  const label=translate(value);
- const number=language==='tr'?label:label.replace(/^(−?\d+),(\d+)(?= |$)/,'$1.$2');
+ const number=language==='pl'?label.replace(/^(−?\d+)\.(\d+)(?= |$)/,'$1,$2'):language==='tr'?label:label.replace(/^(−?\d+),(\d+)(?= |$)/,'$1.$2');
  return number.replace(/ (В|А|мин)$/u,(_,unit)=>unit==='мин'?tr(' мин',' min'):' '+englishUnits[unit]);
 }
 const maxima = [15,30,6,100,100];
@@ -1585,7 +1586,7 @@ function restoreBackup(data,{restoreAccounts=true}={}) {
 }
 function settingControl(label,name,value) {
  const options={
-  'Цепь':['1','2','3','4'],'Язык интерфейса':['Русский','English','Türkçe','简体中文','繁體中文'],
+  'Цепь':['1','2','3','4'],'Язык интерфейса':['Русский','English','Polski','Türkçe','简体中文','繁體中文'],
   'Режим измерения тока':['Постоянный','Двунаправленный'],
   'Верхний / нижний порог':['Верхний','Нижний'],
   'Тип тревоги':['Напряжение АКБ','Температура','Импеданс'],
